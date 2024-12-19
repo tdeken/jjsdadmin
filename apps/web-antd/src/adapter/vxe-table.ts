@@ -10,15 +10,24 @@ setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
     vxeUI.setConfig({
       grid: {
-        align: 'center',
+        align: 'left',
         border: false,
         columnConfig: {
           resizable: true,
         },
-        minHeight: 180,
+        minHeight: 300,
+        maxHeight: 940,
         formConfig: {
           // 全局禁用vxe-table的表单配置，使用formOptions
           enabled: false,
+        },
+        pagerConfig: {
+          pageSize: 20,
+          background: true,
+          pageSizes: [15, 20, 50, 100],
+          className: 'mt-2 w-full',
+          size: 'medium' as const,
+          align: 'right'
         },
         proxyConfig: {
           autoLoad: true,
@@ -32,7 +41,7 @@ setupVbenVxeTable({
         },
         round: true,
         showOverflow: true,
-        size: 'small',
+        size: 'medium',
       },
     });
 

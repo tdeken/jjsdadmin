@@ -1,6 +1,7 @@
 {
   "title": "商店",
   "customer": {
-    "customerList": "客户"
+    "address": "客户地址",
+    "customer": "客户"
   }
 }

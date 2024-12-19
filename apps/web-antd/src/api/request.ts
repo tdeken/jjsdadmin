@@ -20,6 +20,7 @@ import { refreshTokenApi } from './core';
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
+
 function createRequestClient(baseURL: string) {
   const client = new RequestClient({
     baseURL,
@@ -78,6 +79,13 @@ function createRequestClient(baseURL: string) {
       if (status >= 200 && status < 400 && code === 200) {
         return data;
       }
+
+      if (code === 401) {
+        const authStore = useAuthStore();
+        authStore.logout(true)
+        return
+      }
+      
 
       throw Object.assign({}, response, { response });
     },

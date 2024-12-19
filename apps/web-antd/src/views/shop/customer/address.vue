@@ -4,12 +4,13 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
-import { list } from '#/api';
+import { addressList } from '#/api';
 
 interface RowType {
   id: string;
-  name: string;
-  phone: string;
+  title: string;
+  address: string;
+  tel: string;
   created_date: string;
 }
 
@@ -20,17 +21,17 @@ const formOptions: VbenFormProps = {
     {
       component: 'Input',
       componentProps: {
-        placeholder: '请输入客户名称',
+        placeholder: '请输入商铺名称',
       },
-      fieldName: 'name',
-      label: '客户名称',
+      fieldName: 'title',
+      label: '商铺',
     },
     {
       component: 'Input',
       componentProps: {
         placeholder: '请输入联系方式',
       },
-      fieldName: 'phone',
+      fieldName: 'tel',
       label: '联系方式',
     },
   ],
@@ -46,17 +47,22 @@ const formOptions: VbenFormProps = {
 };
 
 const gridOptions: VxeGridProps<RowType> = {
+  checkboxConfig: {
+    highlight: true,
+    labelField: 'name',
+  },
   columns: [
-    { field:'name',title: '商铺', align: 'left', width: 500 },
-    { field:'phone',title: '联系方式', align: 'left', width: 300 },
-    { field:'created_date',title: '添加日期', align: 'left' },
+    { field:'title', title: '商铺', width: 500 },
+    { field:'address', title: '地址' },
+    { field:'tel', title: '联系方式', width: 300 },
+    { field:'created_date', title: '添加日期' },
   ],
   keepSource: true,
   pagerConfig: {},
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await list({
+        return await addressList({
           page: page.currentPage,
           page_size: page.pageSize,
           ...formValues,

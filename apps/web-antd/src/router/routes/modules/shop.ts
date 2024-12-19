@@ -12,16 +12,24 @@ const routes: RouteRecordRaw[] = [
       title: $t('shop.title'),
     },
     name: 'Shop',
-    path: '/customer',
+    path: '/shop/customer',
     children: [
       {
+        name: 'CustomerAddress',
+        path: '/shop/customer/address',
+        component: () => import('#/views/shop/customer/address.vue'),
+        meta: {
+          icon: 'lucide:book-user',
+          title: $t('shop.customer.address'),
+        },
+      },
+      {
         name: 'Customer',
-        path: '/customer',
+        path: '/shop/customer/list',
         component: () => import('#/views/shop/customer/index.vue'),
         meta: {
-          affixTab: true,
           icon: 'lucide:book-user',
-          title: $t('shop.customer.customerList'),
+          title: $t('shop.customer.customer'),
         },
       }
     ],

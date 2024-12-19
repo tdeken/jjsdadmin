@@ -1,6 +1,7 @@
 {
   "title": "Market",
    "customer": {
-    "customerList": "Customer"
+    "address": "Customer Address",
+    "customer": "Customer"
   }
 }
