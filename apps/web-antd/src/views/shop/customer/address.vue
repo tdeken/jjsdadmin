@@ -3,8 +3,7 @@ import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import { Button } from 'ant-design-vue';
 
-import { Page, useVbenDrawer } from '@vben/common-ui';
-
+import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { addressList } from '#/api';
@@ -89,6 +88,13 @@ const gridOptions: VxeGridProps<RowType> = {
     { field:'address', title: '地址' },
     { field:'tel', title: '联系方式', width: 300 },
     { field:'created_date', title: '添加日期' },
+    {
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      title: '操作',
+      width: 200,
+    },
   ],
   keepSource: true,
   proxyConfig: {
@@ -122,6 +128,10 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
         <Button class="mr-2" type="primary" @click=openCreateAddress >
           新增收货地址
         </Button>
+      </template>
+      <template #action>
+        <Button type="link">编辑</Button>
+        <Button danger type="link">删除</Button>
       </template>
     </Grid>
   </Page>
