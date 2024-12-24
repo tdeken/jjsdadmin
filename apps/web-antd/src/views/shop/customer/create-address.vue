@@ -2,7 +2,7 @@
 import { useVbenDrawer } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { customerSelect, addressCreate } from '#/api';
+import { addressCreate } from '#/api';
 
 interface Props {
   refreshAddress?:()=>void, 
