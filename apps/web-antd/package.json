@@ -1,6 +1,6 @@
 {
   "name": "@vben/web-antd",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
@@ -26,11 +26,6 @@
     "#/*": "./src/*"
   },
   "dependencies": {
-    "@fast-crud/fast-crud": "^1.23.4",
-    "@fast-crud/fast-extends": "^1.23.4",
-    "@fast-crud/ui-antdv4": "^1.23.4",
-    "@fast-crud/ui-interface": "^1.23.4",
-    "@iconify/vue": "^4.1.2",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
@@ -48,10 +43,8 @@
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
-    "lodash-es": "^4.17.21",
     "pinia": "catalog:",
     "vue": "catalog:",
-    "vue-i18n": "^10.0.5",
     "vue-router": "catalog:"
   }
 }

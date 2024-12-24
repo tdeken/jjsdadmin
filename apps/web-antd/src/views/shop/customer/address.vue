@@ -1,10 +1,43 @@
 <script lang="ts" setup>
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+import { Button } from 'ant-design-vue';
+
+import { Page, useVbenDrawer } from '@vben/common-ui';
+
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-
 import { addressList } from '#/api';
+import { useRoute } from 'vue-router';
+import { $t } from '#/locales';
+import { customerSelector } from '#/utils';
+
+import { onMounted, ref } from 'vue';
+
+import CreateAddressComponent from './create-address.vue';
+
+const customers = ref() 
+const loadCustomers = async () => {
+  try {
+    customers.value = await customerSelector()
+  }catch(error){
+    console.error('加载用户失败:', error);
+  }
+}
+
+onMounted(()=>{
+  loadCustomers()
+})
+
+const [CreateAddress, drawerApi] = useVbenDrawer({
+  connectedComponent: CreateAddressComponent,
+})
+
+function openCreateAddress () {
+  drawerApi.setState({ title: '新增收货地址' });
+  drawerApi.setData({customers: customers.value})
+  drawerApi.open();
+}
 
 interface RowType {
   id: string;
@@ -58,7 +91,6 @@ const gridOptions: VxeGridProps<RowType> = {
     { field:'created_date', title: '添加日期' },
   ],
   keepSource: true,
-  pagerConfig: {},
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
@@ -72,11 +104,25 @@ const gridOptions: VxeGridProps<RowType> = {
   },
 };
 
-const [Grid] = useVbenVxeGrid({ formOptions, gridOptions });
+function refreshAddress() {
+  GridApi.reload()
+}
+
+const useRouteStore = useRoute()
+
+const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
+
 </script>
 
 <template>
-  <div class="p-5">
-    <Grid />
-  </div>
+  <Page auto-content-height>
+    <Grid>
+      <template #toolbar-tools>
+        <CreateAddress :refreshAddress="refreshAddress" />
+        <Button class="mr-2" type="primary" @click=openCreateAddress >
+          新增收货地址
+        </Button>
+      </template>
+    </Grid>
+  </Page>
 </template>

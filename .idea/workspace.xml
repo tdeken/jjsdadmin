@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4a38d35e-883e-4e8b-8ab1-c641afee45cd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jjsdadmin.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web-antd/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/adapter/component/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web-antd/src/adapter/component/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/api/modules/customer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web-antd/src/api/modules/customer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/store/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web-antd/src/store/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/address.vue" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/address.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lint-configs/commitlint-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/internal/lint-configs/commitlint-config/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/lint-configs/stylelint-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/internal/lint-configs/stylelint-config/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/node-utils/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/internal/node-utils/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/tailwind-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/internal/tailwind-config/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/tsconfig/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/internal/tsconfig/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/vite-config/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/internal/vite-config/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/design/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/design/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/icons/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/icons/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/shared/dist/constants/index.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/shared/dist/constants/index.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/shared/dist/utils/index.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/shared/dist/utils/index.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/shared/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/shared/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/shared/src/constants/globals.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/shared/src/constants/globals.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/shared/src/utils/date.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/shared/src/utils/date.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/typings/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/typings/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/base/typings/src/basic.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/base/typings/src/basic.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/composables/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/composables/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/preferences/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/preferences/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/components/form-actions.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/components/form-actions.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/form-api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/form-api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/form-render/form-field.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/form-render/form-field.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/vben-use-form.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/form-ui/src/vben-use-form.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/layout-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/layout-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/layout-ui/src/vben-layout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/layout-ui/src/vben-layout.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/menu-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/menu-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/drawer/drawer.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/drawer/drawer.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/drawer/drawer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/drawer/drawer.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/modal/modal.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/modal/modal.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/modal/modal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/popup-ui/src/modal/modal.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/dialog/DialogContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/dialog/DialogContent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/dialog/DialogOverlay.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/dialog/DialogOverlay.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/dialog/DialogScrollContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/dialog/DialogScrollContent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/sheet/SheetContent.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/sheet/SheetContent.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/sheet/SheetOverlay.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/sheet/SheetOverlay.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/sheet/sheet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/shadcn-ui/src/ui/sheet/sheet.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/@core/ui-kit/tabs-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/@core/ui-kit/tabs-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/constants/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/constants/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/access/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/access/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/common-ui/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/common-ui/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/common-ui/src/components/api-select/api-select.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/common-ui/src/components/api-select/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/common-ui/src/components/icon-picker/icon-picker.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/common-ui/src/components/icon-picker/icon-picker.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/common-ui/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/common-ui/src/components/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/common-ui/src/components/page/page.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/common-ui/src/components/page/page.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/hooks/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/hooks/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/layouts/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/layouts/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/plugins/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/plugins/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/api.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/api.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/init.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/init.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/use-vxe-grid.vue" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/plugins/src/vxe-table/use-vxe-grid.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/request/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/request/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/request/src/request-client/preset-interceptors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/request/src/request-client/preset-interceptors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/effects/request/src/request-client/request-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/effects/request/src/request-client/request-client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/icons/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/icons/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/locales/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/locales/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/locales/src/langs/en-US/common.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/locales/src/langs/en-US/common.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/locales/src/langs/zh-CN/common.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/locales/src/langs/zh-CN/common.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/preferences/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/preferences/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/stores/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/stores/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/stores/src/modules/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/stores/src/modules/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/styles/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/styles/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/types/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/types/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/types/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/types/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/types/src/page.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/types/src/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/types/src/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/utils/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/utils/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "tdeken"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:tdeken/jjsdadmin.git",
+    "accountId": "3048c59a-d131-4c0d-bd5a-5b8c65463377"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="2qc4A81UrH22dhV3nPCXvvw0w6n" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "main",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/branchcn",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "pnpm"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-5df93f7ad4aa-dfc284eb1eb8-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-242.20224.424" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-GO-242.20224.424" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

@@ -1,6 +1,6 @@
 {
   "name": "vben-admin-monorepo",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "private": true,
   "keywords": [
     "monorepo",
@@ -29,6 +29,10 @@
     "build:analyze": "turbo build:analyze",
     "build:antd": "pnpm run build --filter=@vben/web-antd",
     "build:docker": "./scripts/deploy/build-local-docker-image.sh",
+    "build:docs": "pnpm run build --filter=@vben/docs",
+    "build:ele": "pnpm run build --filter=@vben/web-ele",
+    "build:naive": "pnpm run build --filter=@vben/web-naive",
+    "build:play": "pnpm run build --filter=@vben/playground",
     "changeset": "pnpm exec changeset",
     "check": "pnpm run check:circular && pnpm run check:dep && pnpm run check:type && pnpm check:cspell",
     "check:circular": "vsh check-circular",
@@ -39,6 +43,10 @@
     "commit": "czg",
     "dev": "turbo-run dev",
     "dev:antd": "pnpm -F @vben/web-antd run dev",
+    "dev:docs": "pnpm -F @vben/docs run dev",
+    "dev:ele": "pnpm -F @vben/web-ele run dev",
+    "dev:naive": "pnpm -F @vben/web-naive run dev",
+    "dev:play": "pnpm -F @vben/playground run dev",
     "format": "vsh lint --format",
     "lint": "vsh lint",
     "postinstall": "pnpm -r run stub --if-present",
@@ -91,7 +99,7 @@
     "node": ">=20.10.0",
     "pnpm": ">=9.12.0"
   },
-  "packageManager": "pnpm@9.14.4",
+  "packageManager": "pnpm@9.15.0",
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {
@@ -109,8 +117,5 @@
       "canvas",
       "node-gyp"
     ]
-  },
-  "dependencies": {
-    "@fast-crud/fast-crud": "^1.23.4"
   }
 }

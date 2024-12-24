@@ -71,8 +71,8 @@ class RequestClient {
   /**
    * GET请求方法
    */
-  public get<T = any>(url: string, params?: object, config?: AxiosRequestConfig): Promise<T> {
-    return this.request<T>(url, { ...config, method: 'GET', params: params });
+  public get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    return this.request<T>(url, { ...config, method: 'GET' });
   }
 
   /**

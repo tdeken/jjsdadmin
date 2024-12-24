@@ -2,7 +2,10 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import {useVbenVxeGrid } from '#/adapter/vxe-table';
+
+import { Page } from '@vben/common-ui';
+
 
 import { list } from '#/api';
 
@@ -70,7 +73,7 @@ const [Grid] = useVbenVxeGrid({ formOptions, gridOptions });
 </script>
 
 <template>
-  <div class="p-5">
+  <Page auto-content-height>
     <Grid />
-  </div>
+  </Page>
 </template>
