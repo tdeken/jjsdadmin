@@ -13,7 +13,8 @@ import { customerSelector } from '#/utils';
 
 import { onMounted, ref } from 'vue';
 
-import CreateAddressComponent from './create-address.vue';
+import FormAddressComponent from './form-address.vue';
+import DelAddressComponent from './del-address.vue';
 
 const customers = ref() 
 const loadCustomers = async () => {
@@ -28,13 +29,30 @@ onMounted(()=>{
   loadCustomers()
 })
 
+const [DelAddress, modalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: DelAddressComponent,
+});
+
+function openDelAddress (row: RowType) {
+  modalApi.setState({ title: '确定要删除地址吗？', fullscreenButton: false });
+  modalApi.setData({row: row})
+  modalApi.open();
+}
+
 const [CreateAddress, drawerApi] = useVbenDrawer({
-  connectedComponent: CreateAddressComponent,
+  connectedComponent: FormAddressComponent,
 })
 
 function openCreateAddress () {
   drawerApi.setState({ title: '新增收货地址' });
   drawerApi.setData({customers: customers.value})
+  drawerApi.open();
+}
+
+function openUpdateAddress (row: RowType) {
+  drawerApi.setState({ title: '修改过收货地址' });
+  drawerApi.setData({ customers: customers.value, row: row })
   drawerApi.open();
 }
 
@@ -121,17 +139,18 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 </script>
 
 <template>
+  <CreateAddress :refreshAddress="refreshAddress" />
+  <DelAddress :refreshAddress="refreshAddress" />
   <Page auto-content-height>
     <Grid>
       <template #toolbar-tools>
-        <CreateAddress :refreshAddress="refreshAddress" />
         <Button class="mr-2" type="primary" @click=openCreateAddress >
           新增收货地址
         </Button>
       </template>
-      <template #action>
-        <Button type="link">编辑</Button>
-        <Button danger type="link">删除</Button>
+      <template #action="{ row }">
+        <Button type="link" @click="openUpdateAddress(row)" >编辑</Button>
+        <Button danger type="link" @click="openDelAddress(row)" >删除</Button>
       </template>
     </Grid>
   </Page>

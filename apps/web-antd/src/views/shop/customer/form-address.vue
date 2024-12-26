@@ -2,7 +2,12 @@
 import { useVbenDrawer } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { addressCreate } from '#/api';
+import { addressCreate, addressUpdate } from '#/api';
+
+import { ref } from 'vue';
+
+
+const row = ref()
 
 interface Props {
   refreshAddress?:()=>void, 
@@ -19,17 +24,50 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
   onOpenChange(isOpen) {
     if (isOpen) {
-      formApi.updateSchema([
-        {
-          componentProps: {
-          options: drawerApi.getData()?.customers,
-        },
-        fieldName: 'customer_id',
-      }
-    ])
+      fullCustomers()
+      updateRow()
     }
   },
 });
+
+function fullCustomers(){
+  formApi.updateSchema([
+    {
+      componentProps: {
+        options: drawerApi.getData()?.customers,
+      },
+      fieldName: 'customer_id',
+    }
+  ])
+}
+
+function updateRow(){
+  if (!drawerApi.getData()?.row) return
+
+  const data = drawerApi.getData()?.row
+  row.value = data
+
+  formApi.updateSchema([
+    {
+      fieldName: 'customer_id',
+      defaultValue: data.customer_id
+    },
+    {
+      fieldName: 'title',
+      defaultValue: data.title
+    },
+    {
+      fieldName: 'address',
+      defaultValue: data.address
+    },
+    {
+      fieldName: 'tel',
+      defaultValue: data.tel
+    }
+  ])
+}
+
+
 
 const [Form, formApi] = useVbenForm({
   // 所有表单项共用，可单独在表单内覆盖
@@ -103,12 +141,23 @@ const [Form, formApi] = useVbenForm({
 
 async function onSubmit(values: Record<string, any>) {
 
-  await addressCreate({
-    title: values.title, 
-    address: values.address, 
-    tel: values.tel, 
-    customer_id: values.customer_id,
-  })
+  if (row.value) {
+    await addressUpdate({
+      id: row.value.id,
+      title: values.title, 
+      address: values.address, 
+      tel: values.tel, 
+      customer_id: values.customer_id,
+    })
+  } else {
+    await addressCreate({
+      title: values.title, 
+      address: values.address, 
+      tel: values.tel, 
+      customer_id: values.customer_id,
+    })
+  }
+  
     
   if (props.refreshAddress) {
     props.refreshAddress()

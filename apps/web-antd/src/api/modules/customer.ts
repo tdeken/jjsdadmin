@@ -27,12 +27,21 @@ export namespace CustomerApi {
     phone: string;
   }
 
-  /** 客户选择接口查询结果单条记录 */
+  /** 地址创建 */
   export interface AddressCreate {
     title: string;
     address: string;
     tel: string;
     customer_id: string;
+  }
+
+
+  /** 地址创建 */
+  export interface AddressDestroy {
+    id: string;
+  }
+  
+  export interface AddressUpdate extends AddressDestroy, AddressCreate {
   }
   
 }
@@ -61,6 +70,20 @@ export async function addressList(params: CustomerApi.AddressListQuery) {
 /**
  * 创建地址
  */
-export async function addressCreate(params: CustomerApi.AddressCreate) {
-  return requestClient.post('admin/customer/address-create', params);
+export async function addressCreate(data: CustomerApi.AddressCreate) {
+  return requestClient.post('admin/customer/address-create', data);
+}
+
+/**
+ * 更新地址
+ */
+export async function addressUpdate(data: CustomerApi.AddressUpdate) {
+  return requestClient.post('admin/customer/address-update', data);
+}
+
+/**
+ * 删除地址
+ */
+export async function addressDestroy(data: CustomerApi.AddressDestroy) {
+  return requestClient.post('admin/customer/address-destroy', data);
 }
