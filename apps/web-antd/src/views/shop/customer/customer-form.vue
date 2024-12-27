@@ -2,7 +2,8 @@
 import { useVbenDrawer } from '@vben/common-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { addressCreate, addressUpdate } from '#/api';
+import { customerCreate, customerUpdate } from '#/api';
+import { message } from 'ant-design-vue';
 
 import { ref } from 'vue';
 
@@ -10,7 +11,7 @@ import { ref } from 'vue';
 const row = ref()
 
 interface Props {
-  refreshAddress?:()=>void, 
+  refresh?:()=>void, 
 }
 
 const props = defineProps<Props>()
@@ -49,21 +50,13 @@ function updateRow(){
 
   formApi.updateSchema([
     {
-      fieldName: 'customer_id',
-      defaultValue: data.customer_id
+      fieldName: 'name',
+      defaultValue: data.name
     },
     {
-      fieldName: 'title',
-      defaultValue: data.title
+      fieldName: 'phone',
+      defaultValue: data.phone
     },
-    {
-      fieldName: 'address',
-      defaultValue: data.address
-    },
-    {
-      fieldName: 'tel',
-      defaultValue: data.tel
-    }
   ])
 }
 
@@ -91,7 +84,7 @@ const [Form, formApi] = useVbenForm({
         placeholder: '请输入商铺名称',
       },
       // 字段名
-      fieldName: 'title',
+      fieldName: 'name',
       // 界面显示的label
       label: '商铺名称',
       rules: 'required',
@@ -100,37 +93,10 @@ const [Form, formApi] = useVbenForm({
       component: 'Input',
       // 对应组件的参数
       componentProps: {
-        placeholder: '请输入收获地址',
-      },
-      // 字段名
-      fieldName: 'address',
-      // 界面显示的label
-      label: '收获地址',
-      rules: 'required',
-    },
-    {
-      component: 'Select',
-      componentProps: {
-        options: [],
-        allowClear: true,
-        filterOption: true,
-        immediate: false,
-        optionFilterProp: "label",
-        placeholder: '请选择',
-        showSearch: true,
-      },
-      defaultValue: undefined,
-      fieldName: 'customer_id',
-      label: '关联客户',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
         placeholder: '请输入联系方式',
       },
       // 字段名
-      fieldName: 'tel',
+      fieldName: 'phone',
       // 界面显示的label
       label: '联系方式',
     },
@@ -140,30 +106,27 @@ const [Form, formApi] = useVbenForm({
 
 
 async function onSubmit(values: Record<string, any>) {
+  drawerApi.close();
 
   if (row.value) {
-    await addressUpdate({
+    await customerUpdate({
       id: row.value.id,
-      title: values.title, 
-      address: values.address, 
-      tel: values.tel, 
-      customer_id: values.customer_id,
+      name: values.name, 
+      phone: values.phone,
     })
+    message.success('更新客户成功')
   } else {
-    await addressCreate({
-      title: values.title, 
-      address: values.address, 
-      tel: values.tel, 
-      customer_id: values.customer_id,
+    await customerCreate({
+      name: values.name, 
+      phone: values.phone,
     })
-  }
-  
-    
-  if (props.refreshAddress) {
-    props.refreshAddress()
+    message.success('新增客户成功')
   }
     
-  drawerApi.close();
+  if (props.refresh) {
+    props.refresh()
+  }
+
 }
 
 </script>

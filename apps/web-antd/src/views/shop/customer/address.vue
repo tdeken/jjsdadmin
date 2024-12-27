@@ -7,14 +7,14 @@ import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { addressList } from '#/api';
+import { customerSelector } from '#/utils';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
-import { customerSelector } from '#/utils';
 
 import { onMounted, ref } from 'vue';
 
-import FormAddressComponent from './form-address.vue';
-import DelAddressComponent from './del-address.vue';
+import FormAddressComponent from './address-form.vue';
+import DelAddressComponent from './address-del.vue';
 
 const customers = ref() 
 const loadCustomers = async () => {
@@ -51,7 +51,7 @@ function openCreateAddress () {
 }
 
 function openUpdateAddress (row: RowType) {
-  drawerApi.setState({ title: '修改过收货地址' });
+  drawerApi.setState({ title: '更新收货地址' });
   drawerApi.setData({ customers: customers.value, row: row })
   drawerApi.open();
 }
@@ -114,6 +114,7 @@ const gridOptions: VxeGridProps<RowType> = {
       width: 200,
     },
   ],
+  height: 'auto',
   keepSource: true,
   proxyConfig: {
     ajax: {
@@ -128,7 +129,7 @@ const gridOptions: VxeGridProps<RowType> = {
   },
 };
 
-function refreshAddress() {
+function refresh() {
   GridApi.reload()
 }
 
@@ -139,9 +140,9 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 </script>
 
 <template>
-  <CreateAddress :refreshAddress="refreshAddress" />
-  <DelAddress :refreshAddress="refreshAddress" />
   <Page auto-content-height>
+    <CreateAddress :refresh="refresh" :footer="false" />
+    <DelAddress :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click=openCreateAddress >

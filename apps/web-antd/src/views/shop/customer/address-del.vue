@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { addressDestroy } from '#/api';
+import { message } from 'ant-design-vue';
 
 interface Props {
   refreshAddress?:()=>void, 
@@ -32,6 +33,7 @@ async function delAddress(){
     props.refreshAddress()
   }
   modalApi.close();
+  message.success('操作成功')
 }
 
 </script>

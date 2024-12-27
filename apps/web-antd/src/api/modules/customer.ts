@@ -36,12 +36,29 @@ export namespace CustomerApi {
   }
 
 
-  /** 地址创建 */
+  /** 地址删除*/
   export interface AddressDestroy {
     id: string;
   }
   
+   /** 地址更新*/
   export interface AddressUpdate extends AddressDestroy, AddressCreate {
+  }
+
+  /** 地址创建 */
+  export interface CustomerCreate {
+    name: string;
+    phone: string;
+  }
+
+
+  /** 地址删除*/
+  export interface CustomerDestroy {
+    id: string;
+  }
+  
+   /** 地址更新*/
+  export interface CustomerUpdate extends CustomerDestroy, CustomerCreate {
   }
   
 }
@@ -58,6 +75,27 @@ export async function list(params: CustomerApi.ListQuery) {
  */
 export async function customerSelect() {
   return requestClient.get<CustomerApi.SelectResult>('admin/customer/select');
+}
+
+/**
+ * 创建客户
+ */
+export async function customerCreate(data: CustomerApi.CustomerCreate) {
+  return requestClient.post('admin/customer/store', data);
+}
+
+/**
+ * 更新客户
+ */
+export async function customerUpdate(data: CustomerApi.CustomerUpdate) {
+  return requestClient.post('admin/customer/update', data);
+}
+
+/**
+ * 删除客户
+ */
+export async function customerDestroy(data: CustomerApi.CustomerDestroy) {
+  return requestClient.post('admin/customer/destroy', data);
 }
 
 /**

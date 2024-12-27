@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
       title: $t('shop.title'),
     },
     name: 'Shop',
-    path: '/shop/customer',
+    path: '/shop/customer/address',
     children: [
       {
         name: 'CustomerAddress',
