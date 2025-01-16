@@ -6,7 +6,7 @@ import { addressDestroy } from '#/api';
 import { message } from 'ant-design-vue';
 
 interface Props {
-  refreshAddress?:()=>void, 
+  refresh?:()=>void, 
 }
 
 const props = defineProps<Props>()
@@ -29,8 +29,8 @@ const [Modal, modalApi] = useVbenModal({
 
 async function delAddress(){
   await addressDestroy({id: row.value.id})
-  if (props.refreshAddress) {
-    props.refreshAddress()
+  if (props.refresh) {
+    props.refresh()
   }
   modalApi.close();
   message.success('操作成功')

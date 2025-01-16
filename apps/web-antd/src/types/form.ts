@@ -11,4 +11,11 @@ interface SelectOption {
 
 }
 
-export type { SelectOption };
+interface CudInterface {
+  openForm:(state :any, data: any)=>void;
+  delete:(row: any)=>void;
+  update:(row: any)=>void;
+  create:()=>void;
+}
+
+export type { SelectOption, CudInterface };

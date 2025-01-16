@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import { Button } from 'ant-design-vue';
@@ -19,26 +20,33 @@ const [DelCustomer, modalApi] = useVbenModal({
   connectedComponent: DelCustomerComponent,
 });
 
-function openDelCustomer (row: RowType) {
-  modalApi.setState({ title: '确定要删除客户吗？', fullscreenButton: false });
-  modalApi.setData({row: row})
-  modalApi.open();
+
+const cud: CudInterface = {
+  openForm:(state :any, data: any) => {
+    drawerApi.setState(state);
+    drawerApi.setData(data)
+    drawerApi.open();
+  },
+  delete: (row: RowType) => {
+    modalApi.setState({ title: '确定要删除客户吗？', fullscreenButton: false });
+    modalApi.setData({row: row})
+    modalApi.open();
+  },
+  update: (row: RowType) => {
+    const state = {title: '更新客户', footer: false}
+    const data = {row: row}
+    cud.openForm(state, data)
+  },
+  create:()=> {
+    const state = {title: '新增客户', footer: false}
+    const data = {}
+    cud.openForm(state, data)
+  },
 }
 
 const [CreateCustomer, drawerApi] = useVbenDrawer({
   connectedComponent: FormCustomerComponent,
 })
-
-function openCreateCustomer () {
-  drawerApi.setState({ title: '新增客户' });
-  drawerApi.open();
-}
-
-function openUpdateCustomer (row: RowType) {
-  drawerApi.setState({ title: '更新客户' });
-  drawerApi.setData({ row: row })
-  drawerApi.open();
-}
 
 
 interface RowType {
@@ -121,17 +129,17 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 
 <template>
   <Page auto-content-height>
-    <CreateCustomer :refresh="refresh" :footer=false />
+    <CreateCustomer :refresh="refresh" />
     <DelCustomer :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>
-        <Button class="mr-2" type="primary" @click=openCreateCustomer >
+        <Button class="mr-2" type="primary" @click=cud.create >
           新增客户
         </Button>
       </template>
       <template #action="{ row }">
-        <Button type="link" @click="openUpdateCustomer(row)" >编辑</Button>
-        <Button danger type="link" @click="openDelCustomer(row)" >删除</Button>
+        <Button type="link" @click="cud.update(row)" >编辑</Button>
+        <Button danger type="link" @click="cud.delete(row)" >删除</Button>
       </template>
     </Grid>
   </Page>

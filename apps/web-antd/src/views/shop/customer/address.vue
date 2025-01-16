@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import { Button } from 'ant-design-vue';
@@ -29,32 +30,38 @@ onMounted(()=>{
   loadCustomers()
 })
 
+const cud: CudInterface = {
+  openForm:(state :any, data: any) => {
+    drawerApi.setState(state);
+    drawerApi.setData(data)
+    drawerApi.open();
+  },
+  delete: (row: RowType) => {
+    modalApi.setState({ title: '确定要删除地址吗？', fullscreenButton: false });
+    modalApi.setData({row: row})
+    modalApi.open();
+  },
+  update: (row: RowType) => {
+    const state = {title: '更新收货地址', footer: false}
+    const data = {customers: customers.value, row: row}
+    cud.openForm(state, data)
+  },
+  create:()=> {
+    const state = {title: '新增收货地址', footer: false}
+    const data = {customers: customers.value}
+    cud.openForm(state, data)
+  },
+}
+
 const [DelAddress, modalApi] = useVbenModal({
   // 连接抽离的组件
   connectedComponent: DelAddressComponent,
 });
 
-function openDelAddress (row: RowType) {
-  modalApi.setState({ title: '确定要删除地址吗？', fullscreenButton: false });
-  modalApi.setData({row: row})
-  modalApi.open();
-}
-
 const [CreateAddress, drawerApi] = useVbenDrawer({
   connectedComponent: FormAddressComponent,
 })
 
-function openCreateAddress () {
-  drawerApi.setState({ title: '新增收货地址' });
-  drawerApi.setData({customers: customers.value})
-  drawerApi.open();
-}
-
-function openUpdateAddress (row: RowType) {
-  drawerApi.setState({ title: '更新收货地址' });
-  drawerApi.setData({ customers: customers.value, row: row })
-  drawerApi.open();
-}
 
 interface RowType {
   id: string;
@@ -141,17 +148,17 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 
 <template>
   <Page auto-content-height>
-    <CreateAddress :refresh="refresh" :footer="false" />
+    <CreateAddress :refresh="refresh" />
     <DelAddress :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>
-        <Button class="mr-2" type="primary" @click=openCreateAddress >
+        <Button class="mr-2" type="primary" @click="cud.create" >
           新增收货地址
         </Button>
       </template>
       <template #action="{ row }">
-        <Button type="link" @click="openUpdateAddress(row)" >编辑</Button>
-        <Button danger type="link" @click="openDelAddress(row)" >删除</Button>
+        <Button type="link" @click="cud.update(row)" >编辑</Button>
+        <Button danger type="link" @click="cud.delete(row)" >删除</Button>
       </template>
     </Grid>
   </Page>
