@@ -11,6 +11,7 @@ interface SelectOption {
 
 }
 
+/** 表单操作 */
 interface CudInterface {
   openForm:(state :any, data: any)=>void;
   delete:(row: any)=>void;

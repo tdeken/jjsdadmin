@@ -4,7 +4,37 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a38d35e-883e-4e8b-8ab1-c641afee45cd" name="Changes" comment="" />
+    <list default="true" id="4a38d35e-883e-4e8b-8ab1-c641afee45cd" name="Changes" comment="商品">
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/api/modules/goods.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/locales/langs/en-US/customer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/locales/langs/en-US/goods.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/locales/langs/zh-CN/customer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/locales/langs/zh-CN/goods.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/router/routes/modules/customer.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/router/routes/modules/goods.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/customer/address-del.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/customer/address-form.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/customer/address.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/customer/customer-del.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/customer/customer-form.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/customer/index.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/goods/index.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/goods/sku-list.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/goods/spu-del.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/web-antd/src/views/goods/spu-form.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/api/modules/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web-antd/src/api/modules/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/locales/langs/en-US/shop.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/locales/langs/zh-CN/shop.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/router/routes/modules/shop.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/types/form.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/web-antd/src/types/form.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/address-del.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/address-form.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/address.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/customer-del.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/customer-form.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/web-antd/src/views/shop/customer/index.vue" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -60,6 +90,12 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="商品" />
+    <option name="LAST_COMMIT_MESSAGE" value="商品" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
