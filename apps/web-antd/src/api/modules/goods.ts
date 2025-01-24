@@ -16,7 +16,6 @@ export namespace GoodsApi {
     title: string;
     as_title: string;
     code: string;
-    customer_id: string;
     sku_attrs: GoodsAttrs[][]
   }
 

@@ -1,17 +1,85 @@
+<template>
+  <Drawer> 
+      <Form 
+        ref="formRef"
+        name="spu_form"
+        :model="dataForm"
+      >
+      <FormItem name="title" label="商品名称" :rules="[{ required: true, message: '商品名称必填' }]" >
+        <Input v-model:value="dataForm.title" placeholder="请输入商品名称"  />
+      </FormItem>
+      
+      <FormItem name="as_title" label="商品别名" >
+        <Input v-model:value="dataForm.as_title" placeholder="请输入商品别名"  />
+      </FormItem>
+
+      <FormItem name="code" label="商品编码" >
+        <Input v-model:value="dataForm.code" placeholder="请输入商品编码"  />
+      </FormItem>
+      <FormItem
+        v-for="(attrs, idx) in dataForm.sku_attrs"
+        :name="['sku_attrs', idx]"
+      >
+        <div style="padding-bottom: 5px;">
+          {{ attrGroupLabel(idx) }} 
+          <Button style="margin-left: 20px;">添加属性组</Button>
+        </div>
+        
+        <Space
+          v-for="(attr) in attrs"
+          style="display: block; margin-bottom: 8px; padding: 0px;; border: 1px solid #444; position: relative;"
+        >
+          
+          <FormItem label="展示类型" :label-col="{ offset: 1}" style="padding-top: 10px;" >
+            <RadioGroup 
+              v-model:value="attr.show_type" 
+              name="show_type"
+              :options="showRadio"
+            >
+            </RadioGroup>
+          </FormItem>
+
+          <CloseCircleOutlined style=" position: absolute; right:10px; top: 5px; " @click="removeAttr(idx, attr)" /> 
+        </Space>
+      </FormItem>
+    </Form>
+  </Drawer>
+</template>
+
 <script lang="ts" setup>
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { useVbenForm } from '#/adapter/form';
-import { addressCreate, addressUpdate } from '#/api';
-import { message } from 'ant-design-vue';
+import { message, FormItem, Input, Form, RadioGroup, Space, Button } from 'ant-design-vue';
 
-import { ref } from 'vue';
+import { ref, reactive, toRaw } from 'vue';
+import type { UnwrapRef } from 'vue';
+import type { FormInstance, RadioGroupProps } from 'ant-design-vue';
+import { CloseCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 
+interface SpuForm {
+  id: string; 
+  title: string; 
+  as_title: string; 
+  code: string; 
+  sku_attrs: GoodsAttrs[][]
+}
 
-const row = ref()
+interface GoodsAttrs {
+  mark: string;
+  show_type: number;
+}
+
+const formRef = ref<FormInstance>();
+const dataForm: UnwrapRef<SpuForm> = reactive({
+  id: "",
+  title: "",
+  as_title: "",
+  code: "",
+  sku_attrs: []
+});
 
 interface Props {
-  refresh?:()=>void, 
+  refresh:()=>void, 
 }
 
 const props = defineProps<Props>()
@@ -19,160 +87,79 @@ const props = defineProps<Props>()
 const [Drawer, drawerApi] = useVbenDrawer({
   onCancel() {
     drawerApi.close();
+    console.log(skuAttrs.value)
   },
   onConfirm() {
-    formApi.submitForm();
+    formRef.value?.validate()
+      .then(()=>{
+        console.log('values', dataForm, toRaw(dataForm))
+
+        // drawerApi.close();
+        // props.refresh()
+      })
+      .catch((_error) => {
+      
+      })
   },
   onOpenChange(isOpen) {
     if (isOpen) {
-      fullCustomers()
       updateRow()
     }
   },
 });
 
-function fullCustomers(){
-  formApi.updateSchema([
-    {
-      componentProps: {
-        options: drawerApi.getData()?.customers,
-      },
-      fieldName: 'customer_id',
-    }
-  ])
+
+const skuAttrs = ref<GoodsAttrs[][]>();
+
+
+
+const removeAttr = (idx: number, item: GoodsAttrs) => {
+  if (!dataForm.sku_attrs[idx]) {
+    return
+  }
+
+  const index = dataForm.sku_attrs[idx].indexOf(item)
+  if (index !== -1 && dataForm.sku_attrs[idx] ) {
+    dataForm.sku_attrs[idx].splice(index, 1)
+  }
 }
 
 function updateRow(){
-  if (!drawerApi.getData()?.row) return
+  if (!drawerApi.getData()?.row) {
+    dataForm.title = ""
+    dataForm.as_title = ""
+    dataForm.code = ""
+    dataForm.sku_attrs = []
+
+
+    console.log('row1', JSON.stringify(dataForm))
+    return
+  }
 
   const data = drawerApi.getData()?.row
-  row.value = data
 
-  formApi.updateSchema([
-    {
-      fieldName: 'customer_id',
-      defaultValue: data.customer_id
-    },
-    {
-      fieldName: 'title',
-      defaultValue: data.title
-    },
-    {
-      fieldName: 'address',
-      defaultValue: data.address
-    },
-    {
-      fieldName: 'tel',
-      defaultValue: data.tel
-    }
-  ])
-}
+  skuAttrs.value = [...data.sku_attrs]
 
+  console.log('row3', JSON.stringify(data))
 
+  dataForm.title = data.title
+  dataForm.as_title = data.as_title
+  dataForm.code = data.code
+  dataForm.sku_attrs = [...skuAttrs.value]
 
-const [Form, formApi] = useVbenForm({
-  // 所有表单项共用，可单独在表单内覆盖
-  commonConfig: {
-    // 所有表单项
-    componentProps: {
-      class: 'w-full',
-    },
-  },
-  // 提交函数
-  handleSubmit: onSubmit,
-  // 垂直布局，label和input在不同行，值为vertical
-  // 水平布局，label和input在同一行
-  layout: 'horizontal',
-  schema: [
-    {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入商铺名称',
-      },
-      // 字段名
-      fieldName: 'title',
-      // 界面显示的label
-      label: '商铺名称',
-      rules: 'required',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入收货地址',
-      },
-      // 字段名
-      fieldName: 'address',
-      // 界面显示的label
-      label: '收货地址',
-      rules: 'required',
-    },
-    {
-      component: 'Select',
-      componentProps: {
-        options: [],
-        allowClear: true,
-        filterOption: true,
-        immediate: false,
-        optionFilterProp: "label",
-        placeholder: '请选择',
-        showSearch: true,
-      },
-      defaultValue: undefined,
-      fieldName: 'customer_id',
-      label: '关联客户',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入联系方式',
-      },
-      // 字段名
-      fieldName: 'tel',
-      // 界面显示的label
-      label: '联系方式',
-    },
-  ],
-  wrapperClass: 'grid-cols-1',
-});
-
-
-async function onSubmit(values: Record<string, any>) {
-  drawerApi.close();
-
-  if (row.value) {
-    await addressUpdate({
-      id: row.value.id,
-      title: values.title, 
-      address: values.address, 
-      tel: values.tel, 
-      customer_id: values.customer_id,
-    })
-    message.success('更新客户地址成功')
-  } else {
-    await addressCreate({
-      title: values.title, 
-      address: values.address, 
-      tel: values.tel, 
-      customer_id: values.customer_id,
-    })
-    message.success('新增客户地址成功')
-  }
-    
-  if (props.refresh) {
-    props.refresh()
-  }
-    
   
+
+  console.log('row', JSON.stringify(data))
 }
+
+const attrGroupLabel = (idx: number) => {
+  return '属性组' + (idx + 1)
+}
+
+const showRadio: RadioGroupProps['options'] = [
+  { label: '不展示', value: 1 },
+  { label: '展示', value: 2 },
+  { label: '带括号展示展示', value: 3},
+]
 
 </script>
-
-<template>
-  <Drawer> 
-    <Form />
-  </Drawer>
-</template>

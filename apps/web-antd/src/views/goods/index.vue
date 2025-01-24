@@ -2,6 +2,7 @@
 import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { Button } from 'ant-design-vue';
 
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
@@ -15,8 +16,12 @@ import SkuListComponent from './sku-list.vue';
 import SpuFormComponent from './spu-form.vue';
 import SpuDelComponent from './spu-del.vue';
 
+interface SkuPage extends CudInterface {
+  openSkuList: (row: RowType)=>void;
+}
 
-const cud: CudInterface = {
+
+const cud: SkuPage = {
   openForm:(state :any, data: any) => {
     drawerApi.setState(state);
     drawerApi.setData(data)
@@ -28,14 +33,19 @@ const cud: CudInterface = {
     modalApi.open();
   },
   update: (row: RowType) => {
-    const state = {title: '更新商品', footer: false}
+    const state = {title: '更新商品'}
     const data = {row: row}
     cud.openForm(state, data)
   },
   create:()=> {
-    const state = {title: '新增商品', footer: false}
+    const state = {title: '新增商品'}
     const data = {}
     cud.openForm(state, data)
+  },
+  openSkuList: (row: RowType) => {
+    skuModelApi.setState({ title: '确定要删除地址吗？', fullscreenButton: false, footer: false });
+    skuModelApi.setData({row: row})
+    skuModelApi.open();
   },
 }
 
@@ -61,6 +71,7 @@ interface RowType {
   as_title: string;
   code: string;
   created_date: string;
+  sku_attrs:any;
 }
 
 const formOptions: VbenFormProps = {
@@ -99,14 +110,14 @@ const gridOptions: VxeGridProps<RowType> = {
     labelField: 'name',
   },
   columns: [
-    { field:'title', title: '商品名称', width: 500 },
+    { field:'title', title: '商品名称', width: 300 },
     { 
       field:'sku_num', 
       title: '可售商品数',
-      cellRender: { name: 'CellLink' }
+      slots: { default: 'sku-list' }
     },
     { field:'as_title', title: '商品别名' },
-    { field:'code', title: '商品编码', width: 300 },
+    { field:'code', title: '商品编码', width: 200 },
     { field:'created_date', title: '添加日期' },
     {
       field: 'action',
@@ -145,7 +156,13 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
   <Page auto-content-height>
     <Form :refresh="refresh" />
     <Delete :refresh="refresh" />
+    <SkuList />
     <Grid>
+      <template #sku-list="{ row }">
+        <Button class="mr-2" type="link" @click="cud.openSkuList(row)" >
+          {{ row.sku_num }}
+        </Button>
+      </template>
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click="cud.create" >
           新增商品
