@@ -87,7 +87,6 @@ const props = defineProps<Props>()
 const [Drawer, drawerApi] = useVbenDrawer({
   onCancel() {
     drawerApi.close();
-    console.log(skuAttrs.value)
   },
   onConfirm() {
     formRef.value?.validate()
@@ -107,11 +106,6 @@ const [Drawer, drawerApi] = useVbenDrawer({
     }
   },
 });
-
-
-const skuAttrs = ref<GoodsAttrs[][]>();
-
-
 
 const removeAttr = (idx: number, item: GoodsAttrs) => {
   if (!dataForm.sku_attrs[idx]) {
@@ -138,18 +132,12 @@ function updateRow(){
 
   const data = drawerApi.getData()?.row
 
-  skuAttrs.value = [...data.sku_attrs]
-
-  console.log('row3', JSON.stringify(data))
+  console.log('row', JSON.stringify(data))
 
   dataForm.title = data.title
   dataForm.as_title = data.as_title
   dataForm.code = data.code
-  dataForm.sku_attrs = [...skuAttrs.value]
-
-  
-
-  console.log('row', JSON.stringify(data))
+  dataForm.sku_attrs = JSON.parse(JSON.stringify(data.sku_attrs))
 }
 
 const attrGroupLabel = (idx: number) => {
