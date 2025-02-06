@@ -15,16 +15,7 @@ export namespace GoodsApi {
   export interface GoodsCreate {
     title: string;
     as_title: string;
-    code: string;
-    sku_attrs: GoodsAttrs[][]
   }
-
-  /** 地址创建 */
-  export interface GoodsAttrs{
-    mark: string;
-    show_type: number;
-  }
-
   
 }
 

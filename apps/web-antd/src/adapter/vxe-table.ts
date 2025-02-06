@@ -10,7 +10,7 @@ setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
     vxeUI.setConfig({
       grid: {
-        headerAlign: 'center',
+        headerAlign: 'left',
         align: 'left',
         border: false,
         columnConfig: {
