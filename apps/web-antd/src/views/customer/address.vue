@@ -16,6 +16,8 @@ import { onMounted, ref } from 'vue';
 
 import FormAddressComponent from './address-form.vue';
 import DelAddressComponent from './address-del.vue';
+import type { Address } from './types';
+
 
 const customers = ref() 
 const loadCustomers = async () => {
@@ -36,19 +38,19 @@ const cud: CudInterface = {
     drawerApi.setData(data)
     drawerApi.open();
   },
-  delete: (row: RowType) => {
+  delete: (row: Address) => {
     modalApi.setState({ title: '确定要删除地址吗？', fullscreenButton: false });
     modalApi.setData({row: row})
     modalApi.open();
   },
-  update: (row: RowType) => {
-    const state = {title: '更新收货地址', footer: false}
+  update: (row: Address) => {
+    const state = {title: '更新收货地址'}
     const data = {customers: customers.value, row: row}
     cud.openForm(state, data)
   },
   create:()=> {
-    const state = {title: '新增收货地址', footer: false}
-    const data = {customers: customers.value}
+    const state = {title: '新增收货地址'}
+    const data = {customers: customers.value, row: undefined}
     cud.openForm(state, data)
   },
 }
@@ -63,13 +65,7 @@ const [CreateAddress, drawerApi] = useVbenDrawer({
 })
 
 
-interface RowType {
-  id: string;
-  title: string;
-  address: string;
-  tel: string;
-  created_date: string;
-}
+
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -103,7 +99,7 @@ const formOptions: VbenFormProps = {
   submitOnEnter: true,
 };
 
-const gridOptions: VxeGridProps<RowType> = {
+const gridOptions: VxeGridProps<Address> = {
   checkboxConfig: {
     highlight: true,
     labelField: 'name',

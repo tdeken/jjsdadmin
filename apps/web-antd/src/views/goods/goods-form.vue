@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { useVbenForm } from '#/adapter/form';
-import { goodsCreate, addressUpdate } from '#/api';
+import { vbenForm } from '#/utils';
+import { goodsCreate, goodsUpdate } from '#/api';
 import { message } from 'ant-design-vue';
 
 import { ref } from 'vue';
@@ -21,7 +21,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
     drawerApi.close();
   },
   onConfirm() {
-    formApi.submitForm();
+    formApi.validateAndSubmitForm();
   },
   onOpenChange(isOpen) {
     if (isOpen) {
@@ -31,38 +31,22 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 function updateRow(){
-  if (!drawerApi.getData()?.row) return
-
   const data = drawerApi.getData()?.row
   row.value = data
 
   formApi.updateSchema([
     {
       fieldName: 'title',
-      defaultValue: data.title
+      defaultValue: data?.title || ''
     },
     {
       fieldName: 'as_title',
-      defaultValue: data.as_title
+      defaultValue: data?.as_title || ''
     }
   ])
 }
 
-
-
-const [Form, formApi] = useVbenForm({
-  // 所有表单项共用，可单独在表单内覆盖
-  commonConfig: {
-    // 所有表单项
-    componentProps: {
-      class: 'w-full',
-    },
-  },
-  // 提交函数
-  handleSubmit: onSubmit,
-  // 垂直布局，label和input在不同行，值为vertical
-  // 水平布局，label和input在同一行
-  layout: 'horizontal',
+const cus = {
   schema: [
     {
       // 组件需要在 #/adapter.ts内注册，并加上类型
@@ -84,25 +68,23 @@ const [Form, formApi] = useVbenForm({
         placeholder: '请输入商品别名，方便搜索',
       },
       // 字段名
-      fieldName: 'address',
+      fieldName: 'as_title',
       // 界面显示的label
       label: '商品别名',
     }
   ],
-  wrapperClass: 'grid-cols-1',
-});
+}
 
+const [Form, formApi] = vbenForm(cus, onSubmit);
 
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();
 
   if (row.value) {
-    await addressUpdate({
+    await goodsUpdate({
       id: row.value.id,
       title: values.title, 
-      address: values.address, 
-      tel: values.tel, 
-      customer_id: values.customer_id,
+      as_title: values.as_title,
     })
     message.success('更新商品成功')
   } else {

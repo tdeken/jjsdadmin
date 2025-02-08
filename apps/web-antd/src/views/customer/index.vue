@@ -33,13 +33,13 @@ const cud: CudInterface = {
     modalApi.open();
   },
   update: (row: RowType) => {
-    const state = {title: '更新客户', footer: false}
+    const state = {title: '更新客户'}
     const data = {row: row}
     cud.openForm(state, data)
   },
   create:()=> {
-    const state = {title: '新增客户', footer: false}
-    const data = {}
+    const state = {title: '新增客户'}
+    const data = {row: undefined}
     cud.openForm(state, data)
   },
 }

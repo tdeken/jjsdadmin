@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { addressDestroy } from '#/api';
+import { goodsDestroy } from '#/api';
 import { message } from 'ant-design-vue';
 
 interface Props {
@@ -28,7 +28,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 async function delAddress(){
-  await addressDestroy({id: row.value.id})
+  await goodsDestroy({id: row.value.id})
   if (props.refresh) {
     props.refresh()
   }
@@ -39,6 +39,6 @@ async function delAddress(){
 </script>
 <template>
   <Modal>
-    <div class="flex-col-left">你确定要删除商铺 {{ row.title }} 的配送地址吗？</div>
+    <div class="flex-col-left">删除后该商品下的销售商品也会删除，你确定要删除商品 {{ row.title }} 吗？</div>
   </Modal>
 </template>

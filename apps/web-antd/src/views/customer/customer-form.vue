@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { useVbenForm } from '#/adapter/form';
+import { vbenForm } from '#/utils';
 import { customerCreate, customerUpdate } from '#/api';
 import { message } from 'ant-design-vue';
 
@@ -21,7 +21,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
     drawerApi.close();
   },
   onConfirm() {
-    formApi.submitForm();
+    formApi.validateAndSubmitForm();
   },
   onOpenChange(isOpen) {
     if (isOpen) {
@@ -43,38 +43,22 @@ function fullCustomers(){
 }
 
 function updateRow(){
-  if (!drawerApi.getData()?.row) return
-
   const data = drawerApi.getData()?.row
   row.value = data
 
   formApi.updateSchema([
     {
       fieldName: 'name',
-      defaultValue: data.name
+      defaultValue: data?.name || ''
     },
     {
       fieldName: 'phone',
-      defaultValue: data.phone
+      defaultValue: data?.phone || ''
     },
   ])
 }
 
-
-
-const [Form, formApi] = useVbenForm({
-  // 所有表单项共用，可单独在表单内覆盖
-  commonConfig: {
-    // 所有表单项
-    componentProps: {
-      class: 'w-full',
-    },
-  },
-  // 提交函数
-  handleSubmit: onSubmit,
-  // 垂直布局，label和input在不同行，值为vertical
-  // 水平布局，label和input在同一行
-  layout: 'horizontal',
+const cus = {
   schema: [
     {
       // 组件需要在 #/adapter.ts内注册，并加上类型
@@ -101,9 +85,9 @@ const [Form, formApi] = useVbenForm({
       label: '联系方式',
     },
   ],
-  wrapperClass: 'grid-cols-1',
-});
+}
 
+const [Form, formApi] = vbenForm(cus, onSubmit);
 
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();

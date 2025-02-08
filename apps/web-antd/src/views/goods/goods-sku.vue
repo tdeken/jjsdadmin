@@ -5,25 +5,14 @@ import { Page } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
+import type { GoodsSku } from './types';
+
+
 interface Props {
-  data?:GoodsSku[],
+  data?: GoodsSku[],
 }
 
 const props = defineProps<Props>();
-
-interface GoodsSku {
-  id: string;
-  name: string;
-  capacity: string;
-  remark: string;
-  format: string;
-  unit: string;
-  pp: string;
-  wp: string;
-  rp: string;
-  stock: number;
-  number: string;
-}
 
 const gridOptions: VxeGridProps<GoodsSku> = {
   minHeight: 150,
@@ -53,7 +42,7 @@ const [Grid] = useVbenVxeGrid({ gridOptions });
 <template>
   <Page auto-content-height>
     <Grid>
-      
+
     </Grid>
   </Page>
 </template>

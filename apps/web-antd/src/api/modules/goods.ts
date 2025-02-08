@@ -17,18 +17,41 @@ export namespace GoodsApi {
     as_title: string;
   }
   
+  /** 地址删除*/
+  export interface GoodsDestroy {
+    id: string;
+  }
+
+  /** 地址创建 */
+  export interface GoodsUpdate extends GoodsCreate, GoodsDestroy {
+  }
+
 }
 
 /**
- * 客户列表
+ * 商品列表
  */
 export async function goodsList(params: GoodsApi.ListQuery) {
   return requestClient.get('admin/goods/list', { params });
 }
 
 /**
- * 创建客户
+ * 创建商品
  */
 export async function goodsCreate(data: GoodsApi.GoodsCreate) {
   return requestClient.post('admin/goods/store', data);
+}
+
+/**
+ * 创建商品
+ */
+export async function goodsUpdate(data: GoodsApi.GoodsUpdate) {
+  return requestClient.post('admin/goods/update', data);
+}
+
+/**
+ * 删除商品
+ */
+export async function goodsDestroy(data: GoodsApi.GoodsDestroy) {
+  return requestClient.post('admin/goods/destroy', data);
 }

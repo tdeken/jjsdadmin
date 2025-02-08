@@ -12,16 +12,16 @@ import { goodsList } from '#/api';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 
-
-import SpuFormComponent from './spu-form.vue';
-import SpuDelComponent from './spu-del.vue';
+import type { Goods } from './types';
+import SpuFormComponent from './goods-form.vue';
+import SpuDelComponent from './goods-del.vue';
 import SkuFormComponent from './sku-form.vue';
 import GoodsSkuComponent from './goods-sku.vue';
 
 
 interface SkuPage extends CudInterface {
-  createSku: (row: RowType)=>void;
-  openSkuForm: (state :any, data: any)=>void;
+  createSku: (row: Goods) => void;
+  openSkuForm: (state :any, data: any) => void;
 }
 
 
@@ -31,12 +31,12 @@ const cud: SkuPage = {
     drawerApi.setData(data)
     drawerApi.open();
   },
-  delete: (row: RowType) => {
+  delete: (row: Goods) => {
     modalApi.setState({ title: '确定要删除地址吗？', fullscreenButton: false });
     modalApi.setData({row: row})
     modalApi.open();
   },
-  update: (row: RowType) => {
+  update: (row: Goods) => {
     const state = {title: '更新商品'}
     const data = {row: row}
     cud.openForm(state, data)
@@ -51,7 +51,7 @@ const cud: SkuPage = {
     skuDrawerApi.setData(data)
     skuDrawerApi.open();
   },
-  createSku: (row: RowType) => {
+  createSku: (row: Goods) => {
     const state = {title: '新增可售商品'}
     const data = {goods_id: row.id}
     cud.openSkuForm(state, data)
@@ -72,16 +72,6 @@ const [Form, drawerApi] = useVbenDrawer({
   connectedComponent: SpuFormComponent,
 })
 
-
-interface RowType {
-  id: string;
-  title: string;
-  sku_num: number;
-  as_title: string;
-  code: string;
-  created_date: string;
-  goods_skus?:GoodsSku[];
-}
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -113,7 +103,7 @@ const formOptions: VbenFormProps = {
   submitOnEnter: true,
 };
 
-const gridOptions: VxeGridProps<RowType> = {
+const gridOptions: VxeGridProps<Goods> = {
   checkboxConfig: {
     highlight: true,
     labelField: 'name',
@@ -157,21 +147,6 @@ function refresh() {
 const useRouteStore = useRoute()
 
 const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
-
-interface GoodsSku {
-  id: string;
-  name: string;
-  capacity: string;
-  remark: string;
-  format: string;
-  unit: string;
-  pp: string;
-  wp: string;
-  rp: string;
-  stock: number;
-  number: string;
-}
-
 
 </script>
 
