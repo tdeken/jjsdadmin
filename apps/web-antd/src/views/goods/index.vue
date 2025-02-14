@@ -76,7 +76,7 @@ const [Form, drawerApi] = useVbenDrawer({
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
-  fieldMappingTime: [['created_at', ['start', 'end'], ['YYYY-MM-DD 00:00:00', 'YYYY-MM-DD 23:59:59']]],
+  fieldMappingTime: [['updated_date', ['start', 'end'], ['YYYY-MM-DD 00:00:00', 'YYYY-MM-DD 23:59:59']]],
   schema: [
     {
       component: 'Input',
@@ -88,8 +88,8 @@ const formOptions: VbenFormProps = {
     },
     {
       component: 'RangePicker',
-      fieldName: 'created_at',
-      label: '创建时间',
+      fieldName: 'updated_date',
+      label: '最后修改日期',
     },
   ],
   // 控制表单是否显示折叠按钮
@@ -116,7 +116,7 @@ const gridOptions: VxeGridProps<Goods> = {
       title: '可售商品数'
     },
     { field:'as_title', title: '商品别名' },
-    { field:'created_date', title: '添加日期' },
+    { field:'updated_date', title: '最后修改日期' },
     {
       field: 'action',
       fixed: 'right',
