@@ -10,6 +10,7 @@ interface Goods {
 
 interface GoodsSku {
   id: string;
+  goods_id: string;
   name: string;
   capacity: string;
   remark: string;
