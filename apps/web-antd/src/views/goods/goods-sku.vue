@@ -21,6 +21,7 @@ const props = defineProps<Props>();
 const gridOptions: VxeGridProps<GoodsSku> = {
   minHeight: 150,
   maxHeight: 700,
+  showOverflow: true,
   columns: [
     { field: 'name', title: '销售商品名称' },
     { field: 'unit', title: '单位', width:50 },

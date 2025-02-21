@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 
 import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
-import type { VxeGridProps } from '#/adapter/vxe-table';
+import type { VxeGridProps, VxeGridListeners } from '#/adapter/vxe-table';
 
 import { Button } from 'ant-design-vue';
 
@@ -20,8 +20,6 @@ import SpuDelComponent from './goods-del.vue';
 import SkuFormComponent from './sku-form.vue';
 import GoodsSkuComponent from './goods-sku.vue';
 import SkuDelComponent from './sku-del.vue';
-
-
 
 const unit = ref() 
 const format = ref() 
@@ -180,7 +178,7 @@ const gridOptions: VxeGridProps<Goods> = {
         });
       },
     },
-  },
+  }
 };
 
 function refresh() {
@@ -191,6 +189,16 @@ const useRouteStore = useRoute()
 
 const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
 
+
+const gridEvents: VxeGridListeners<Goods> = {
+  cellClick ({ row, column }) {
+    console.log(`单击行：${row.id} 单击列：${column.title}`)
+  },
+  cellDblclick ({ row, column }) {
+    console.log(`双击行：${row.id} 双击列：${column.title}`)
+  }
+}
+
 </script>
 
 <template>
@@ -200,14 +208,14 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
     <SkuDelete :refresh="refresh" />
     <Delete :refresh="refresh" />
     <SkuList />
-    <Grid>
+    <Grid v-on="gridEvents">
       <template #expand_content="{ row }">
           <GoodsSkuComponent 
-          :data="row.goods_skus" 
-          :copySku="cud.copySku"
-          :updateSku="cud.updateSku"
-          :deleteSku="cud.deleteSku"
-          ></GoodsSkuComponent>
+            :data="row.goods_skus" 
+            :copySku="cud.copySku"
+            :updateSku="cud.updateSku"
+            :deleteSku="cud.deleteSku"
+          />
       </template>
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click="cud.create" >
