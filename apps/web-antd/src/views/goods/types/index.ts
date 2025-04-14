@@ -21,6 +21,7 @@ interface GoodsSku {
   rp: string;
   stock: number;
   number: string;
+  short_name: string;
 }
 
 export type { Goods, GoodsSku };

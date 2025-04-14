@@ -24,10 +24,11 @@ const gridOptions: VxeGridProps<GoodsSku> = {
   showOverflow: true,
   columns: [
     { field: 'name', title: '销售商品名称' },
+    { field: 'short_name', title: '简称' },
     { field: 'unit', title: '单位', width:50 },
     { field: 'format', title: '规格', width:100 },
-    { field: 'wp', title: '批发价', width:100 },
-    { field: 'rp', title: '零售价', width:100 },
+    { field: 'wp', title: '批发价(元)', width:100 },
+    { field: 'rp', title: '零售价(元)', width:100 },
     { field: 'stock', title: '库存', width:100 },
     { field: 'number', title: '商品编号', width:200 },
     {
@@ -70,7 +71,7 @@ function deleteSku (row : GoodsSku){
 </script>
 
 <template>
-  <Page auto-content-height>
+  <Page>
     <Grid>
       <template #action="{ row }">
         <Button type="link" @click="copySku(row)" >复制</Button>

@@ -46,6 +46,10 @@ function updateRow(){
       defaultValue: data?.capacity || ''
     },
     {
+      fieldName: 'short_name',
+      defaultValue: data?.short_name || ''
+    },
+    {
       fieldName: 'remark',
       defaultValue: data?.remark || ''
     },
@@ -111,6 +115,17 @@ const cus = {
       fieldName: 'remark',
       // 界面显示的label
       label: '商品备注',
+    },
+    {
+      component: 'Input',
+      // 对应组件的参数
+      componentProps: {
+        placeholder: '选填，请输入商品备注，如：原味，蓝莓味',
+      },
+      // 字段名
+      fieldName: 'short_name',
+      // 界面显示的label
+      label: '简称',
     },
     {
       component: 'Select',

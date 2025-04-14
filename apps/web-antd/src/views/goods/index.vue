@@ -124,7 +124,7 @@ const formOptions: VbenFormProps = {
       componentProps: {
         placeholder: '请输入商品全称、简称或编号',
       },
-      fieldName: 'keywork',
+      fieldName: 'keyword',
       label: '关键字',
     },
     {
