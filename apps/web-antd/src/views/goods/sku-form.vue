@@ -34,13 +34,34 @@ function updateRow(){
 
   const format = drawerApi.getData()?.format
   const unit = drawerApi.getData()?.unit
+  const goods = drawerApi.getData()?.goods
+  const goodsData: any[] = []
+  if (goods) {
+      goods.value.forEach((row: any) => {
+        goodsData.push({
+            value: row.id,
+            label: row.title,
+        })
+      })
+  }
 
   const data = drawerApi.getData()?.row
   row.value = data
 
   goodsId = drawerApi.getData()?.goods_id
-
+  console.log(goodsId)
   formApi.updateSchema([
+    {
+      componentProps: {
+        options: goodsData,
+      },
+      fieldName: 'goods_id',
+      defaultValue: goodsId,
+      dependencies: {
+        triggerFields: ['goods_id'],
+        if: goodsId === undefined
+      }
+    },
     {
       fieldName: 'capacity',
       defaultValue: data?.capacity || ''
@@ -55,14 +76,14 @@ function updateRow(){
     },
     {
       componentProps: {
-        options: drawerApi.getData()?.format,
+        options: format,
       },
       fieldName: 'format',
       defaultValue: data?.format || format.value?.[0].value,
     },
     {
       componentProps: {
-        options: drawerApi.getData()?.unit,
+        options: unit,
       },
       fieldName: 'unit',
       defaultValue: data?.unit || unit.value?.[0].value,
@@ -93,6 +114,24 @@ function updateRow(){
 
 const cus = {
   schema: [
+    {
+      component: 'Select',
+      componentProps: {
+        options: [],
+        allowClear: true,
+        filterOption: true,
+        immediate: false,
+        optionFilterProp: "title",
+        optionValueProp: "id",
+        placeholder: '请选择',
+        showSearch: true,
+      },
+      defaultValue: undefined,
+      fieldName: 'goods_id',
+      label: '绑定商品',
+      rules: 'required',
+      show: false,
+    },
     {
       // 组件需要在 #/adapter.ts内注册，并加上类型
       component: 'Input',
@@ -224,6 +263,7 @@ const [Form, formApi] = vbenForm(cus, onSubmit);
 
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();
+
   let stock:number =  parseInt(values.stock)
   let pp:string = priceFloat(values.pp)
   let wp:string = priceFloat(values.wp)
@@ -232,7 +272,7 @@ async function onSubmit(values: Record<string, any>) {
 
   if (!row.value || drawerApi.getData()?.copy) {
     await goodsSkuCreate({
-      goods_id: goodsId,
+      goods_id: values.goods_id,
       remark: values.remark,
       format: values.format,
       unit: values.unit,

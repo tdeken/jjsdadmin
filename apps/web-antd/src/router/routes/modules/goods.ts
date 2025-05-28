@@ -15,6 +15,14 @@ const routes: RouteRecordRaw[] = [
     path: '/goods/address',
     children: [
       {
+        name: 'SkuList',
+        path: '/goods/sku-list',
+        component: () => import('#/views/goods/sku-list.vue'),
+        meta: {
+          title: $t('goods.sku-list'),
+        },
+      },
+      {
         name: 'Goods',
         path: '/goods/list',
         component: () => import('#/views/goods/index.vue'),

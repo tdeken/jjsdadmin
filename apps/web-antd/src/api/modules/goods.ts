@@ -48,6 +48,15 @@ export namespace GoodsApi {
   /** 商品更新 */
   export interface SkuUpdate extends SkuCreate, SkuDestroy {
   }
+
+
+  /** 可销售商品列表请求参数 */
+  export interface SkuListQuery extends PageQueryParams {
+    keyword: string;
+    start: string;
+    end: string;
+  }
+
 }
 
 /**
@@ -55,6 +64,13 @@ export namespace GoodsApi {
  */
 export async function goodsList(params: GoodsApi.ListQuery) {
   return requestClient.get('admin/goods/list', { params });
+}
+
+/**
+ * 商品选择
+ */
+export async function goodsSelect() {
+  return requestClient.get('admin/goods/select');
 }
 
 /**
@@ -104,4 +120,11 @@ export async function goodsSkuUpdate(data: GoodsApi.SkuUpdate) {
  */
 export async function goodsSkuDestroy(data: GoodsApi.SkuDestroy) {
   return requestClient.post('admin/goods/sku-destroy', data);
+}
+
+/**
+ * 可销售商品列表
+ */
+export async function goodsSkuList(params: GoodsApi.SkuListQuery) {
+  return requestClient.get('admin/goods/sku-list', { params });
 }

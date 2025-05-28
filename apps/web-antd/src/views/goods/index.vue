@@ -78,7 +78,7 @@ const cud: SkuPage = {
   },
   updateSku: (row: GoodsSku) => {
     const state = {title: '更新可售商品'}
-    const data = {row: row, unit: unit, format: format}
+    const data = {goods_id: row.goods_id, row: row, unit: unit, format: format}
     cud.openSkuForm(state, data)
   },
   copySku: (row: GoodsSku) => {
@@ -207,7 +207,6 @@ const gridEvents: VxeGridListeners<Goods> = {
     <SkuForm :refresh="refresh" />
     <SkuDelete :refresh="refresh" />
     <Delete :refresh="refresh" />
-    <SkuList />
     <Grid v-on="gridEvents">
       <template #expand_content="{ row }">
           <GoodsSkuComponent 

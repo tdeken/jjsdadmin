@@ -1,5 +1,8 @@
 function priceFloat(num: number): string {
-  return num.toFixed(2);
+  if (typeof num === 'number') {
+    return num.toFixed(2);
+  }
+  return num
 }
 
 export { priceFloat }
