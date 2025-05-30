@@ -22,7 +22,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 });
 
 const gridOptions: VxeGridProps<OrderSku> = {
-  minHeight: 150,
+  minHeight: 0,
   showOverflow: true,
   columns: [
     { field: 'name', title: '销售商品名称' },
