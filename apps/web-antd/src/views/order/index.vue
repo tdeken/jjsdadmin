@@ -82,6 +82,7 @@ const gridOptions: VxeGridProps<RowType> = {
       title: '状态',
       width: 150,
     },
+    { field:'remark',title: '备注' },
     {
       field: 'action',
       fixed: 'right',
@@ -120,7 +121,7 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 
 <template>
   <Page auto-content-height>
-    <OrderSHow class="w-[50%]" />
+    <OrderSHow class="w-[45%]" />
     <Grid>
       <template #status="{ row }">
         <TagComponents :status="row.status" :status-map="ORDER_STATUS"/>

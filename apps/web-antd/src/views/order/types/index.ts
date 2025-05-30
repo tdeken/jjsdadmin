@@ -8,6 +8,7 @@ interface Order {
   real_amount: string;
   created_date: string;
   status: number;
+  remark: string;
 }
 
 interface OrderSku {

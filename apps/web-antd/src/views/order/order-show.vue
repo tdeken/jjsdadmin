@@ -1,13 +1,15 @@
 <script lang="ts" setup>
+import  { computed } from 'vue';
+import { Row, Col, Descriptions, DescriptionsItem, Divider } from 'ant-design-vue';
+
 import type { VxeGridProps } from '#/adapter/vxe-table';
-
-import { useVbenDrawer } from '@vben/common-ui';
-
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { orderSkuList } from '#/api';
 
+import { useVbenDrawer } from '@vben/common-ui';
+
 import type { Order, OrderSku } from './types';
-import  { computed } from 'vue';
+
 
 const orderRow = computed(() => {
   return drawerApi.getData() as Order
@@ -40,7 +42,7 @@ const gridOptions: VxeGridProps<OrderSku> = {
     ajax: {
       query: async () => {
         return await orderSkuList({
-          order_id: orderRow.value?.id || '',
+          order_id: orderRow.value.id ,
         });
       },
     },
@@ -49,10 +51,49 @@ const gridOptions: VxeGridProps<OrderSku> = {
 
 const [Grid] = useVbenVxeGrid({ gridOptions });
 
+
+const itemStyle = {
+  fontSize:'16px',
+  fontWeight:'400'
+}
+
 </script>
 
 <template>
-  <Drawer> 
+  <Drawer>
+    <Row>
+      <Col :offset="1" :span="12">
+        <Descriptions size="middle">
+          <DescriptionsItem label="收货人" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.shop_name }} </DescriptionsItem>
+        </Descriptions>
+      </Col>
+    </Row>
+    <Row>
+      <Col :offset="1" :span="12">
+        <Descriptions>
+          <DescriptionsItem label="收货地址" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.address }} </DescriptionsItem>
+        </Descriptions>
+      </Col>
+    </Row>
+    <Row>
+      <Col :offset="1" :span="9">
+        <Descriptions>
+          <DescriptionsItem label="总金额" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.amount }}元 </DescriptionsItem>
+        </Descriptions>
+      </Col>
+      <Col :span="12">
+        <Descriptions>
+          <DescriptionsItem label="实收金额" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.real_amount }}元 </DescriptionsItem>
+        </Descriptions>
+      </Col>
+    </Row>
+    <Row>
+      <Col :offset="1" :span="12">
+        <Descriptions>
+          <DescriptionsItem label="备注" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.remark }} </DescriptionsItem>
+        </Descriptions>
+      </Col>
+    </Row>
     <Grid>
     </Grid>
   </Drawer> 
