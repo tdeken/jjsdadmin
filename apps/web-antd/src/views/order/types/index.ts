@@ -22,4 +22,24 @@ interface OrderSku {
 }
 
 
-export type { Order, OrderSku };
+interface Cart {
+  shop_name: string;
+  address: string;
+  tel: string;
+  amount: string;
+  sku: CartSku[];
+}
+
+interface CartSku {
+  id: string;
+  name: string;
+  book_num: string;
+  format: string;
+  price: string;
+  total: string;
+  remark: string;
+  capacity: string;
+  unit: string;
+}
+
+export type { Order, OrderSku, Cart, CartSku };

@@ -9,7 +9,7 @@ import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { addressList } from '#/api';
 import { customerSelector } from '#/utils';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { $t } from '#/locales';
 
 import { onMounted, ref } from 'vue';
@@ -17,6 +17,7 @@ import { onMounted, ref } from 'vue';
 import FormAddressComponent from './address-form.vue';
 import DelAddressComponent from './address-del.vue';
 import type { Address } from './types';
+import { CART_PATH } from '#/constants'
 
 
 const customers = ref() 
@@ -76,7 +77,7 @@ const formOptions: VbenFormProps = {
       componentProps: {
         placeholder: '请输入商铺名称',
       },
-      fieldName: 'title',
+      fieldName: 'shop_name',
       label: '商铺',
     },
     {
@@ -105,7 +106,7 @@ const gridOptions: VxeGridProps<Address> = {
     labelField: 'name',
   },
   columns: [
-    { field:'title', title: '商铺', width: 500 },
+    { field:'shop_name', title: '商铺', width: 500 },
     { field:'address', title: '地址' },
     { field:'tel', title: '联系方式', width: 300 },
     { field:'created_date', title: '添加日期' },
@@ -114,7 +115,7 @@ const gridOptions: VxeGridProps<Address> = {
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      width: 200,
+      width: 250,
     },
   ],
   height: 'auto',
@@ -136,9 +137,20 @@ function refresh() {
   GridApi.reload()
 }
 
+
 const useRouteStore = useRoute()
 
 const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
+
+const router = useRouter()
+function toCart(addressId: any) {
+  router.push({
+      path:CART_PATH,
+      query: { address_id: addressId, order_id: ""} // URL查询参数
+    }
+  )
+}
+
 
 </script>
 
@@ -153,6 +165,7 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
         </Button>
       </template>
       <template #action="{ row }">
+        <Button type="text" @click="toCart(row.id)" >订货</Button>
         <Button type="link" @click="cud.update(row)" >编辑</Button>
         <Button danger type="link" @click="cud.delete(row)" >删除</Button>
       </template>

@@ -18,6 +18,11 @@ export namespace OrderApi {
     order_id: string;
   }
 
+  export interface CartQuery {
+    address_id: string;
+    order_id: string;
+  }
+
 }
 
 /**
@@ -32,4 +37,11 @@ export async function orderList(params: OrderApi.ListQuery) {
  */
 export async function orderSkuList(params: OrderApi.SkuListQuery) {
   return requestClient.get('admin/order/sku-list', { params });
+}
+
+/**
+ * 订单列表
+ */
+export async function orderCart(params: OrderApi.CartQuery) {
+  return requestClient.get('admin/order/cart', { params });
 }

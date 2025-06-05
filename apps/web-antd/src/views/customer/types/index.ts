@@ -1,6 +1,6 @@
 interface Address {
   id: string;
-  title: string;
+  shop_name: string;
   address: string;
   tel: string;
   created_date: string;

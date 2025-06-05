@@ -40,22 +40,29 @@ const [OrderSHow, orderShowModalApi] = useVbenDrawer({
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
+   fieldMappingTime: [['created_date', ['start', 'end'], ['YYYY-MM-DD 00:00:00', 'YYYY-MM-DD 23:59:59']]],
+
   schema: [
     {
       component: 'Input',
       componentProps: {
-        placeholder: '请输入客户名称',
+        placeholder: '请输入订单号',
       },
-      fieldName: 'name',
-      label: '客户名称',
+      fieldName: 'order_no',
+      label: '订单号',
     },
     {
       component: 'Input',
       componentProps: {
-        placeholder: '请输入联系方式',
+        placeholder: '请输入收货人或手机号',
       },
-      fieldName: 'phone',
-      label: '联系方式',
+      fieldName: 'keyword',
+      label: '关键词',
+    },
+    {
+      component: 'RangePicker',
+      fieldName: 'created_date',
+      label: '下单时间',
     },
   ],
   // 控制表单是否显示折叠按钮
@@ -75,20 +82,21 @@ const gridOptions: VxeGridProps<RowType> = {
     { field:'shop_name',title: '收货人', width: 300 },
     { field:'address',title: '收货地址' },
     { field:'amount',title: '订单金额（元）', width: 150 },
-    { field:'real_amount',title: '实际金额（元）', width: 150 },
+    { field:'real_amount',title: '实收金额（元）', width: 150 },
     {
       field: 'status',
       slots: { default: 'status' },
       title: '状态',
-      width: 150,
+      width: 100,
     },
-    { field:'remark',title: '备注' },
+    { field:'remark',title: '备注', width:200 },
+    { field:'created_date',title: '下单时间' },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      width: 300,
+      width: 240,
     },
   ],
   height: 'auto',

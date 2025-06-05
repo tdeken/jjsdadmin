@@ -17,7 +17,7 @@ export namespace CustomerApi {
 
    /** 地址列表请求参数 */
   export interface AddressListQuery extends PageQueryParams {
-    title: string;
+    shop_name: string;
     tel: string;
   }
 
@@ -29,7 +29,7 @@ export namespace CustomerApi {
 
   /** 地址创建 */
   export interface AddressCreate {
-    title: string;
+    shop_name: string;
     address: string;
     tel: string;
     customer_id: string;

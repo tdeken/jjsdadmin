@@ -21,9 +21,19 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: $t('order.order'),
         },
+      },
+      {
+        name: 'Cart',
+        path: '/order/cart',
+        component: () => import('#/views/order/cart.vue'),
+        meta: {
+          title: $t('order.book'),
+          hideInBreadcrumb: true,
+          hideInMenu: true,
+        },
       }
     ],
-  },
+  }
 ];
 
 export default routes;

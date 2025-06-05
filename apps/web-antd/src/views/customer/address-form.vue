@@ -56,8 +56,8 @@ function updateRow(){
 
   formApi.updateSchema([
     {
-      fieldName: 'title',
-      defaultValue: data?.title || ''
+      fieldName: 'shop_name',
+      defaultValue: data?.shop_name || ''
     },
     {
       fieldName: 'address',
@@ -80,7 +80,7 @@ const cus = {
         placeholder: '请输入商铺名称',
       },
       // 字段名
-      fieldName: 'title',
+      fieldName: 'shop_name',
       // 界面显示的label
       label: '商铺名称',
       rules: 'required',
@@ -135,7 +135,7 @@ async function onSubmit(values: Record<string, any>) {
   if (row.value) {
     await addressUpdate({
       id: row.value.id,
-      title: values.title, 
+      shop_name: values.shop_name, 
       address: values.address, 
       tel: values.tel, 
       customer_id: values.customer_id,
@@ -143,7 +143,7 @@ async function onSubmit(values: Record<string, any>) {
     message.success('更新客户地址成功')
   } else {
     await addressCreate({
-      title: values.title, 
+      shop_name: values.shop_name, 
       address: values.address, 
       tel: values.tel, 
       customer_id: values.customer_id,
