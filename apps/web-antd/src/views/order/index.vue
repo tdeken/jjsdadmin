@@ -4,21 +4,29 @@ import type { Order as RowType } from "./types";
 import type { VbenFormProps } from "#/adapter/form";
 import type { VxeGridProps } from "#/adapter/vxe-table";
 
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
-import { Page, useVbenDrawer } from "@vben/common-ui";
+import { Page, useVbenDrawer, useVbenModal } from "@vben/common-ui";
 
-import { Button } from "ant-design-vue";
+import { Button, Space, Dropdown, DropdownButton, Menu, MenuItem } from "ant-design-vue";
+
 
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { orderList } from "#/api";
+import { orderList, orderCartStore } from "#/api";
 import TagComponents from "#/components/tags/tag.vue";
 import { ORDER_STATUS } from "#/constants";
 import { $t } from "#/locales";
+import type { CudInterface } from '#/types/form';
+import { CART_PATH } from "#/constants";
+
+
 
 import OrderShow from "./order-show.vue";
+import OrderDelComponent from './order-del.vue';
 
-interface SkuPage {
+const router = useRouter();
+
+interface SkuPage extends CudInterface {
   oderShow: (row: RowType) => void;
 }
 
@@ -28,7 +36,30 @@ const cud: SkuPage = {
     orderShowModalApi.setData(row);
     orderShowModalApi.open();
   },
+  openForm: (state: any, data: any) => {
+    
+  },
+  update: async (row: RowType) => {
+      await orderCartStore({address_id: row.address_id, order_id: row.id})
+      router.push({
+          path: CART_PATH,
+          query: { address_id: row.address_id, order_id: row.id }, // URL查询参数
+        });
+  },
+  create: () => {
+    
+  },
+  delete(row: RowType) {
+    orderModalApi.setState({ title: '确定要删除订单吗？', fullscreenButton: false });
+    orderModalApi.setData({row: row})
+    orderModalApi.open();
+  },
 };
+
+const [OrderDelete, orderModalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: OrderDelComponent,
+});
 
 const [OrderSHow, orderShowModalApi] = useVbenDrawer({
   // 连接抽离的组件
@@ -81,11 +112,11 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeGridProps<RowType> = {
   columns: [
-    { field: "order_no", title: "订单号", width: 200 },
-    { field: "shop_name", title: "收货人", width: 300 },
-    { field: "address", title: "收货地址" },
-    { field: "amount", title: "订单金额（元）", width: 150 },
-    { field: "real_amount", title: "实收金额（元）", width: 150 },
+    { field: "order_no", title: "订单号", minWidth: 150 },
+    { field: "shop_name", title: "收货人", minWidth: 150 },
+    { field: "address", title: "收货地址", minWidth: 200 },
+    { field: "amount", title: "总金额（元）", minWidth: 100 },
+    { field: "real_amount", title: "实收（元）", minWidth: 100 },
     {
       field: "status",
       slots: { default: "status" },
@@ -99,7 +130,7 @@ const gridOptions: VxeGridProps<RowType> = {
       fixed: "right",
       slots: { default: "action" },
       title: "操作",
-      width: 240,
+      minWidth: 200,
     },
   ],
   height: "auto",
@@ -129,17 +160,45 @@ const [Grid, GridApi] = useVbenVxeGrid({
   formOptions,
   gridOptions,
 });
+
 </script>
 
 <template>
   <Page auto-content-height>
+    <OrderDelete :refresh="refresh" />
     <OrderSHow class="w-[45%]" />
     <Grid>
+      <template #toolbar-tools>
+        <Button class="mr-2" type="primary" @click="cud.create" >
+          创建订单
+        </Button>
+      </template>
+      
       <template #status="{ row }">
         <TagComponents :status="row.status" :status-map="ORDER_STATUS" />
       </template>
+
       <template #action="{ row }">
-        <Button type="link" @click="cud.oderShow(row)">订单详情</Button>
+        <Space>
+          <Button size='small' @click="cud.oderShow(row)">详情</Button>
+          <Button size='small' type="primary" @click="cud.update(row)">打印</Button>
+          <Dropdown>
+            <template #overlay>
+              <Menu>
+                 <MenuItem @click="cud.update(row)">
+                  修改订单
+                </MenuItem>
+                <MenuItem @click="cud.update(row)">
+                  修改订单状态
+                </MenuItem>
+                <MenuItem @click="cud.delete(row)">
+                  删除订单
+                </MenuItem>
+              </Menu>
+            </template>
+            <DropdownButton size='small' type="link">更多</DropdownButton>
+          </Dropdown>
+        </Space>
       </template>
     </Grid>
   </Page>

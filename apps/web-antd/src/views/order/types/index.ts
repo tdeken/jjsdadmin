@@ -38,7 +38,7 @@ interface CartSku {
   price: string;
   total: string;
   remark: string;
-  capacity: string;
+  number: string;
   unit: string;
 }
 

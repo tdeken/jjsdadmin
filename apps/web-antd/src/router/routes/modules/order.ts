@@ -27,6 +27,7 @@ const routes: RouteRecordRaw[] = [
         path: '/order/cart',
         component: () => import('#/views/order/cart.vue'),
         meta: {
+          fullPathKey: false,
           title: $t('order.book'),
           hideInBreadcrumb: true,
           hideInMenu: true,
