@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import type { UseResizeObserverReturn } from '@vueuse/core';
+import type { UseResizeObserverReturn } from "@vueuse/core";
+
+import type { SetupContext, VNodeArrayChildren } from "vue";
 
 import type {
   MenuItemClicked,
   MenuItemRegistered,
   MenuProps,
   MenuProvider,
-} from '../types';
+} from "../types";
 
 import {
   computed,
@@ -15,35 +17,35 @@ import {
   ref,
   toRef,
   useSlots,
-  type VNodeArrayChildren,
   watch,
   watchEffect,
-} from 'vue';
+} from "vue";
 
-import { useNamespace } from '@vben-core/composables';
-import { Ellipsis } from '@vben-core/icons';
-import { isHttpUrl } from '@vben-core/shared/utils';
+import { useNamespace } from "@vben-core/composables";
+import { Ellipsis } from "@vben-core/icons";
 
-import { useResizeObserver } from '@vueuse/core';
+import { useResizeObserver } from "@vueuse/core";
 
 import {
   createMenuContext,
   createSubMenuContext,
   useMenuStyle,
-} from '../hooks';
-import { flattedChildren } from '../utils';
-import SubMenu from './sub-menu.vue';
+} from "../hooks";
+import { useMenuScroll } from "../hooks/use-menu-scroll";
+import { flattedChildren } from "../utils";
+import SubMenu from "./sub-menu.vue";
 
 interface Props extends MenuProps {}
 
-defineOptions({ name: 'Menu' });
+defineOptions({ name: "Menu" });
 
 const props = withDefaults(defineProps<Props>(), {
   accordion: true,
   collapse: false,
-  mode: 'vertical',
+  mode: "vertical",
   rounded: true,
-  theme: 'dark',
+  theme: "dark",
+  scrollToActive: false,
 });
 
 const emit = defineEmits<{
@@ -52,22 +54,22 @@ const emit = defineEmits<{
   select: [string, string[]];
 }>();
 
-const { b, is } = useNamespace('menu');
+const { b, is } = useNamespace("menu");
 const menuStyle = useMenuStyle();
-const slots = useSlots();
+const slots: SetupContext["slots"] = useSlots();
 const menu = ref<HTMLUListElement>();
 const sliceIndex = ref(-1);
-const openedMenus = ref<MenuProvider['openedMenus']>(
+const openedMenus = ref<MenuProvider["openedMenus"]>(
   props.defaultOpeneds && !props.collapse ? [...props.defaultOpeneds] : [],
 );
-const activePath = ref<MenuProvider['activePath']>(props.defaultActive);
-const items = ref<MenuProvider['items']>({});
-const subMenus = ref<MenuProvider['subMenus']>({});
+const activePath = ref<MenuProvider["activePath"]>(props.defaultActive);
+const items = ref<MenuProvider["items"]>({});
+const subMenus = ref<MenuProvider["subMenus"]>({});
 const mouseInChild = ref(false);
 
-const isMenuPopup = computed<MenuProvider['isMenuPopup']>(() => {
+const isMenuPopup = computed<MenuProvider["isMenuPopup"]>(() => {
   return (
-    props.mode === 'horizontal' || (props.mode === 'vertical' && props.collapse)
+    props.mode === "horizontal" || (props.mode === "vertical" && props.collapse)
   );
 });
 
@@ -98,17 +100,17 @@ watch(items.value, initMenu);
 
 watch(
   () => props.defaultActive,
-  (currentActive = '') => {
+  (currentActive = "") => {
     if (!items.value[currentActive]) {
-      activePath.value = '';
+      activePath.value = "";
     }
     updateActiveName(currentActive);
   },
 );
 
-let resizeStopper: UseResizeObserverReturn['stop'];
+let resizeStopper: UseResizeObserverReturn["stop"];
 watchEffect(() => {
-  if (props.mode === 'horizontal') {
+  if (props.mode === "horizontal") {
     resizeStopper = useResizeObserver(menu, handleResize).stop;
   } else {
     resizeStopper?.();
@@ -131,7 +133,7 @@ createMenuContext(
     removeMenuItem,
     removeSubMenu,
     subMenus,
-    theme: toRef(props, 'theme'),
+    theme: toRef(props, "theme"),
     items,
   }),
 );
@@ -157,8 +159,8 @@ function calcSliceIndex() {
   const items = [...(menu.value?.childNodes ?? [])].filter(
     (item) =>
       // remove comment type node #12634
-      item.nodeName !== '#comment' &&
-      (item.nodeName !== '#text' || item.nodeValue),
+      item.nodeName !== "#comment" &&
+      (item.nodeName !== "#text" || item.nodeValue),
   ) as HTMLElement[];
 
   const moreItemWidth = 46;
@@ -206,15 +208,19 @@ function handleResize() {
   isFirstTimeRender = false;
 }
 
-function getActivePaths() {
-  const activeItem = activePath.value && items.value[activePath.value];
+const enableScroll = computed(
+  () => props.scrollToActive && props.mode === "vertical" && !props.collapse,
+);
 
-  if (!activeItem || props.mode === 'horizontal' || props.collapse) {
-    return [];
-  }
+const { scrollToActiveItem } = useMenuScroll(activePath, {
+  enable: enableScroll,
+  delay: 320,
+});
 
-  return activeItem.parentPaths;
-}
+// 监听 activePath 变化，自动滚动到激活项
+watch(activePath, () => {
+  scrollToActiveItem();
+});
 
 // 默认展开菜单
 function initMenu() {
@@ -233,25 +239,22 @@ function updateActiveName(val: string) {
   const item =
     itemsInData[val] ||
     (activePath.value && itemsInData[activePath.value]) ||
-    itemsInData[props.defaultActive || ''];
+    itemsInData[props.defaultActive || ""];
 
   activePath.value = item ? item.path : val;
 }
 
 function handleMenuItemClick(data: MenuItemClicked) {
   const { collapse, mode } = props;
-  if (mode === 'horizontal' || collapse) {
+  if (mode === "horizontal" || collapse) {
     openedMenus.value = [];
   }
   const { parentPaths, path } = data;
   if (!path || !parentPaths) {
     return;
   }
-  if (!isHttpUrl(path)) {
-    activePath.value = path;
-  }
 
-  emit('select', path, parentPaths);
+  emit("select", path, parentPaths);
 }
 
 function handleSubMenuClick({ parentPaths, path }: MenuItemRegistered) {
@@ -282,7 +285,7 @@ function closeMenu(path: string, parentPaths: string[]) {
 
   close(path);
 
-  emit('close', path, parentPaths);
+  emit("close", path, parentPaths);
 }
 
 /**
@@ -303,7 +306,7 @@ function openMenu(path: string, parentPaths: string[]) {
     );
   }
   openedMenus.value.push(path);
-  emit('open', path, parentPaths);
+  emit("open", path, parentPaths);
 }
 
 function addMenuItem(item: MenuItemRegistered) {
@@ -321,6 +324,16 @@ function removeSubMenu(subMenu: MenuItemRegistered) {
 function removeMenuItem(item: MenuItemRegistered) {
   Reflect.deleteProperty(items.value, item.path);
 }
+
+function getActivePaths() {
+  const activeItem = activePath.value && items.value[activePath.value];
+
+  if (!activeItem || props.mode === "horizontal" || props.collapse) {
+    return [];
+  }
+
+  return activeItem.parentPaths;
+}
 </script>
 <template>
   <ul
@@ -332,6 +345,7 @@ function removeMenuItem(item: MenuItemRegistered) {
       is(theme, true),
       is('rounded', rounded),
       is('collapse', collapse),
+      is('menu-align', mode === 'horizontal'),
     ]"
     :style="menuStyle"
     role="menu"
@@ -376,10 +390,10 @@ $namespace: vben;
     var(--menu-item-margin-x);
   font-size: var(--menu-font-size);
   color: var(--menu-item-color);
-  text-decoration: none;
   white-space: nowrap;
-  list-style: none;
+  text-decoration: none;
   cursor: pointer;
+  list-style: none;
   background: var(--menu-item-background-color);
   border: none;
   border-radius: var(--menu-item-radius);
@@ -421,6 +435,10 @@ $namespace: vben;
   text-overflow: ellipsis;
   white-space: nowrap;
   opacity: 1;
+}
+
+.is-menu-align {
+  justify-content: var(--menu-align, start);
 }
 
 .#{$namespace}-menu__popup-container,
@@ -699,8 +717,8 @@ $namespace: vben;
     width: var(--menu-item-icon-size);
     height: var(--menu-item-icon-size);
     margin-right: 8px;
-    text-align: center;
     vertical-align: middle;
+    text-align: center;
   }
 }
 
@@ -780,7 +798,7 @@ $namespace: vben;
   fill: var(--menu-item-color);
 
   &.is-active {
-    div[data-state='open'] > .#{$namespace}-sub-menu-content,
+    div[data-state="open"] > .#{$namespace}-sub-menu-content,
     > .#{$namespace}-sub-menu-content {
       // font-weight: 500;
       color: var(--menu-submenu-active-color);

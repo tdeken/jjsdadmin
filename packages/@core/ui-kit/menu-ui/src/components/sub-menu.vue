@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { HoverCardContentProps } from '@vben-core/shadcn-ui';
+import type { HoverCardContentProps } from "@vben-core/shadcn-ui";
 
-import type { MenuItemRegistered, MenuProvider, SubMenuProps } from '../types';
+import type { MenuItemRegistered, MenuProvider, SubMenuProps } from "../types";
 
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 
-import { useNamespace } from '@vben-core/composables';
-import { VbenHoverCard } from '@vben-core/shadcn-ui';
+import { useNamespace } from "@vben-core/composables";
+import { VbenHoverCard } from "@vben-core/shadcn-ui";
 
 import {
   createSubMenuContext,
@@ -14,15 +14,15 @@ import {
   useMenuContext,
   useMenuStyle,
   useSubMenuContext,
-} from '../hooks';
-import CollapseTransition from './collapse-transition.vue';
-import SubMenuContent from './sub-menu-content.vue';
+} from "../hooks";
+import CollapseTransition from "./collapse-transition.vue";
+import SubMenuContent from "./sub-menu-content.vue";
 
 interface Props extends SubMenuProps {
   isSubMenuMore?: boolean;
 }
 
-defineOptions({ name: 'SubMenu' });
+defineOptions({ name: "SubMenu" });
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,
@@ -30,16 +30,16 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const { parentMenu, parentPaths } = useMenu();
-const { b, is } = useNamespace('sub-menu');
-const nsMenu = useNamespace('menu');
+const { b, is } = useNamespace("sub-menu");
+const nsMenu = useNamespace("menu");
 const rootMenu = useMenuContext();
 const subMenu = useSubMenuContext();
 const subMenuStyle = useMenuStyle(subMenu);
 
 const mouseInChild = ref(false);
 
-const items = ref<MenuProvider['items']>({});
-const subMenus = ref<MenuProvider['subMenus']>({});
+const items = ref<MenuProvider["items"]>({});
+const subMenus = ref<MenuProvider["subMenus"]>({});
 const timer = ref<null | ReturnType<typeof setTimeout>>(null);
 
 createSubMenuContext({
@@ -54,9 +54,9 @@ const opened = computed(() => {
   return rootMenu?.openedMenus.includes(props.path);
 });
 const isTopLevelMenuSubmenu = computed(
-  () => parentMenu.value?.type.name === 'Menu',
+  () => parentMenu.value?.type.name === "Menu",
 );
-const mode = computed(() => rootMenu?.props.mode ?? 'vertical');
+const mode = computed(() => rootMenu?.props.mode ?? "vertical");
 const rounded = computed(() => rootMenu?.props.rounded);
 const currentLevel = computed(() => subMenu?.level ?? 0);
 const isFirstLevel = computed(() => {
@@ -64,8 +64,8 @@ const isFirstLevel = computed(() => {
 });
 
 const contentProps = computed((): HoverCardContentProps => {
-  const isHorizontal = mode.value === 'horizontal';
-  const side = isHorizontal && isFirstLevel.value ? 'bottom' : 'right';
+  const isHorizontal = mode.value === "horizontal";
+  const side = isHorizontal && isFirstLevel.value ? "bottom" : "right";
   return {
     collisionPadding: { top: 20 },
     side,
@@ -106,9 +106,9 @@ function handleClick() {
   if (
     // 当前菜单禁用时，不展开
     props.disabled ||
-    (rootMenu?.props.collapse && mode === 'vertical') ||
+    (rootMenu?.props.collapse && mode === "vertical") ||
     // 水平模式下不展开
-    mode === 'horizontal'
+    mode === "horizontal"
   ) {
     return;
   }
@@ -121,12 +121,12 @@ function handleClick() {
 }
 
 function handleMouseenter(event: FocusEvent | MouseEvent, showTimeout = 300) {
-  if (event.type === 'focus') {
+  if (event.type === "focus") {
     return;
   }
 
   if (
-    (!rootMenu?.props.collapse && rootMenu?.props.mode === 'vertical') ||
+    (!rootMenu?.props.collapse && rootMenu?.props.mode === "vertical") ||
     props.disabled
   ) {
     if (subMenu) {
@@ -142,13 +142,13 @@ function handleMouseenter(event: FocusEvent | MouseEvent, showTimeout = 300) {
   timer.value = setTimeout(() => {
     rootMenu?.openMenu(props.path, parentPaths.value);
   }, showTimeout);
-  parentMenu.value?.vnode.el?.dispatchEvent(new MouseEvent('mouseenter'));
+  parentMenu.value?.vnode.el?.dispatchEvent(new MouseEvent("mouseenter"));
 }
 
 function handleMouseleave(deepDispatch = false) {
   if (
     !rootMenu?.props.collapse &&
-    rootMenu?.props.mode === 'vertical' &&
+    rootMenu?.props.mode === "vertical" &&
     subMenu
   ) {
     subMenu.mouseInChild.value = false;
@@ -208,6 +208,8 @@ onBeforeUnmount(() => {
           nsMenu.e('popup-container'),
           is(rootMenu.theme, true),
           opened ? '' : 'hidden',
+          'overflow-auto',
+          'max-h-[calc(var(--radix-hover-card-content-available-height)-20px)]',
         ]"
         :content-props="contentProps"
         :open="true"

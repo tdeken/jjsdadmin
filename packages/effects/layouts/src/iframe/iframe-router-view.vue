@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import type { RouteLocationNormalized } from 'vue-router';
+import type { RouteLocationNormalized } from "vue-router";
 
-import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 
-import { preferences } from '@vben/preferences';
-import { useTabbarStore } from '@vben/stores';
-import { VbenSpinner } from '@vben-core/shadcn-ui';
+import { preferences } from "@vben/preferences";
+import { useTabbarStore } from "@vben/stores";
 
-defineOptions({ name: 'IFrameRouterView' });
+import { VbenSpinner } from "@vben-core/shadcn-ui";
+
+defineOptions({ name: "IFrameRouterView" });
 
 const spinningList = ref<boolean[]>([]);
 const tabbarStore = useTabbarStore();

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { CSSProperties } from 'vue';
-import { computed } from 'vue';
+import type { CSSProperties } from "vue";
+
+import { computed } from "vue";
 
 interface Props {
   /**
@@ -25,8 +26,8 @@ const style = computed((): CSSProperties => {
   const { fixed, height, show, width, zIndex } = props;
   return {
     height: `${height}px`,
-    marginBottom: show ? '0' : `-${height}px`,
-    position: fixed ? 'fixed' : 'static',
+    marginBottom: show ? "0" : `-${height}px`,
+    position: fixed ? "fixed" : "static",
     width,
     zIndex,
   };

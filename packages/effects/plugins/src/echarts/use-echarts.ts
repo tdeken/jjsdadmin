@@ -1,11 +1,14 @@
-import type { EChartsOption } from 'echarts';
+import type { EChartsOption } from "echarts";
 
-import type EchartsUI from './echarts-ui.vue';
+import type { Ref } from "vue";
 
-import type { Ref } from 'vue';
-import { computed, nextTick, watch } from 'vue';
+import type { Nullable } from "@vben/types";
 
-import { usePreferences } from '@vben/preferences';
+import type EchartsUI from "./echarts-ui.vue";
+
+import { computed, nextTick, watch } from "vue";
+
+import { usePreferences } from "@vben/preferences";
 
 import {
   tryOnUnmounted,
@@ -13,13 +16,13 @@ import {
   useResizeObserver,
   useTimeoutFn,
   useWindowSize,
-} from '@vueuse/core';
+} from "@vueuse/core";
 
-import echarts from './echarts';
+import echarts from "./echarts";
 
 type EchartsUIType = typeof EchartsUI | undefined;
 
-type EchartsThemeType = 'dark' | 'light' | null;
+type EchartsThemeType = "dark" | "light" | null;
 
 function useEcharts(chartRef: Ref<EchartsUIType>) {
   let chartInstance: echarts.ECharts | null = null;
@@ -35,7 +38,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
     }
 
     return {
-      backgroundColor: 'transparent',
+      backgroundColor: "transparent",
     };
   });
 
@@ -44,12 +47,15 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
     if (!el) {
       return;
     }
-    chartInstance = echarts.init(el, t || isDark.value ? 'dark' : null);
+    chartInstance = echarts.init(el, t || isDark.value ? "dark" : null);
 
     return chartInstance;
   };
 
-  const renderEcharts = (options: EChartsOption, clear = true) => {
+  const renderEcharts = (
+    options: EChartsOption,
+    clear = true,
+  ): Promise<Nullable<echarts.ECharts>> => {
     cacheOptions = options;
     const currentOptions = {
       ...options,
@@ -57,9 +63,8 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
     };
     return new Promise((resolve) => {
       if (chartRef.value?.offsetHeight === 0) {
-        useTimeoutFn(() => {
-          renderEcharts(currentOptions);
-          resolve(null);
+        useTimeoutFn(async () => {
+          resolve(await renderEcharts(currentOptions));
         }, 30);
         return;
       }
@@ -71,7 +76,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
           }
           clear && chartInstance?.clear();
           chartInstance?.setOption(currentOptions);
-          resolve(null);
+          resolve(chartInstance);
         }, 30);
       });
     });
@@ -81,7 +86,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
     chartInstance?.resize({
       animation: {
         duration: 300,
-        easing: 'quadraticIn',
+        easing: "quadraticIn",
       },
     });
   }
@@ -108,6 +113,7 @@ function useEcharts(chartRef: Ref<EchartsUIType>) {
   return {
     renderEcharts,
     resize,
+    getChartInstance: () => chartInstance,
   };
 }
 

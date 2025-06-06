@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { PaginationEllipsisProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { MoreHorizontal } from 'lucide-vue-next';
-import { PaginationEllipsis, type PaginationEllipsisProps } from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & PaginationEllipsisProps>();
+import { MoreHorizontal } from "lucide-vue-next";
+import { PaginationEllipsis } from "radix-vue";
+
+const props = defineProps<PaginationEllipsisProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

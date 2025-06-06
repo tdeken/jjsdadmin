@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { DropdownMenuLabelProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import {
-  DropdownMenuLabel,
-  type DropdownMenuLabelProps,
-  useForwardProps,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
+
+import { DropdownMenuLabel, useForwardProps } from "radix-vue";
 
 const props = defineProps<
-  { class?: any; inset?: boolean } & DropdownMenuLabelProps
+  DropdownMenuLabelProps & { class?: any; inset?: boolean }
 >();
 
 const delegatedProps = computed(() => {

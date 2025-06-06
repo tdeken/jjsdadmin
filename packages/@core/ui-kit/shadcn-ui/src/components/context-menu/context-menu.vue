@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import type { ClassType } from '@vben-core/typings';
 import type {
   ContextMenuContentProps,
   ContextMenuRootEmits,
   ContextMenuRootProps,
-} from 'radix-vue';
+} from "radix-vue";
 
-import type { IContextMenuItem } from './interface';
+import type { ClassType } from "@vben-core/typings";
 
-import { computed } from 'vue';
+import type { IContextMenuItem } from "./interface";
 
-import { useForwardPropsEmits } from 'radix-vue';
+import { computed } from "vue";
+
+import { useForwardPropsEmits } from "radix-vue";
 
 import {
   ContextMenu,
@@ -19,17 +20,17 @@ import {
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuTrigger,
-} from '../../ui/context-menu';
+} from "../../ui/context-menu";
 
 const props = defineProps<
-  {
+  ContextMenuRootProps & {
     class?: ClassType;
     contentClass?: ClassType;
     contentProps?: ContextMenuContentProps;
     handlerData?: Record<string, any>;
     itemClass?: ClassType;
     menus: (data: any) => IContextMenuItem[];
-  } & ContextMenuRootProps
+  }
 >();
 
 const emits = defineEmits<ContextMenuRootEmits>();
@@ -68,7 +69,7 @@ function handleClick(menu: IContextMenuItem) {
     <ContextMenuContent
       :class="contentClass"
       v-bind="contentProps"
-      class="side-content z-[1000]"
+      class="side-content z-popup"
     >
       <template v-for="menu in menusView" :key="menu.key">
         <ContextMenuItem

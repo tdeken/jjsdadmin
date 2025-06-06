@@ -2,16 +2,31 @@ import type {
   DrawerApiOptions,
   DrawerProps,
   ExtendedDrawerApi,
-} from './drawer';
+} from "./drawer";
 
-import { defineComponent, h, inject, nextTick, provide, reactive } from 'vue';
+import {
+  defineComponent,
+  h,
+  inject,
+  nextTick,
+  onDeactivated,
+  provide,
+  reactive,
+  ref,
+} from "vue";
 
-import { useStore } from '@vben-core/shared/store';
+import { useStore } from "@vben-core/shared/store";
 
-import VbenDrawer from './drawer.vue';
-import { DrawerApi } from './drawer-api';
+import { DrawerApi } from "./drawer-api";
+import VbenDrawer from "./drawer.vue";
 
-const USER_DRAWER_INJECT_KEY = Symbol('VBEN_DRAWER_INJECT');
+const USER_DRAWER_INJECT_KEY = Symbol("VBEN_DRAWER_INJECT");
+
+const DEFAULT_DRAWER_PROPS: Partial<DrawerProps> = {};
+
+export function setDefaultDrawerProps(props: Partial<DrawerProps>) {
+  Object.assign(DEFAULT_DRAWER_PROPS, props);
+}
 
 export function useVbenDrawer<
   TParentDrawerProps extends DrawerProps = DrawerProps,
@@ -22,6 +37,7 @@ export function useVbenDrawer<
   const { connectedComponent } = options;
   if (connectedComponent) {
     const extendedApi = reactive({});
+    const isDrawerReady = ref(true);
     const Drawer = defineComponent(
       (props: TParentDrawerProps, { attrs, slots }) => {
         provide(USER_DRAWER_INJECT_KEY, {
@@ -31,25 +47,45 @@ export function useVbenDrawer<
             Object.setPrototypeOf(extendedApi, api);
           },
           options,
+          async reCreateDrawer() {
+            isDrawerReady.value = false;
+            await nextTick();
+            isDrawerReady.value = true;
+          },
         });
         checkProps(extendedApi as ExtendedDrawerApi, {
           ...props,
           ...attrs,
           ...slots,
         });
-        return () => h(connectedComponent, { ...props, ...attrs }, slots);
+        return () =>
+          h(
+            isDrawerReady.value ? connectedComponent : "div",
+            { ...props, ...attrs },
+            slots,
+          );
       },
+      // eslint-disable-next-line vue/one-component-per-file
       {
+        name: "VbenParentDrawer",
         inheritAttrs: false,
-        name: 'VbenParentDrawer',
       },
     );
+
+    /**
+     * 在开启keepAlive情况下 直接通过浏览器按钮/手势等返回 不会关闭弹窗
+     */
+    onDeactivated(() => {
+      (extendedApi as ExtendedDrawerApi)?.close?.();
+    });
+
     return [Drawer, extendedApi as ExtendedDrawerApi] as const;
   }
 
   const injectData = inject<any>(USER_DRAWER_INJECT_KEY, {});
 
   const mergedOptions = {
+    ...DEFAULT_DRAWER_PROPS,
     ...injectData.options,
     ...options,
   } as DrawerApiOptions;
@@ -57,6 +93,14 @@ export function useVbenDrawer<
   mergedOptions.onOpenChange = (isOpen: boolean) => {
     options.onOpenChange?.(isOpen);
     injectData.options?.onOpenChange?.(isOpen);
+  };
+
+  const onClosed = mergedOptions.onClosed;
+  mergedOptions.onClosed = () => {
+    onClosed?.();
+    if (mergedOptions.destroyOnClose) {
+      injectData.reCreateDrawer?.();
+    }
   };
   const api = new DrawerApi(mergedOptions);
 
@@ -71,9 +115,10 @@ export function useVbenDrawer<
       return () =>
         h(VbenDrawer, { ...props, ...attrs, drawerApi: extendedApi }, slots);
     },
+    // eslint-disable-next-line vue/one-component-per-file
     {
+      name: "VbenDrawer",
       inheritAttrs: false,
-      name: 'VbenDrawer',
     },
   );
   injectData.extendApi?.(extendedApi);
@@ -95,7 +140,7 @@ async function checkProps(api: ExtendedDrawerApi, attrs: Record<string, any>) {
   const stateKeys = new Set(Object.keys(state));
 
   for (const attr of Object.keys(attrs)) {
-    if (stateKeys.has(attr) && !['class'].includes(attr)) {
+    if (stateKeys.has(attr) && !["class"].includes(attr)) {
       // connectedComponent存在时，不要传入Drawer的props，会造成复杂度提升，如果你需要修改Drawer的props，请使用 useVbenDrawer 或者api
       console.warn(
         `[Vben Drawer]: When 'connectedComponent' exists, do not set props or slots '${attr}', which will increase complexity. If you need to modify the props of Drawer, please use useVbenDrawer or api.`,

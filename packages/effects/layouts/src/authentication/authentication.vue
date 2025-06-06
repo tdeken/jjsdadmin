@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { ToolbarType } from './types';
+import type { ToolbarType } from "./types";
 
-import { preferences, usePreferences } from '@vben/preferences';
+import { preferences, usePreferences } from "@vben/preferences";
 
-import { Copyright } from '../basic/copyright';
-import AuthenticationFormView from './form.vue';
-import SloganIcon from './icons/slogan.vue';
-import Toolbar from './toolbar.vue';
+import { Copyright } from "../basic/copyright";
+import AuthenticationFormView from "./form.vue";
+import SloganIcon from "./icons/slogan.vue";
+import Toolbar from "./toolbar.vue";
 
 interface Props {
   appName?: string;
@@ -17,17 +17,19 @@ interface Props {
   toolbar?: boolean;
   copyright?: boolean;
   toolbarList?: ToolbarType[];
+  clickLogo?: () => void;
 }
 
 withDefaults(defineProps<Props>(), {
-  appName: '',
+  appName: "",
   copyright: true,
-  logo: '',
-  pageDescription: '',
-  pageTitle: '',
-  sloganImage: '',
+  logo: "",
+  pageDescription: "",
+  pageTitle: "",
+  sloganImage: "",
   toolbar: true,
-  toolbarList: () => ['color', 'language', 'layout', 'theme'],
+  toolbarList: () => ["color", "language", "layout", "theme"],
+  clickLogo: () => {},
 });
 
 const { authPanelCenter, authPanelLeft, authPanelRight, isDark } =
@@ -36,7 +38,7 @@ const { authPanelCenter, authPanelLeft, authPanelRight, isDark } =
 
 <template>
   <div
-    :class="[isDark]"
+    :class="[isDark ? 'dark' : '']"
     class="flex min-h-full flex-1 select-none overflow-x-hidden"
   >
     <template v-if="toolbar">
@@ -61,12 +63,16 @@ const { authPanelCenter, authPanelLeft, authPanelRight, isDark } =
     </AuthenticationFormView>
 
     <!-- 头部 Logo 和应用名称 -->
-    <div v-if="logo || appName" class="absolute left-0 top-0 z-10 flex flex-1">
+    <div
+      v-if="logo || appName"
+      class="absolute left-0 top-0 z-10 flex flex-1"
+      @click="clickLogo"
+    >
       <div
         class="text-foreground lg:text-foreground ml-4 mt-4 flex flex-1 items-center sm:left-6 sm:top-6"
       >
         <img v-if="logo" :alt="appName" :src="logo" class="mr-2" width="42" />
-        <p v-if="appName" class="text-xl font-medium">
+        <p v-if="appName" class="m-0 text-xl font-medium">
           {{ appName }}
         </p>
       </div>

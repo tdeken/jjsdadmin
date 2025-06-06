@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { DialogTitleProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { DialogTitle, type DialogTitleProps, useForwardProps } from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & DialogTitleProps>();
+import { DialogTitle, useForwardProps } from "radix-vue";
+
+const props = defineProps<DialogTitleProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

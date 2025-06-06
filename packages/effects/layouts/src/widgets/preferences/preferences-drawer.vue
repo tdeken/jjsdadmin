@@ -1,36 +1,39 @@
 <script setup lang="ts">
-import type { SupportedLanguagesType } from '@vben/locales';
+import type { SupportedLanguagesType } from "@vben/locales";
 import type {
   BreadcrumbStyleType,
   BuiltinThemeType,
   ContentCompactType,
+  LayoutHeaderMenuAlignType,
   LayoutHeaderModeType,
   LayoutType,
   NavigationStyleType,
   PreferencesButtonPositionType,
   ThemeModeType,
-} from '@vben/types';
-import type { SegmentedItem } from '@vben-core/shadcn-ui';
+} from "@vben/types";
 
-import { computed, ref } from 'vue';
+import type { SegmentedItem } from "@vben-core/shadcn-ui";
 
-import { Copy, RotateCw } from '@vben/icons';
-import { $t, loadLocaleMessages } from '@vben/locales';
+import { computed, ref } from "vue";
+
+import { Copy, RotateCw } from "@vben/icons";
+import { $t, loadLocaleMessages } from "@vben/locales";
 import {
   clearPreferencesCache,
   preferences,
   resetPreferences,
   usePreferences,
-} from '@vben/preferences';
-import { useVbenDrawer } from '@vben-core/popup-ui';
+} from "@vben/preferences";
+
+import { useVbenDrawer } from "@vben-core/popup-ui";
 import {
   VbenButton,
   VbenIconButton,
   VbenSegmented,
-} from '@vben-core/shadcn-ui';
-import { globalShareState } from '@vben-core/shared/global-state';
+} from "@vben-core/shadcn-ui";
+import { globalShareState } from "@vben-core/shared/global-state";
 
-import { useClipboard } from '@vueuse/core';
+import { useClipboard } from "@vueuse/core";
 
 import {
   Animation,
@@ -51,109 +54,122 @@ import {
   Tabbar,
   Theme,
   Widget,
-} from './blocks';
+} from "./blocks";
 
 const emit = defineEmits<{ clearPreferencesAndLogout: [] }>();
 
 const message = globalShareState.getMessage();
 
-const appLocale = defineModel<SupportedLanguagesType>('appLocale');
-const appDynamicTitle = defineModel<boolean>('appDynamicTitle');
-const appLayout = defineModel<LayoutType>('appLayout');
-const appColorGrayMode = defineModel<boolean>('appColorGrayMode');
-const appColorWeakMode = defineModel<boolean>('appColorWeakMode');
-const appContentCompact = defineModel<ContentCompactType>('appContentCompact');
-const appWatermark = defineModel<boolean>('appWatermark');
-const appEnableCheckUpdates = defineModel<boolean>('appEnableCheckUpdates');
+const appLocale = defineModel<SupportedLanguagesType>("appLocale");
+const appDynamicTitle = defineModel<boolean>("appDynamicTitle");
+const appLayout = defineModel<LayoutType>("appLayout");
+const appColorGrayMode = defineModel<boolean>("appColorGrayMode");
+const appColorWeakMode = defineModel<boolean>("appColorWeakMode");
+const appContentCompact = defineModel<ContentCompactType>("appContentCompact");
+const appWatermark = defineModel<boolean>("appWatermark");
+const appEnableCheckUpdates = defineModel<boolean>("appEnableCheckUpdates");
 const appPreferencesButtonPosition = defineModel<PreferencesButtonPositionType>(
-  'appPreferencesButtonPosition',
+  "appPreferencesButtonPosition",
 );
 
-const transitionProgress = defineModel<boolean>('transitionProgress');
-const transitionName = defineModel<string>('transitionName');
-const transitionLoading = defineModel<boolean>('transitionLoading');
-const transitionEnable = defineModel<boolean>('transitionEnable');
+const transitionProgress = defineModel<boolean>("transitionProgress");
+const transitionName = defineModel<string>("transitionName");
+const transitionLoading = defineModel<boolean>("transitionLoading");
+const transitionEnable = defineModel<boolean>("transitionEnable");
 
-const themeColorPrimary = defineModel<string>('themeColorPrimary');
-const themeBuiltinType = defineModel<BuiltinThemeType>('themeBuiltinType');
-const themeMode = defineModel<ThemeModeType>('themeMode');
-const themeRadius = defineModel<string>('themeRadius');
-const themeSemiDarkSidebar = defineModel<boolean>('themeSemiDarkSidebar');
-const themeSemiDarkHeader = defineModel<boolean>('themeSemiDarkHeader');
+const themeColorPrimary = defineModel<string>("themeColorPrimary");
+const themeBuiltinType = defineModel<BuiltinThemeType>("themeBuiltinType");
+const themeMode = defineModel<ThemeModeType>("themeMode");
+const themeRadius = defineModel<string>("themeRadius");
+const themeSemiDarkSidebar = defineModel<boolean>("themeSemiDarkSidebar");
+const themeSemiDarkHeader = defineModel<boolean>("themeSemiDarkHeader");
 
-const sidebarEnable = defineModel<boolean>('sidebarEnable');
-const sidebarWidth = defineModel<number>('sidebarWidth');
-const sidebarCollapsed = defineModel<boolean>('sidebarCollapsed');
+const sidebarEnable = defineModel<boolean>("sidebarEnable");
+const sidebarWidth = defineModel<number>("sidebarWidth");
+const sidebarCollapsed = defineModel<boolean>("sidebarCollapsed");
 const sidebarCollapsedShowTitle = defineModel<boolean>(
-  'sidebarCollapsedShowTitle',
+  "sidebarCollapsedShowTitle",
 );
+const sidebarAutoActivateChild = defineModel<boolean>(
+  "sidebarAutoActivateChild",
+);
+const sidebarExpandOnHover = defineModel<boolean>("sidebarExpandOnHover");
+const sidebarCollapsedButton = defineModel<boolean>("sidebarCollapsedButton");
+const sidebarFixedButton = defineModel<boolean>("sidebarFixedButton");
+const headerEnable = defineModel<boolean>("headerEnable");
+const headerMode = defineModel<LayoutHeaderModeType>("headerMode");
+const headerMenuAlign =
+  defineModel<LayoutHeaderMenuAlignType>("headerMenuAlign");
 
-const headerEnable = defineModel<boolean>('headerEnable');
-const headerMode = defineModel<LayoutHeaderModeType>('headerMode');
-
-const breadcrumbEnable = defineModel<boolean>('breadcrumbEnable');
-const breadcrumbShowIcon = defineModel<boolean>('breadcrumbShowIcon');
-const breadcrumbShowHome = defineModel<boolean>('breadcrumbShowHome');
+const breadcrumbEnable = defineModel<boolean>("breadcrumbEnable");
+const breadcrumbShowIcon = defineModel<boolean>("breadcrumbShowIcon");
+const breadcrumbShowHome = defineModel<boolean>("breadcrumbShowHome");
 const breadcrumbStyleType = defineModel<BreadcrumbStyleType>(
-  'breadcrumbStyleType',
+  "breadcrumbStyleType",
 );
-const breadcrumbHideOnlyOne = defineModel<boolean>('breadcrumbHideOnlyOne');
+const breadcrumbHideOnlyOne = defineModel<boolean>("breadcrumbHideOnlyOne");
 
-const tabbarEnable = defineModel<boolean>('tabbarEnable');
-const tabbarShowIcon = defineModel<boolean>('tabbarShowIcon');
-const tabbarShowMore = defineModel<boolean>('tabbarShowMore');
-const tabbarShowMaximize = defineModel<boolean>('tabbarShowMaximize');
-const tabbarPersist = defineModel<boolean>('tabbarPersist');
-const tabbarDraggable = defineModel<boolean>('tabbarDraggable');
-const tabbarStyleType = defineModel<string>('tabbarStyleType');
+const tabbarEnable = defineModel<boolean>("tabbarEnable");
+const tabbarShowIcon = defineModel<boolean>("tabbarShowIcon");
+const tabbarShowMore = defineModel<boolean>("tabbarShowMore");
+const tabbarShowMaximize = defineModel<boolean>("tabbarShowMaximize");
+const tabbarPersist = defineModel<boolean>("tabbarPersist");
+const tabbarDraggable = defineModel<boolean>("tabbarDraggable");
+const tabbarWheelable = defineModel<boolean>("tabbarWheelable");
+const tabbarStyleType = defineModel<string>("tabbarStyleType");
+const tabbarMaxCount = defineModel<number>("tabbarMaxCount");
+const tabbarMiddleClickToClose = defineModel<boolean>(
+  "tabbarMiddleClickToClose",
+);
 
 const navigationStyleType = defineModel<NavigationStyleType>(
-  'navigationStyleType',
+  "navigationStyleType",
 );
-const navigationSplit = defineModel<boolean>('navigationSplit');
-const navigationAccordion = defineModel<boolean>('navigationAccordion');
+const navigationSplit = defineModel<boolean>("navigationSplit");
+const navigationAccordion = defineModel<boolean>("navigationAccordion");
 
 // const logoVisible = defineModel<boolean>('logoVisible');
 
-const footerEnable = defineModel<boolean>('footerEnable');
-const footerFixed = defineModel<boolean>('footerFixed');
+const footerEnable = defineModel<boolean>("footerEnable");
+const footerFixed = defineModel<boolean>("footerFixed");
 
-const copyrightSettingShow = defineModel<boolean>('copyrightSettingShow');
-const copyrightEnable = defineModel<boolean>('copyrightEnable');
-const copyrightCompanyName = defineModel<string>('copyrightCompanyName');
+const copyrightSettingShow = defineModel<boolean>("copyrightSettingShow");
+const copyrightEnable = defineModel<boolean>("copyrightEnable");
+const copyrightCompanyName = defineModel<string>("copyrightCompanyName");
 const copyrightCompanySiteLink = defineModel<string>(
-  'copyrightCompanySiteLink',
+  "copyrightCompanySiteLink",
 );
-const copyrightDate = defineModel<string>('copyrightDate');
-const copyrightIcp = defineModel<string>('copyrightIcp');
-const copyrightIcpLink = defineModel<string>('copyrightIcpLink');
+const copyrightDate = defineModel<string>("copyrightDate");
+const copyrightIcp = defineModel<string>("copyrightIcp");
+const copyrightIcpLink = defineModel<string>("copyrightIcpLink");
 
-const shortcutKeysEnable = defineModel<boolean>('shortcutKeysEnable');
+const shortcutKeysEnable = defineModel<boolean>("shortcutKeysEnable");
 const shortcutKeysGlobalSearch = defineModel<boolean>(
-  'shortcutKeysGlobalSearch',
+  "shortcutKeysGlobalSearch",
 );
 const shortcutKeysGlobalLogout = defineModel<boolean>(
-  'shortcutKeysGlobalLogout',
+  "shortcutKeysGlobalLogout",
 );
 
 const shortcutKeysGlobalLockScreen = defineModel<boolean>(
-  'shortcutKeysGlobalLockScreen',
+  "shortcutKeysGlobalLockScreen",
 );
 
-const widgetGlobalSearch = defineModel<boolean>('widgetGlobalSearch');
-const widgetFullscreen = defineModel<boolean>('widgetFullscreen');
-const widgetLanguageToggle = defineModel<boolean>('widgetLanguageToggle');
-const widgetNotification = defineModel<boolean>('widgetNotification');
-const widgetThemeToggle = defineModel<boolean>('widgetThemeToggle');
-const widgetSidebarToggle = defineModel<boolean>('widgetSidebarToggle');
-const widgetLockScreen = defineModel<boolean>('widgetLockScreen');
-const widgetRefresh = defineModel<boolean>('widgetRefresh');
+const widgetGlobalSearch = defineModel<boolean>("widgetGlobalSearch");
+const widgetFullscreen = defineModel<boolean>("widgetFullscreen");
+const widgetLanguageToggle = defineModel<boolean>("widgetLanguageToggle");
+const widgetNotification = defineModel<boolean>("widgetNotification");
+const widgetThemeToggle = defineModel<boolean>("widgetThemeToggle");
+const widgetSidebarToggle = defineModel<boolean>("widgetSidebarToggle");
+const widgetLockScreen = defineModel<boolean>("widgetLockScreen");
+const widgetRefresh = defineModel<boolean>("widgetRefresh");
 
 const {
   diffPreference,
   isDark,
   isFullContent,
   isHeaderNav,
+  isHeaderSidebarNav,
   isMixedNav,
   isSideMixedNav,
   isSideMode,
@@ -163,25 +179,25 @@ const { copy } = useClipboard({ legacy: true });
 
 const [Drawer] = useVbenDrawer();
 
-const activeTab = ref('appearance');
+const activeTab = ref("appearance");
 
 const tabs = computed((): SegmentedItem[] => {
   return [
     {
-      label: $t('preferences.appearance'),
-      value: 'appearance',
+      label: $t("preferences.appearance"),
+      value: "appearance",
     },
     {
-      label: $t('preferences.layout'),
-      value: 'layout',
+      label: $t("preferences.layout"),
+      value: "layout",
     },
     {
-      label: $t('preferences.shortcutKeys.title'),
-      value: 'shortcutKey',
+      label: $t("preferences.shortcutKeys.title"),
+      value: "shortcutKey",
     },
     {
-      label: $t('preferences.general'),
-      value: 'general',
+      label: $t("preferences.general"),
+      value: "general",
     },
   ];
 });
@@ -199,15 +215,15 @@ async function handleCopy() {
   await copy(JSON.stringify(diffPreference.value, null, 2));
 
   message.copyPreferencesSuccess?.(
-    $t('preferences.copyPreferencesSuccessTitle'),
-    $t('preferences.copyPreferencesSuccess'),
+    $t("preferences.copyPreferencesSuccessTitle"),
+    $t("preferences.copyPreferencesSuccess"),
   );
 }
 
 async function handleClearCache() {
   resetPreferences();
   clearPreferencesCache();
-  emit('clearPreferencesAndLogout');
+  emit("clearPreferencesAndLogout");
 }
 
 async function handleReset() {
@@ -298,10 +314,15 @@ async function handleReset() {
 
             <Block :title="$t('preferences.sidebar.title')">
               <Sidebar
+                v-model:sidebar-auto-activate-child="sidebarAutoActivateChild"
                 v-model:sidebar-collapsed="sidebarCollapsed"
                 v-model:sidebar-collapsed-show-title="sidebarCollapsedShowTitle"
                 v-model:sidebar-enable="sidebarEnable"
+                v-model:sidebar-expand-on-hover="sidebarExpandOnHover"
                 v-model:sidebar-width="sidebarWidth"
+                v-model:sidebar-collapsed-button="sidebarCollapsedButton"
+                v-model:sidebar-fixed-button="sidebarFixedButton"
+                :current-layout="appLayout"
                 :disabled="!isSideMode"
               />
             </Block>
@@ -309,6 +330,7 @@ async function handleReset() {
             <Block :title="$t('preferences.header.title')">
               <Header
                 v-model:header-enable="headerEnable"
+                v-model:header-menu-align="headerMenuAlign"
                 v-model:header-mode="headerMode"
                 :disabled="isFullContent"
               />
@@ -332,7 +354,8 @@ async function handleReset() {
                 v-model:breadcrumb-show-icon="breadcrumbShowIcon"
                 v-model:breadcrumb-style-type="breadcrumbStyleType"
                 :disabled="
-                  !showBreadcrumbConfig || !(isSideNav || isSideMixedNav)
+                  !showBreadcrumbConfig ||
+                  !(isSideNav || isSideMixedNav || isHeaderSidebarNav)
                 "
               />
             </Block>
@@ -345,6 +368,9 @@ async function handleReset() {
                 v-model:tabbar-show-maximize="tabbarShowMaximize"
                 v-model:tabbar-show-more="tabbarShowMore"
                 v-model:tabbar-style-type="tabbarStyleType"
+                v-model:tabbar-wheelable="tabbarWheelable"
+                v-model:tabbar-max-count="tabbarMaxCount"
+                v-model:tabbar-middle-click-to-close="tabbarMiddleClickToClose"
               />
             </Block>
             <Block :title="$t('preferences.widget.title')">
@@ -406,7 +432,7 @@ async function handleReset() {
           @click="handleCopy"
         >
           <Copy class="mr-2 size-3" />
-          {{ $t('preferences.copyPreferences') }}
+          {{ $t("preferences.copyPreferences") }}
         </VbenButton>
         <VbenButton
           :disabled="!diffPreference"
@@ -415,7 +441,7 @@ async function handleReset() {
           variant="ghost"
           @click="handleClearCache"
         >
-          {{ $t('preferences.clearAndLogout') }}
+          {{ $t("preferences.clearAndLogout") }}
         </VbenButton>
       </template>
     </Drawer>

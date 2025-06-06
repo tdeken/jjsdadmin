@@ -1,5 +1,2 @@
-import { Config } from 'tailwindcss';
-
-declare const _default: Config;
-
-export { _default as default };
+export * from "/Users/branchcn/Project/web/jjsdadmin/internal/tailwind-config/src/index.js";
+export { default } from "/Users/branchcn/Project/web/jjsdadmin/internal/tailwind-config/src/index.js";

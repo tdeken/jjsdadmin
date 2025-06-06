@@ -1,5 +1,6 @@
-import type { Ref } from 'vue';
-import { computed, ref, unref } from 'vue';
+import type { Ref } from "vue";
+
+import { computed, ref, unref } from "vue";
 
 /**
  * Paginates an array of items
@@ -10,8 +11,8 @@ import { computed, ref, unref } from 'vue';
  * @throws {Error} If pageNo or pageSize are invalid
  */
 function pagination<T = any>(list: T[], pageNo: number, pageSize: number): T[] {
-  if (pageNo < 1) throw new Error('Page number must be positive');
-  if (pageSize < 1) throw new Error('Page size must be positive');
+  if (pageNo < 1) throw new Error("Page number must be positive");
+  if (pageSize < 1) throw new Error("Page size must be positive");
 
   const offset = (pageNo - 1) * Number(pageSize);
   const ret =
@@ -39,14 +40,14 @@ export function usePagination<T = any>(list: Ref<T[]>, pageSize: number) {
 
   function setCurrentPage(page: number) {
     if (page < 1 || page > unref(totalPages)) {
-      throw new Error('Invalid page number');
+      throw new Error("Invalid page number");
     }
     currentPage.value = page;
   }
 
   function setPageSize(pageSize: number) {
     if (pageSize < 1) {
-      throw new Error('Page size must be positive');
+      throw new Error("Page size must be positive");
     }
     pageSizeRef.value = pageSize;
     // Reset to first page to prevent invalid state

@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { SegmentedItem } from './types';
+import type { SegmentedItem } from "./types";
 
-import { computed } from 'vue';
+import { computed } from "vue";
 
-import { TabsTrigger } from 'radix-vue';
+import { TabsTrigger } from "radix-vue";
 
-import { Tabs, TabsContent, TabsList } from '../../ui';
-import TabsIndicator from './tabs-indicator.vue';
+import { Tabs, TabsContent, TabsList } from "../../ui";
+import TabsIndicator from "./tabs-indicator.vue";
 
 interface Props {
   defaultValue?: string;
-  tabs: SegmentedItem[];
+  tabs?: SegmentedItem[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  defaultValue: '',
+  defaultValue: "",
   tabs: () => [],
 });
 
@@ -26,7 +26,7 @@ const getDefaultValue = computed(() => {
 
 const tabsStyle = computed(() => {
   return {
-    'grid-template-columns': `repeat(${props.tabs.length}, minmax(0, 1fr))`,
+    "grid-template-columns": `repeat(${props.tabs.length}, minmax(0, 1fr))`,
   };
 });
 

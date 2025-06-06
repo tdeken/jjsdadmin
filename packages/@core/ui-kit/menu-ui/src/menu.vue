@@ -1,32 +1,26 @@
 <script setup lang="ts">
-import type { MenuRecordRaw } from '@vben-core/typings';
+import type { MenuRecordRaw } from "@vben-core/typings";
 
-import type { MenuProps } from './types';
+import type { MenuProps } from "./types";
 
-import { useForwardProps } from '@vben-core/composables';
+import { useForwardProps } from "@vben-core/composables";
 
-import { Menu } from './components';
-import SubMenu from './sub-menu.vue';
+import { Menu } from "./components";
+import SubMenu from "./sub-menu.vue";
 
 interface Props extends MenuProps {
   menus: MenuRecordRaw[];
 }
 
 defineOptions({
-  name: 'MenuView',
+  name: "MenuView",
 });
 
 const props = withDefaults(defineProps<Props>(), {
   collapse: false,
-  // theme: 'dark',
 });
 
 const forward = useForwardProps(props);
-
-// const emit = defineEmits<{
-//   'update:openKeys': [key: Key[]];
-//   'update:selectedKeys': [key: Key[]];
-// }>();
 </script>
 
 <template>

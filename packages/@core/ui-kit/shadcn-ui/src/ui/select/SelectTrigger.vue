@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { SelectTriggerProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { ChevronDown } from 'lucide-vue-next';
-import {
-  SelectIcon,
-  SelectTrigger,
-  type SelectTriggerProps,
-  useForwardProps,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & SelectTriggerProps>();
+import { ChevronDown } from "lucide-vue-next";
+import { SelectIcon, SelectTrigger, useForwardProps } from "radix-vue";
+
+const props = defineProps<SelectTriggerProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

@@ -1,29 +1,26 @@
 <script setup lang="ts">
-import type { VariantProps } from 'class-variance-authority';
+import type { VariantProps } from "class-variance-authority";
+import type { ToggleGroupItemProps } from "radix-vue";
 
-import { computed, inject } from 'vue';
+import { computed, inject } from "vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { cn } from "@vben-core/shared/utils";
 
-import {
-  ToggleGroupItem,
-  type ToggleGroupItemProps,
-  useForwardProps,
-} from 'radix-vue';
+import { ToggleGroupItem, useForwardProps } from "radix-vue";
 
-import { toggleVariants } from '../toggle';
+import { toggleVariants } from "../toggle";
 
 type ToggleGroupVariants = VariantProps<typeof toggleVariants>;
 
 const props = defineProps<
-  {
+  ToggleGroupItemProps & {
     class?: any;
-    size?: ToggleGroupVariants['size'];
-    variant?: ToggleGroupVariants['variant'];
-  } & ToggleGroupItemProps
+    size?: ToggleGroupVariants["size"];
+    variant?: ToggleGroupVariants["variant"];
+  }
 >();
 
-const context = inject<ToggleGroupVariants>('toggleGroup');
+const context = inject<ToggleGroupVariants>("toggleGroup");
 
 const delegatedProps = computed(() => {
   const { class: _, size: _size, variant: _variant, ...delegated } = props;

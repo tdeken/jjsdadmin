@@ -1,4 +1,4 @@
-import type { MenuRecordRaw } from '@vben-core/typings';
+import type { MenuRecordRaw } from "@vben-core/typings";
 
 function findMenuByPath(
   list: MenuRecordRaw[],
@@ -21,9 +21,9 @@ function findMenuByPath(
  * @param menus
  * @param path
  */
-function findRootMenuByPath(menus: MenuRecordRaw[], path?: string) {
+function findRootMenuByPath(menus: MenuRecordRaw[], path?: string, level = 0) {
   const findMenu = findMenuByPath(menus, path);
-  const rootMenuPath = findMenu?.parents?.[0];
+  const rootMenuPath = findMenu?.parents?.[level];
   const rootMenu = rootMenuPath
     ? menus.find((item) => item.path === rootMenuPath)
     : undefined;

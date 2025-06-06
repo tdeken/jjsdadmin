@@ -1,23 +1,28 @@
 <script setup lang="ts">
-import type { ExtendedFormApi, VbenFormProps } from './types';
+import type { Recordable } from "@vben-core/typings";
+
+import type { ExtendedFormApi, VbenFormProps } from "./types";
 
 // import { toRaw, watch } from 'vue';
+import { nextTick, onMounted, watch } from "vue";
 
-import { useForwardPriorityValues } from '@vben-core/composables';
-// import { isFunction } from '@vben-core/shared/utils';
+import { useForwardPriorityValues } from "@vben-core/composables";
+import { cloneDeep, get, isEqual, set } from "@vben-core/shared/utils";
 
-import { toRaw, useTemplateRef, watch } from 'vue';
+import { useDebounceFn } from "@vueuse/core";
 
-import { useDebounceFn } from '@vueuse/core';
-
-import FormActions from './components/form-actions.vue';
+import FormActions from "./components/form-actions.vue";
 import {
   COMPONENT_BIND_EVENT_MAP,
   COMPONENT_MAP,
   DEFAULT_FORM_COMMON_CONFIG,
-} from './config';
-import { Form } from './form-render';
-import { provideFormProps, useFormInitial } from './use-form-context';
+} from "./config";
+import { Form } from "./form-render";
+import {
+  provideComponentRefMap,
+  provideFormProps,
+  useFormInitial,
+} from "./use-form-context";
 // 通过 extends 会导致热更新卡死，所以重复写了一遍
 interface Props extends VbenFormProps {
   formApi: ExtendedFormApi;
@@ -25,28 +30,25 @@ interface Props extends VbenFormProps {
 
 const props = defineProps<Props>();
 
-const formActionsRef = useTemplateRef<typeof FormActions>('formActionsRef');
-
 const state = props.formApi?.useStore?.();
 
 const forward = useForwardPriorityValues(props, state);
 
+const componentRefMap = new Map<string, unknown>();
+
 const { delegatedSlots, form } = useFormInitial(forward);
 
 provideFormProps([forward, form]);
+provideComponentRefMap(componentRefMap);
 
-props.formApi?.mount?.(form);
+props.formApi?.mount?.(form, componentRefMap);
 
 const handleUpdateCollapsed = (value: boolean) => {
   props.formApi?.setState({ collapsed: !!value });
 };
 
 function handleKeyDownEnter(event: KeyboardEvent) {
-  if (
-    !state.value.submitOnEnter ||
-    !formActionsRef.value ||
-    !formActionsRef.value.handleSubmit
-  ) {
+  if (!state.value.submitOnEnter || !forward.value.formApi?.isMounted) {
     return;
   }
   // 如果是 textarea 不阻止默认行为，否则会导致无法换行。
@@ -56,17 +58,51 @@ function handleKeyDownEnter(event: KeyboardEvent) {
   }
   event.preventDefault();
 
-  formActionsRef.value?.handleSubmit?.();
+  forward.value.formApi.validateAndSubmitForm();
 }
 
-watch(
-  () => form.values,
-  useDebounceFn(() => {
-    forward.value.handleValuesChange?.(toRaw(form.values));
-    state.value.submitOnChange && props.formApi?.submitForm();
-  }, 300),
-  { deep: true },
-);
+const handleValuesChangeDebounced = useDebounceFn(async () => {
+  state.value.submitOnChange && forward.value.formApi?.validateAndSubmitForm();
+}, 300);
+
+const valuesCache: Recordable<any> = {};
+
+onMounted(async () => {
+  // 只在挂载后开始监听，form.values会有一个初始化的过程
+  await nextTick();
+  watch(
+    () => form.values,
+    async (newVal) => {
+      if (forward.value.handleValuesChange) {
+        const fields = state.value.schema?.map((item) => {
+          return item.fieldName;
+        });
+
+        if (fields && fields.length > 0) {
+          const changedFields: string[] = [];
+          fields.forEach((field) => {
+            const newFieldValue = get(newVal, field);
+            const oldFieldValue = get(valuesCache, field);
+            if (!isEqual(newFieldValue, oldFieldValue)) {
+              changedFields.push(field);
+              set(valuesCache, field, newFieldValue);
+            }
+          });
+
+          if (changedFields.length > 0) {
+            // 调用handleValuesChange回调，传入所有表单值的深拷贝和变更的字段列表
+            forward.value.handleValuesChange(
+              cloneDeep(await forward.value.formApi.getValues()),
+              changedFields,
+            );
+          }
+        }
+      }
+      handleValuesChangeDebounced();
+    },
+    { deep: true },
+  );
+});
 </script>
 
 <template>
@@ -90,7 +126,6 @@ watch(
       <slot v-bind="slotProps">
         <FormActions
           v-if="forward.showDefaultActions"
-          ref="formActionsRef"
           :model-value="state.collapsed"
           @update:model-value="handleUpdateCollapsed"
         >

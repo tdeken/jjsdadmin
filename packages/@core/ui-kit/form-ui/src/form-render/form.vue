@@ -1,35 +1,34 @@
 <script setup lang="ts">
-import type { ZodTypeAny } from 'zod';
+import type { GenericObject } from "vee-validate";
+import type { ZodTypeAny } from "zod";
 
 import type {
   FormCommonConfig,
   FormRenderProps,
   FormSchema,
   FormShape,
-} from '../types';
+} from "../types";
 
-import { computed } from 'vue';
+import { computed } from "vue";
 
-import { Form } from '@vben-core/shadcn-ui';
-import { cn, isString, mergeWithArrayOverride } from '@vben-core/shared/utils';
+import { Form } from "@vben-core/shadcn-ui";
+import { cn, isString, mergeWithArrayOverride } from "@vben-core/shared/utils";
 
-import { type GenericObject } from 'vee-validate';
-
-import { provideFormRenderProps } from './context';
-import { useExpandable } from './expandable';
-import FormField from './form-field.vue';
-import { getBaseRules, getDefaultValueInZodStack } from './helper';
+import { provideFormRenderProps } from "./context";
+import { useExpandable } from "./expandable";
+import FormField from "./form-field.vue";
+import { getBaseRules, getDefaultValueInZodStack } from "./helper";
 
 interface Props extends FormRenderProps {}
 
 const props = withDefaults(
-  defineProps<{ globalCommonConfig?: FormCommonConfig } & Props>(),
+  defineProps<Props & { globalCommonConfig?: FormCommonConfig }>(),
   {
     collapsedRows: 1,
     commonConfig: () => ({}),
     globalCommonConfig: () => ({}),
     showCollapseButton: false,
-    wrapperClass: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
+    wrapperClass: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3",
   },
 );
 
@@ -47,7 +46,7 @@ const shapes = computed(() => {
     const { fieldName } = schema;
     const rules = schema.rules as ZodTypeAny;
 
-    let typeName = '';
+    let typeName = "";
     if (rules && !isString(rules)) {
       typeName = rules._def.typeName;
     }
@@ -57,22 +56,22 @@ const shapes = computed(() => {
     resultShapes.push({
       default: getDefaultValueInZodStack(rules),
       fieldName,
-      required: !['ZodNullable', 'ZodOptional'].includes(typeName),
+      required: !["ZodNullable", "ZodOptional"].includes(typeName),
       rules: baseRules,
     });
   });
   return resultShapes;
 });
 
-const formComponent = computed(() => (props.form ? 'form' : Form));
+const formComponent = computed(() => (props.form ? "form" : Form));
 
 const formComponentProps = computed(() => {
   return props.form
     ? {
-        onSubmit: props.form.handleSubmit((val) => emits('submit', val)),
+        onSubmit: props.form.handleSubmit((val) => emits("submit", val)),
       }
     : {
-        onSubmit: (val: GenericObject) => emits('submit', val),
+        onSubmit: (val: GenericObject) => emits("submit", val),
       };
 });
 
@@ -81,23 +80,26 @@ const formCollapsed = computed(() => {
 });
 
 const computedSchema = computed(
-  (): ({
+  (): (Omit<FormSchema, "formFieldProps"> & {
     commonComponentProps: Record<string, any>;
     formFieldProps: Record<string, any>;
-  } & Omit<FormSchema, 'formFieldProps'>)[] => {
+  })[] => {
     const {
+      colon = false,
       componentProps = {},
-      controlClass = '',
+      controlClass = "",
       disabled,
-      disabledOnChangeListener = false,
+      disabledOnChangeListener = true,
+      disabledOnInputListener = true,
       emptyStateValue = undefined,
       formFieldProps = {},
-      formItemClass = '',
+      formItemClass = "",
       hideLabel = false,
       hideRequiredMark = false,
-      labelClass = '',
+      labelClass = "",
       labelWidth = 100,
-      wrapperClass = '',
+      modelPropName = "",
+      wrapperClass = "",
     } = mergeWithArrayOverride(props.commonConfig, props.globalCommonConfig);
     return (props.schema || []).map((schema, index) => {
       const keepIndex = keepFormItemIndex.value;
@@ -109,12 +111,15 @@ const computedSchema = computed(
           : false;
 
       return {
+        colon,
         disabled,
         disabledOnChangeListener,
+        disabledOnInputListener,
         emptyStateValue,
         hideLabel,
         hideRequiredMark,
         labelWidth,
+        modelPropName,
         wrapperClass,
         ...schema,
         commonComponentProps: componentProps,
@@ -125,7 +130,7 @@ const computedSchema = computed(
           ...schema.formFieldProps,
         },
         formItemClass: cn(
-          'flex-shrink-0',
+          "flex-shrink-0",
           { hidden },
           formItemClass,
           schema.formItemClass,

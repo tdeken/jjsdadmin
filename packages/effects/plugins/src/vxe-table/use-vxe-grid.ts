@@ -1,11 +1,11 @@
-import type { ExtendedVxeGridApi, VxeGridProps } from './types';
+import type { ExtendedVxeGridApi, VxeGridProps } from "./types";
 
-import { defineComponent, h, onBeforeUnmount } from 'vue';
+import { defineComponent, h, onBeforeUnmount } from "vue";
 
-import { useStore } from '@vben-core/shared/store';
+import { useStore } from "@vben-core/shared/store";
 
-import { VxeGridApi } from './api';
-import VxeGrid from './use-vxe-grid.vue';
+import { VxeGridApi } from "./api";
+import VxeGrid from "./use-vxe-grid.vue";
 
 export function useVbenVxeGrid(options: VxeGridProps) {
   // const IS_REACTIVE = isReactive(options);
@@ -24,8 +24,8 @@ export function useVbenVxeGrid(options: VxeGridProps) {
       return () => h(VxeGrid, { ...props, ...attrs, api: extendedApi }, slots);
     },
     {
+      name: "VbenVxeGrid",
       inheritAttrs: false,
-      name: 'VbenVxeGrid',
     },
   );
   // Add reactivity support

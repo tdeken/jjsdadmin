@@ -1,25 +1,26 @@
-import type { VbenButtonProps } from '@vben-core/shadcn-ui';
-import type { ClassType } from '@vben-core/typings';
-import type { FieldOptions, FormContext, GenericObject } from 'vee-validate';
-import type { ZodTypeAny } from 'zod';
+import type { FieldOptions, FormContext, GenericObject } from "vee-validate";
+import type { ZodTypeAny } from "zod";
 
-import type { FormApi } from './form-api';
+import type { Component, HtmlHTMLAttributes, Ref } from "vue";
 
-import type { Component, HtmlHTMLAttributes, Ref } from 'vue';
+import type { VbenButtonProps } from "@vben-core/shadcn-ui";
+import type { ClassType, MaybeComputedRef } from "@vben-core/typings";
 
-export type FormLayout = 'horizontal' | 'vertical';
+import type { FormApi } from "./form-api";
+
+export type FormLayout = "horizontal" | "vertical";
 
 export type BaseFormComponentType =
-  | 'DefaultButton'
-  | 'PrimaryButton'
-  | 'VbenCheckbox'
-  | 'VbenInput'
-  | 'VbenInputPassword'
-  | 'VbenPinInput'
-  | 'VbenSelect'
+  | "DefaultButton"
+  | "PrimaryButton"
+  | "VbenCheckbox"
+  | "VbenInput"
+  | "VbenInputPassword"
+  | "VbenPinInput"
+  | "VbenSelect"
   | (Record<never, never> & string);
 
-type Breakpoints = '' | '2xl:' | '3xl:' | 'lg:' | 'md:' | 'sm:' | 'xl:';
+type Breakpoints = "2xl:" | "3xl:" | "" | "lg:" | "md:" | "sm:" | "xl:";
 
 type GridCols = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13;
 
@@ -28,19 +29,19 @@ export type WrapperClassType =
   | (Record<never, never> & string);
 
 export type FormItemClassType =
-  | `${Breakpoints}cols-end-${'auto' | GridCols}`
-  | `${Breakpoints}cols-span-${'auto' | 'full' | GridCols}`
-  | `${Breakpoints}cols-start-${'auto' | GridCols}`
+  | `${Breakpoints}cols-end-${"auto" | GridCols}`
+  | `${Breakpoints}cols-span-${"auto" | "full" | GridCols}`
+  | `${Breakpoints}cols-start-${"auto" | GridCols}`
   | (Record<never, never> & string)
   | WrapperClassType;
 
 export type FormFieldOptions = Partial<
-  {
+  FieldOptions & {
     validateOnBlur?: boolean;
     validateOnChange?: boolean;
     validateOnInput?: boolean;
     validateOnModelUpdate?: boolean;
-  } & FieldOptions
+  }
 >;
 
 export interface FormShape {
@@ -54,9 +55,9 @@ export interface FormShape {
 }
 
 export type MaybeComponentPropKey =
-  | 'options'
-  | 'placeholder'
-  | 'title'
+  | "options"
+  | "placeholder"
+  | "title"
   | keyof HtmlHTMLAttributes
   | (Record<never, never> & string);
 
@@ -67,8 +68,8 @@ export type FormActions = FormContext<GenericObject>;
 export type CustomRenderType = (() => Component | string) | string;
 
 export type FormSchemaRuleType =
-  | 'required'
-  | 'selectRequired'
+  | "required"
+  | "selectRequired"
   | null
   | (Record<never, never> & string)
   | ZodTypeAny;
@@ -137,6 +138,10 @@ type ComponentProps =
 
 export interface FormCommonConfig {
   /**
+   * 在Label后显示一个冒号
+   */
+  colon?: boolean;
+  /**
    * 所有表单项的props
    */
   componentProps?: ComponentProps;
@@ -151,9 +156,14 @@ export interface FormCommonConfig {
   disabled?: boolean;
   /**
    * 是否禁用所有表单项的change事件监听
-   * @default false
+   * @default true
    */
   disabledOnChangeListener?: boolean;
+  /**
+   * 是否禁用所有表单项的input事件监听
+   * @default true
+   */
+  disabledOnInputListener?: boolean;
   /**
    * 所有表单项的空状态值,默认都是undefined，naive-ui的空状态值是null
    */
@@ -188,6 +198,11 @@ export interface FormCommonConfig {
    */
   labelWidth?: number;
   /**
+   * 所有表单项的model属性名
+   * @default "modelValue"
+   */
+  modelPropName?: string;
+  /**
    * 所有表单项的wrapper样式
    */
   wrapperClass?: string;
@@ -209,8 +224,19 @@ export type HandleResetFn = (
 export type FieldMappingTime = [
   string,
   [string, string],
-  ([string, string] | string)?,
+  (
+    | ((value: any, fieldName: string) => any)
+    | [string, string]
+    | null
+    | string
+  )?,
 ][];
+
+export type ArrayToStringFields = Array<
+  | [string[], string?] // 嵌套数组格式，可选分隔符
+  | string // 单个字段，使用默认分隔符
+  | string[] // 简单数组格式，最后一个元素可以是分隔符
+>;
 
 export interface FormSchema<
   T extends BaseFormComponentType = BaseFormComponentType,
@@ -224,13 +250,13 @@ export interface FormSchema<
   /** 依赖 */
   dependencies?: FormItemDependencies;
   /** 描述 */
-  description?: string;
+  description?: CustomRenderType;
   /** 字段名 */
   fieldName: string;
   /** 帮助信息 */
-  help?: string;
+  help?: CustomRenderType;
   /** 表单项 */
-  label?: string;
+  label?: CustomRenderType;
   // 自定义组件内部渲染
   renderComponentContent?: RenderComponentContentType;
   /** 字段规则 */
@@ -246,6 +272,10 @@ export interface FormFieldProps extends FormSchema {
 export interface FormRenderProps<
   T extends BaseFormComponentType = BaseFormComponentType,
 > {
+  /**
+   * 表单字段数组映射字符串配置 默认使用","
+   */
+  arrayToStringFields?: ArrayToStringFields;
   /**
    * 是否展开，在showCollapseButton=true下生效
    */
@@ -265,6 +295,10 @@ export interface FormRenderProps<
    */
   commonConfig?: FormCommonConfig;
   /**
+   * 紧凑模式（移除表单每一项底部为校验信息预留的空间）
+   */
+  compact?: boolean;
+  /**
    * 组件v-model事件绑定
    */
   componentBindEventMap?: Partial<Record<BaseFormComponentType, string>>;
@@ -272,6 +306,10 @@ export interface FormRenderProps<
    * 组件集合
    */
   componentMap: Record<BaseFormComponentType, Component>;
+  /**
+   * 表单字段映射到时间格式
+   */
+  fieldMappingTime?: FieldMappingTime;
   /**
    * 表单实例
    */
@@ -284,10 +322,15 @@ export interface FormRenderProps<
    * 表单定义
    */
   schema?: FormSchema<T>[];
+
   /**
    * 是否显示展开/折叠
    */
   showCollapseButton?: boolean;
+  /**
+   * 格式化日期
+   */
+
   /**
    * 表单栅格布局
    * @default "grid-cols-1"
@@ -297,7 +340,7 @@ export interface FormRenderProps<
 
 export interface ActionButtonOptions extends VbenButtonProps {
   [key: string]: any;
-  content?: string;
+  content?: MaybeComputedRef<string>;
   show?: boolean;
 }
 
@@ -305,7 +348,7 @@ export interface VbenFormProps<
   T extends BaseFormComponentType = BaseFormComponentType,
 > extends Omit<
     FormRenderProps<T>,
-    'componentBindEventMap' | 'componentMap' | 'form'
+    "componentBindEventMap" | "componentMap" | "form"
   > {
   /**
    * 操作按钮是否反转（提交按钮前置）
@@ -316,7 +359,12 @@ export interface VbenFormProps<
    */
   actionWrapperClass?: ClassType;
   /**
-   * 表单字段映射成时间格式
+   * 表单字段数组映射字符串配置 默认使用","
+   */
+  arrayToStringFields?: ArrayToStringFields;
+
+  /**
+   * 表单字段映射
    */
   fieldMappingTime?: FieldMappingTime;
   /**
@@ -330,11 +378,15 @@ export interface VbenFormProps<
   /**
    * 表单值变化回调
    */
-  handleValuesChange?: (values: Record<string, any>) => void;
+  handleValuesChange?: (
+    values: Record<string, any>,
+    fieldsChanged: string[],
+  ) => void;
   /**
    * 重置按钮参数
    */
   resetButtonOptions?: ActionButtonOptions;
+
   /**
    * 是否显示默认操作按钮
    * @default true
@@ -359,11 +411,11 @@ export interface VbenFormProps<
   submitOnEnter?: boolean;
 }
 
-export type ExtendedFormApi = {
+export type ExtendedFormApi = FormApi & {
   useStore: <T = NoInfer<VbenFormProps>>(
     selector?: (state: NoInfer<VbenFormProps>) => T,
   ) => Readonly<Ref<T>>;
-} & FormApi;
+};
 
 export interface VbenFormAdapterOptions<
   T extends BaseFormComponentType = BaseFormComponentType,
@@ -371,6 +423,7 @@ export interface VbenFormAdapterOptions<
   config?: {
     baseModelPropName?: string;
     disabledOnChangeListener?: boolean;
+    disabledOnInputListener?: boolean;
     emptyStateValue?: null | undefined;
     modelPropNameMap?: Partial<Record<T, string>>;
   };

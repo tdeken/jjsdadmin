@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import type { BreadcrumbStyleType } from '@vben/types';
-import type { IBreadcrumb } from '@vben-core/shadcn-ui';
+import type { BreadcrumbStyleType } from "@vben/types";
 
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import type { IBreadcrumb } from "@vben-core/shadcn-ui";
 
-import { $t } from '@vben/locales';
-import { VbenBreadcrumbView } from '@vben-core/shadcn-ui';
+import { computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+import { $t } from "@vben/locales";
+
+import { VbenBreadcrumbView } from "@vben-core/shadcn-ui";
 
 interface Props {
   hideWhenOnlyOne?: boolean;
@@ -18,7 +20,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   showHome: false,
   showIcon: false,
-  type: 'normal',
+  type: "normal",
 });
 
 const route = useRoute();
@@ -40,14 +42,14 @@ const breadcrumbs = computed((): IBreadcrumb[] => {
     resultBreadcrumb.push({
       icon,
       path: path || route.path,
-      title: title ? $t((title || name) as string) : '',
+      title: title ? $t((title || name) as string) : "",
     });
   }
   if (props.showHome) {
     resultBreadcrumb.unshift({
-      icon: 'mdi:home-outline',
+      icon: "mdi:home-outline",
       isHome: true,
-      path: '/',
+      path: "/",
     });
   }
   if (props.hideWhenOnlyOne && resultBreadcrumb.length === 1) {

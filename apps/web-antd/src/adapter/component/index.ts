@@ -3,76 +3,132 @@
  * 可用于 vben-form、vben-modal、vben-drawer 等组件使用,
  */
 
-import type { BaseFormComponentType } from '@vben/common-ui';
+import type { Component } from "vue";
 
-import type { Component, SetupContext } from 'vue';
-import { h } from 'vue';
-
-import { ApiComponent, globalShareState, IconPicker } from '@vben/common-ui';
-import { $t } from '@vben/locales';
+import type { BaseFormComponentType } from "@vben/common-ui";
+import type { Recordable } from "@vben/types";
 
 import {
-  AutoComplete,
-  Button,
-  Checkbox,
-  CheckboxGroup,
-  DatePicker,
-  Divider,
-  Input,
-  InputNumber,
-  InputPassword,
-  Mentions,
-  notification,
-  Radio,
-  RadioGroup,
-  RangePicker,
-  Rate,
-  Select,
-  Space,
-  Switch,
-  Textarea,
-  TimePicker,
-  TreeSelect,
-  Upload,
-} from 'ant-design-vue';
+  defineAsyncComponent,
+  defineComponent,
+  getCurrentInstance,
+  h,
+  ref,
+} from "vue";
+
+import { ApiComponent, globalShareState, IconPicker } from "@vben/common-ui";
+import { $t } from "@vben/locales";
+
+import { notification } from "ant-design-vue";
+
+const AutoComplete = defineAsyncComponent(
+  () => import("ant-design-vue/es/auto-complete"),
+);
+const Button = defineAsyncComponent(() => import("ant-design-vue/es/button"));
+const Checkbox = defineAsyncComponent(
+  () => import("ant-design-vue/es/checkbox"),
+);
+const CheckboxGroup = defineAsyncComponent(() =>
+  import("ant-design-vue/es/checkbox").then((res) => res.CheckboxGroup),
+);
+const DatePicker = defineAsyncComponent(
+  () => import("ant-design-vue/es/date-picker"),
+);
+const Divider = defineAsyncComponent(() => import("ant-design-vue/es/divider"));
+const Input = defineAsyncComponent(() => import("ant-design-vue/es/input"));
+const InputNumber = defineAsyncComponent(
+  () => import("ant-design-vue/es/input-number"),
+);
+const InputPassword = defineAsyncComponent(() =>
+  import("ant-design-vue/es/input").then((res) => res.InputPassword),
+);
+const Mentions = defineAsyncComponent(
+  () => import("ant-design-vue/es/mentions"),
+);
+const Radio = defineAsyncComponent(() => import("ant-design-vue/es/radio"));
+const RadioGroup = defineAsyncComponent(() =>
+  import("ant-design-vue/es/radio").then((res) => res.RadioGroup),
+);
+const RangePicker = defineAsyncComponent(() =>
+  import("ant-design-vue/es/date-picker").then((res) => res.RangePicker),
+);
+const Rate = defineAsyncComponent(() => import("ant-design-vue/es/rate"));
+const Select = defineAsyncComponent(() => import("ant-design-vue/es/select"));
+const Space = defineAsyncComponent(() => import("ant-design-vue/es/space"));
+const Switch = defineAsyncComponent(() => import("ant-design-vue/es/switch"));
+const Textarea = defineAsyncComponent(() =>
+  import("ant-design-vue/es/input").then((res) => res.Textarea),
+);
+const TimePicker = defineAsyncComponent(
+  () => import("ant-design-vue/es/time-picker"),
+);
+const TreeSelect = defineAsyncComponent(
+  () => import("ant-design-vue/es/tree-select"),
+);
+const Upload = defineAsyncComponent(() => import("ant-design-vue/es/upload"));
 
 const withDefaultPlaceholder = <T extends Component>(
   component: T,
-  type: 'input' | 'select',
+  type: "input" | "select",
+  componentProps: Recordable<any> = {},
 ) => {
-  return (props: any, { attrs, slots }: Omit<SetupContext, 'expose'>) => {
-    const placeholder = props?.placeholder || $t(`ui.placeholder.${type}`);
-    return h(component, { ...props, ...attrs, placeholder }, slots);
-  };
+  return defineComponent({
+    name: component.name,
+    inheritAttrs: false,
+    setup: (props: any, { attrs, expose, slots }) => {
+      const placeholder =
+        props?.placeholder ||
+        attrs?.placeholder ||
+        $t(`ui.placeholder.${type}`);
+      // 透传组件暴露的方法
+      const innerRef = ref();
+      const publicApi: Recordable<any> = {};
+      expose(publicApi);
+      const instance = getCurrentInstance();
+      instance?.proxy?.$nextTick(() => {
+        for (const key in innerRef.value) {
+          if (typeof innerRef.value[key] === "function") {
+            publicApi[key] = innerRef.value[key];
+          }
+        }
+      });
+      return () =>
+        h(
+          component,
+          { ...componentProps, placeholder, ...props, ...attrs, ref: innerRef },
+          slots,
+        );
+    },
+  });
 };
 
 // 这里需要自行根据业务组件库进行适配，需要用到的组件都需要在这里类型说明
 export type ComponentType =
-  | 'ApiSelect'
-  | 'ApiTreeSelect'
-  | 'AutoComplete'
-  | 'Checkbox'
-  | 'CheckboxGroup'
-  | 'DatePicker'
-  | 'DefaultButton'
-  | 'Divider'
-  | 'IconPicker'
-  | 'Input'
-  | 'InputNumber'
-  | 'InputPassword'
-  | 'Mentions'
-  | 'PrimaryButton'
-  | 'Radio'
-  | 'RadioGroup'
-  | 'RangePicker'
-  | 'Rate'
-  | 'Select'
-  | 'Space'
-  | 'Switch'
-  | 'Textarea'
-  | 'TimePicker'
-  | 'TreeSelect'
-  | 'Upload'
+  | "ApiSelect"
+  | "ApiTreeSelect"
+  | "AutoComplete"
+  | "Checkbox"
+  | "CheckboxGroup"
+  | "DatePicker"
+  | "DefaultButton"
+  | "Divider"
+  | "IconPicker"
+  | "Input"
+  | "InputNumber"
+  | "InputPassword"
+  | "Mentions"
+  | "PrimaryButton"
+  | "Radio"
+  | "RadioGroup"
+  | "RangePicker"
+  | "Rate"
+  | "Select"
+  | "Space"
+  | "Switch"
+  | "Textarea"
+  | "TimePicker"
+  | "TreeSelect"
+  | "Upload"
   | BaseFormComponentType;
 
 async function initComponentAdapter() {
@@ -80,72 +136,66 @@ async function initComponentAdapter() {
     // 如果你的组件体积比较大，可以使用异步加载
     // Button: () =>
     // import('xxx').then((res) => res.Button),
-    ApiSelect: (props, { attrs, slots }) => {
-      return h(
-        ApiComponent,
-        {
-          placeholder: $t('ui.placeholder.select'),
-          ...props,
-          ...attrs,
-          component: Select,
-          loadingSlot: 'suffixIcon',
-          visibleEvent: 'onDropdownVisibleChange',
-          modelPropName: 'value',
-        },
-        slots,
-      );
-    },
-    ApiTreeSelect: (props, { attrs, slots }) => {
-      return h(
-        ApiComponent,
-        {
-          placeholder: $t('ui.placeholder.select'),
-          ...props,
-          ...attrs,
-          component: TreeSelect,
-          fieldNames: { label: 'label', value: 'value', children: 'children' },
-          loadingSlot: 'suffixIcon',
-          modelPropName: 'value',
-          optionsPropName: 'treeData',
-          visibleEvent: 'onVisibleChange',
-        },
-        slots,
-      );
-    },
+    ApiSelect: withDefaultPlaceholder(
+      {
+        ...ApiComponent,
+        name: "ApiSelect",
+      },
+      "select",
+      {
+        component: Select,
+        loadingSlot: "suffixIcon",
+        visibleEvent: "onDropdownVisibleChange",
+        modelPropName: "value",
+      },
+    ),
+    ApiTreeSelect: withDefaultPlaceholder(
+      {
+        ...ApiComponent,
+        name: "ApiTreeSelect",
+      },
+      "select",
+      {
+        component: TreeSelect,
+        fieldNames: { label: "label", value: "value", children: "children" },
+        loadingSlot: "suffixIcon",
+        modelPropName: "value",
+        optionsPropName: "treeData",
+        visibleEvent: "onVisibleChange",
+      },
+    ),
     AutoComplete,
     Checkbox,
     CheckboxGroup,
     DatePicker,
     // 自定义默认按钮
     DefaultButton: (props, { attrs, slots }) => {
-      return h(Button, { ...props, attrs, type: 'default' }, slots);
+      return h(Button, { ...props, attrs, type: "default" }, slots);
     },
     Divider,
-    IconPicker: (props, { attrs, slots }) => {
-      return h(
-        IconPicker,
-        { iconSlot: 'addonAfter', inputComponent: Input, ...props, ...attrs },
-        slots,
-      );
-    },
-    Input: withDefaultPlaceholder(Input, 'input'),
-    InputNumber: withDefaultPlaceholder(InputNumber, 'input'),
-    InputPassword: withDefaultPlaceholder(InputPassword, 'input'),
-    Mentions: withDefaultPlaceholder(Mentions, 'input'),
+    IconPicker: withDefaultPlaceholder(IconPicker, "select", {
+      iconSlot: "addonAfter",
+      inputComponent: Input,
+      modelValueProp: "value",
+    }),
+    Input: withDefaultPlaceholder(Input, "input"),
+    InputNumber: withDefaultPlaceholder(InputNumber, "input"),
+    InputPassword: withDefaultPlaceholder(InputPassword, "input"),
+    Mentions: withDefaultPlaceholder(Mentions, "input"),
     // 自定义主要按钮
     PrimaryButton: (props, { attrs, slots }) => {
-      return h(Button, { ...props, attrs, type: 'primary' }, slots);
+      return h(Button, { ...props, attrs, type: "primary" }, slots);
     },
     Radio,
     RadioGroup,
     RangePicker,
     Rate,
-    Select: withDefaultPlaceholder(Select, 'select'),
+    Select: withDefaultPlaceholder(Select, "select"),
     Space,
     Switch,
-    Textarea: withDefaultPlaceholder(Textarea, 'input'),
+    Textarea: withDefaultPlaceholder(Textarea, "input"),
     TimePicker,
-    TreeSelect: withDefaultPlaceholder(TreeSelect, 'select'),
+    TreeSelect: withDefaultPlaceholder(TreeSelect, "select"),
     Upload,
   };
 
@@ -159,7 +209,7 @@ async function initComponentAdapter() {
       notification.success({
         description: content,
         message: title,
-        placement: 'bottomRight',
+        placement: "bottomRight",
       });
     },
   });

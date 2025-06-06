@@ -1,9 +1,48 @@
-import type { RequestClient } from './request-client';
-import type { MakeErrorMessageFn, ResponseInterceptorConfig } from './types';
+import type { RequestClient } from "./request-client";
+import type { MakeErrorMessageFn, ResponseInterceptorConfig } from "./types";
 
-import { $t } from '@vben/locales';
+import { $t } from "@vben/locales";
+import { isFunction } from "@vben/utils";
 
-import axios from 'axios';
+import axios from "axios";
+
+export const defaultResponseInterceptor = ({
+  codeField = "code",
+  dataField = "data",
+  successCode = 0,
+}: {
+  /** 响应数据中代表访问结果的字段名 */
+  codeField: string;
+  /** 响应数据中装载实际数据的字段名，或者提供一个函数从响应数据中解析需要返回的数据 */
+  dataField: ((response: any) => any) | string;
+  /** 当codeField所指定的字段值与successCode相同时，代表接口访问成功。如果提供一个函数，则返回true代表接口访问成功 */
+  successCode: ((code: any) => boolean) | number | string;
+}): ResponseInterceptorConfig => {
+  return {
+    fulfilled: (response) => {
+      const { config, data: responseData, status } = response;
+
+      if (config.responseReturn === "raw") {
+        return response;
+      }
+
+      if (status >= 200 && status < 400) {
+        if (config.responseReturn === "body") {
+          return responseData;
+        } else if (
+          isFunction(successCode)
+            ? successCode(responseData[codeField])
+            : responseData[codeField] === successCode
+        ) {
+          return isFunction(dataField)
+            ? dataField(responseData)
+            : responseData[dataField];
+        }
+      }
+      throw Object.assign({}, response, { response });
+    },
+  };
+};
 
 export const authenticateResponseInterceptor = ({
   client,
@@ -57,9 +96,9 @@ export const authenticateResponseInterceptor = ({
         return client.request(error.config.url, { ...error.config });
       } catch (refreshError) {
         // 如果刷新 token 失败，处理错误（如强制登出或跳转登录页面）
-        client.refreshTokenQueue.forEach((callback) => callback(''));
+        client.refreshTokenQueue.forEach((callback) => callback(""));
         client.refreshTokenQueue = [];
-        console.error('Refresh token failed, please login again.');
+        console.error("Refresh token failed, please login again.");
         await doReAuthenticate();
 
         throw refreshError;
@@ -79,44 +118,44 @@ export const errorMessageResponseInterceptor = (
         return Promise.reject(error);
       }
 
-      const err: string = error?.toString?.() ?? '';
-      let errMsg = '';
-      if (err?.includes('Network Error')) {
-        errMsg = $t('ui.fallback.http.networkError');
-      } else if (error?.message?.includes?.('timeout')) {
-        errMsg = $t('ui.fallback.http.requestTimeout');
+      const err: string = error?.toString?.() ?? "";
+      let errMsg = "";
+      if (err?.includes("Network Error")) {
+        errMsg = $t("ui.fallback.http.networkError");
+      } else if (error?.message?.includes?.("timeout")) {
+        errMsg = $t("ui.fallback.http.requestTimeout");
       }
       if (errMsg) {
         makeErrorMessage?.(errMsg, error);
         return Promise.reject(error);
       }
 
-      let errorMessage = '';
+      let errorMessage = "";
       const status = error?.response?.status;
 
       switch (status) {
         case 400: {
-          errorMessage = $t('ui.fallback.http.badRequest');
+          errorMessage = $t("ui.fallback.http.badRequest");
           break;
         }
         case 401: {
-          errorMessage = $t('ui.fallback.http.unauthorized');
+          errorMessage = $t("ui.fallback.http.unauthorized");
           break;
         }
         case 403: {
-          errorMessage = $t('ui.fallback.http.forbidden');
+          errorMessage = $t("ui.fallback.http.forbidden");
           break;
         }
         case 404: {
-          errorMessage = $t('ui.fallback.http.notFound');
+          errorMessage = $t("ui.fallback.http.notFound");
           break;
         }
         case 408: {
-          errorMessage = $t('ui.fallback.http.requestTimeout');
+          errorMessage = $t("ui.fallback.http.requestTimeout");
           break;
         }
         default: {
-          errorMessage = $t('ui.fallback.http.internalServerError');
+          errorMessage = $t("ui.fallback.http.internalServerError");
         }
       }
       makeErrorMessage?.(errorMessage, error);

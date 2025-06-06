@@ -15,8 +15,8 @@ const jiti = createJiti(import.meta.url, {
 /** @type {import("/Users/branchcn/Project/web/jjsdadmin/internal/node-utils/src/index.js")} */
 const _module = await jiti.import("/Users/branchcn/Project/web/jjsdadmin/internal/node-utils/src/index.ts");
 
-export const gitAdd = _module.gitAdd;
 export const getStagedFiles = _module.getStagedFiles;
+export const gitAdd = _module.gitAdd;
 export const generatorContentHash = _module.generatorContentHash;
 export const toPosixPath = _module.toPosixPath;
 export const prettierFormat = _module.prettierFormat;

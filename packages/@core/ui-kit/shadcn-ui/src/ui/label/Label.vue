@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { LabelProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { Label, type LabelProps } from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & LabelProps>();
+import { Label } from "radix-vue";
+
+const props = defineProps<LabelProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

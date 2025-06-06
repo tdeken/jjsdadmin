@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import type { Recordable } from '@vben/types';
-import type { VbenFormSchema } from '@vben-core/form-ui';
+import type { Recordable } from "@vben/types";
 
-import { computed, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import type { VbenFormSchema } from "@vben-core/form-ui";
 
-import { $t } from '@vben/locales';
-import { useVbenForm } from '@vben-core/form-ui';
-import { VbenButton } from '@vben-core/shadcn-ui';
+import { computed, reactive } from "vue";
+import { useRouter } from "vue-router";
 
-import Title from './auth-title.vue';
+import { $t } from "@vben/locales";
+
+import { useVbenForm } from "@vben-core/form-ui";
+import { VbenButton } from "@vben-core/shadcn-ui";
+
+import Title from "./auth-title.vue";
 
 interface Props {
   formSchema: VbenFormSchema[];
@@ -36,15 +38,15 @@ interface Props {
 }
 
 defineOptions({
-  name: 'AuthenticationCodeLogin',
+  name: "AuthenticationCodeLogin",
 });
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  loginPath: '/auth/login',
-  submitButtonText: '',
-  subTitle: '',
-  title: '',
+  loginPath: "/auth/login",
+  submitButtonText: "",
+  subTitle: "",
+  title: "",
 });
 
 const emit = defineEmits<{
@@ -68,10 +70,7 @@ async function handleSubmit() {
   const { valid } = await formApi.validate();
   const values = await formApi.getValues();
   if (valid) {
-    emit('submit', {
-      code: values?.code,
-      phoneNumber: values?.phoneNumber,
-    });
+    emit("submit", values);
   }
 }
 
@@ -88,12 +87,12 @@ defineExpose({
   <div>
     <Title>
       <slot name="title">
-        {{ title || $t('authentication.welcomeBack') }} 📲
+        {{ title || $t("authentication.welcomeBack") }} 📲
       </slot>
       <template #desc>
         <span class="text-muted-foreground">
           <slot name="subTitle">
-            {{ subTitle || $t('authentication.codeSubtitle') }}
+            {{ subTitle || $t("authentication.codeSubtitle") }}
           </slot>
         </span>
       </template>
@@ -108,11 +107,11 @@ defineExpose({
       @click="handleSubmit"
     >
       <slot name="submitButtonText">
-        {{ submitButtonText || $t('common.login') }}
+        {{ submitButtonText || $t("common.login") }}
       </slot>
     </VbenButton>
     <VbenButton class="mt-4 w-full" variant="outline" @click="goToLogin()">
-      {{ $t('common.back') }}
+      {{ $t("common.back") }}
     </VbenButton>
   </div>
 </template>

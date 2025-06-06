@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { ButtonVariants, ButtonVariantSize } from './types';
+import type { PrimitiveProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import type { ButtonVariants, ButtonVariantSize } from "./types";
 
-import { Primitive, type PrimitiveProps } from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-import { buttonVariants } from './button';
+import { Primitive } from "radix-vue";
+
+import { buttonVariants } from "./button";
 
 interface Props extends PrimitiveProps {
   class?: any;
@@ -14,8 +16,8 @@ interface Props extends PrimitiveProps {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  as: 'button',
-  class: '',
+  as: "button",
+  class: "",
 });
 </script>
 

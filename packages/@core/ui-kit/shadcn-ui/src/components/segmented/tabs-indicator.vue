@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { TabsIndicatorProps } from 'radix-vue';
+import type { TabsIndicatorProps } from "radix-vue";
 
-import { computed } from 'vue';
+import { computed } from "vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { cn } from "@vben-core/shared/utils";
 
-import { TabsIndicator, useForwardProps } from 'radix-vue';
+import { TabsIndicator, useForwardProps } from "radix-vue";
 
-const props = defineProps<{ class?: any } & TabsIndicatorProps>();
+const props = defineProps<TabsIndicatorProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

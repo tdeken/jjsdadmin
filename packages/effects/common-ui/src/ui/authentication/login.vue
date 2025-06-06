@@ -1,43 +1,45 @@
 <script setup lang="ts">
-import type { Recordable } from '@vben/types';
-import type { VbenFormSchema } from '@vben-core/form-ui';
+import type { Recordable } from "@vben/types";
 
-import type { AuthenticationProps } from './types';
+import type { VbenFormSchema } from "@vben-core/form-ui";
 
-import { computed, onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import type { AuthenticationProps } from "./types";
 
-import { $t } from '@vben/locales';
-import { useVbenForm } from '@vben-core/form-ui';
-import { VbenButton, VbenCheckbox } from '@vben-core/shadcn-ui';
+import { computed, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
-import Title from './auth-title.vue';
-import ThirdPartyLogin from './third-party-login.vue';
+import { $t } from "@vben/locales";
+
+import { useVbenForm } from "@vben-core/form-ui";
+import { VbenButton, VbenCheckbox } from "@vben-core/shadcn-ui";
+
+import Title from "./auth-title.vue";
+import ThirdPartyLogin from "./third-party-login.vue";
 
 interface Props extends AuthenticationProps {
-  formSchema: VbenFormSchema[];
+  formSchema?: VbenFormSchema[];
 }
 
 defineOptions({
-  name: 'AuthenticationLogin',
+  name: "AuthenticationLogin",
 });
 
 const props = withDefaults(defineProps<Props>(), {
-  codeLoginPath: '/auth/code-login',
-  forgetPasswordPath: '/auth/forget-password',
+  codeLoginPath: "/auth/code-login",
+  forgetPasswordPath: "/auth/forget-password",
   formSchema: () => [],
   loading: false,
-  qrCodeLoginPath: '/auth/qrcode-login',
-  registerPath: '/auth/register',
+  qrCodeLoginPath: "/auth/qrcode-login",
+  registerPath: "/auth/register",
   showCodeLogin: true,
   showForgetPassword: true,
   showQrcodeLogin: true,
   showRegister: true,
   showRememberMe: true,
   showThirdPartyLogin: true,
-  submitButtonText: '',
-  subTitle: '',
-  title: '',
+  submitButtonText: "",
+  subTitle: "",
+  title: "",
 });
 
 const emit = defineEmits<{
@@ -58,7 +60,7 @@ const router = useRouter();
 
 const REMEMBER_ME_KEY = `REMEMBER_ME_USERNAME_${location.hostname}`;
 
-const localUsername = localStorage.getItem(REMEMBER_ME_KEY) || '';
+const localUsername = localStorage.getItem(REMEMBER_ME_KEY) || "";
 
 const rememberMe = ref(!!localUsername);
 
@@ -68,9 +70,9 @@ async function handleSubmit() {
   if (valid) {
     localStorage.setItem(
       REMEMBER_ME_KEY,
-      rememberMe.value ? values?.username : '',
+      rememberMe.value ? values?.username : "",
     );
-    emit('submit', values);
+    emit("submit", values);
   }
 }
 
@@ -80,7 +82,7 @@ function handleGo(path: string) {
 
 onMounted(() => {
   if (localUsername) {
-    formApi.setFieldValue('username', localUsername);
+    formApi.setFieldValue("username", localUsername);
   }
 });
 
@@ -94,12 +96,12 @@ defineExpose({
     <slot name="title">
       <Title>
         <slot name="title">
-          {{ title || `${$t('authentication.welcomeBack')} 👋🏻` }}
+          {{ title || `${$t("authentication.welcomeBack")} 👋🏻` }}
         </slot>
         <template #desc>
           <span class="text-muted-foreground">
             <slot name="subTitle">
-              {{ subTitle || $t('authentication.loginSubtitle') }}
+              {{ subTitle || $t("authentication.loginSubtitle") }}
             </slot>
           </span>
         </template>
@@ -118,7 +120,7 @@ defineExpose({
           v-model:checked="rememberMe"
           name="rememberMe"
         >
-          {{ $t('authentication.rememberMe') }}
+          {{ $t("authentication.rememberMe") }}
         </VbenCheckbox>
       </div>
 
@@ -127,7 +129,7 @@ defineExpose({
         class="vben-link text-sm font-normal"
         @click="handleGo(forgetPasswordPath)"
       >
-        {{ $t('authentication.forgetPassword') }}
+        {{ $t("authentication.forgetPassword") }}
       </span>
     </div>
     <VbenButton
@@ -139,7 +141,7 @@ defineExpose({
       class="w-full"
       @click="handleSubmit"
     >
-      {{ submitButtonText || $t('common.login') }}
+      {{ submitButtonText || $t("common.login") }}
     </VbenButton>
 
     <div
@@ -152,7 +154,7 @@ defineExpose({
         variant="outline"
         @click="handleGo(codeLoginPath)"
       >
-        {{ $t('authentication.mobileLogin') }}
+        {{ $t("authentication.mobileLogin") }}
       </VbenButton>
       <VbenButton
         v-if="showQrcodeLogin"
@@ -160,7 +162,7 @@ defineExpose({
         variant="outline"
         @click="handleGo(qrCodeLoginPath)"
       >
-        {{ $t('authentication.qrcodeLogin') }}
+        {{ $t("authentication.qrcodeLogin") }}
       </VbenButton>
     </div>
 
@@ -171,12 +173,12 @@ defineExpose({
 
     <slot name="to-register">
       <div v-if="showRegister" class="mt-3 text-center text-sm">
-        {{ $t('authentication.accountTip') }}
+        {{ $t("authentication.accountTip") }}
         <span
           class="vben-link text-sm font-normal"
           @click="handleGo(registerPath)"
         >
-          {{ $t('authentication.createAccount') }}
+          {{ $t("authentication.createAccount") }}
         </span>
       </div>
     </slot>

@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { ContextMenuSubTriggerProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { ChevronRight } from 'lucide-vue-next';
-import {
-  ContextMenuSubTrigger,
-  type ContextMenuSubTriggerProps,
-  useForwardProps,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
+
+import { ChevronRight } from "lucide-vue-next";
+import { ContextMenuSubTrigger, useForwardProps } from "radix-vue";
 
 const props = defineProps<
-  {
+  ContextMenuSubTriggerProps & {
     class?: any;
     inset?: boolean;
-  } & ContextMenuSubTriggerProps
+  }
 >();
 
 const delegatedProps = computed(() => {

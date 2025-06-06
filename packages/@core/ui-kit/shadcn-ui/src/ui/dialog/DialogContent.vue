@@ -1,38 +1,40 @@
 <script setup lang="ts">
-import type { ClassType } from '@vben-core/typings';
+import type { DialogContentEmits, DialogContentProps } from "radix-vue";
 
-import { computed, ref } from 'vue';
+import type { ClassType } from "@vben-core/typings";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed, ref } from "vue";
 
-import { X } from 'lucide-vue-next';
+import { cn } from "@vben-core/shared/utils";
+
+import { X } from "lucide-vue-next";
 import {
   DialogClose,
   DialogContent,
-  type DialogContentEmits,
-  type DialogContentProps,
   DialogPortal,
   useForwardPropsEmits,
-} from 'radix-vue';
+} from "radix-vue";
 
-import DialogOverlay from './DialogOverlay.vue';
+import DialogOverlay from "./DialogOverlay.vue";
 
 const props = withDefaults(
   defineProps<
-    {
+    DialogContentProps & {
       appendTo?: HTMLElement | string;
       class?: ClassType;
       closeClass?: ClassType;
+      closeDisabled?: boolean;
       modal?: boolean;
       open?: boolean;
+      overlayBlur?: number;
       showClose?: boolean;
       zIndex?: number;
-    } & DialogContentProps
+    }
   >(),
-  { appendTo: 'body', showClose: true, zIndex: 1000 },
+  { appendTo: "body", closeDisabled: false, showClose: true },
 );
 const emits = defineEmits<
-  { close: []; closed: []; opened: [] } & DialogContentEmits
+  DialogContentEmits & { close: []; closed: []; opened: [] }
 >();
 
 const delegatedProps = computed(() => {
@@ -49,14 +51,14 @@ const delegatedProps = computed(() => {
 
 function isAppendToBody() {
   return (
-    props.appendTo === 'body' ||
+    props.appendTo === "body" ||
     props.appendTo === document.body ||
     !props.appendTo
   );
 }
 
 const position = computed(() => {
-  return isAppendToBody() ? 'fixed' : 'absolute';
+  return isAppendToBody() ? "fixed" : "absolute";
 });
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
@@ -66,9 +68,9 @@ function onAnimationEnd(event: AnimationEvent) {
   // 只有在 contentRef 的动画结束时才触发 opened/closed 事件
   if (event.target === contentRef.value?.$el) {
     if (props.open) {
-      emits('opened');
+      emits("opened");
     } else {
-      emits('closed');
+      emits("closed");
     }
   }
 }
@@ -82,18 +84,23 @@ defineExpose({
     <Transition name="fade">
       <DialogOverlay
         v-if="open && modal"
-        :style="{ zIndex, position }"
+        :style="{
+          ...(zIndex ? { zIndex } : {}),
+          position,
+          backdropFilter:
+            overlayBlur && overlayBlur > 0 ? `blur(${overlayBlur}px)` : 'none',
+        }"
         @click="() => emits('close')"
       />
     </Transition>
     <DialogContent
       ref="contentRef"
-      :style="{ zIndex, position }"
+      :style="{ ...(zIndex ? { zIndex } : {}), position }"
       @animationend="onAnimationEnd"
       v-bind="forwarded"
       :class="
         cn(
-          'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%] w-full p-6 shadow-lg outline-none sm:rounded-xl',
+          'z-popup bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%] w-full p-6 shadow-lg outline-none sm:rounded-xl',
           props.class,
         )
       "
@@ -102,6 +109,7 @@ defineExpose({
 
       <DialogClose
         v-if="showClose"
+        :disabled="closeDisabled"
         :class="
           cn(
             'data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:bg-accent hover:text-accent-foreground text-foreground/80 flex-center absolute right-3 top-3 h-6 w-6 rounded-full px-1 text-lg opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none',

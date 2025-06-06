@@ -1,17 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { DropdownMenuSeparatorProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import {
-  DropdownMenuSeparator,
-  type DropdownMenuSeparatorProps,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
+
+import { DropdownMenuSeparator } from "radix-vue";
 
 const props = defineProps<
-  {
+  DropdownMenuSeparatorProps & {
     class?: any;
-  } & DropdownMenuSeparatorProps
+  }
 >();
 
 const delegatedProps = computed(() => {

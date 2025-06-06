@@ -1,25 +1,26 @@
 <script setup lang="ts">
-import type { MenuRecordRaw } from '@vben/types';
+import type { MenuRecordRaw } from "@vben/types";
 
-import { nextTick, onMounted, ref, shallowRef, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { nextTick, onMounted, ref, shallowRef, watch } from "vue";
+import { useRouter } from "vue-router";
 
-import { SearchX, X } from '@vben/icons';
-import { $t } from '@vben/locales';
-import { mapTree, traverseTreeValues, uniqueByField } from '@vben/utils';
-import { VbenIcon, VbenScrollbar } from '@vben-core/shadcn-ui';
-import { isHttpUrl } from '@vben-core/shared/utils';
+import { SearchX, X } from "@vben/icons";
+import { $t } from "@vben/locales";
+import { mapTree, traverseTreeValues, uniqueByField } from "@vben/utils";
 
-import { onKeyStroke, useLocalStorage, useThrottleFn } from '@vueuse/core';
+import { VbenIcon, VbenScrollbar } from "@vben-core/shadcn-ui";
+import { isHttpUrl } from "@vben-core/shared/utils";
+
+import { onKeyStroke, useLocalStorage, useThrottleFn } from "@vueuse/core";
 
 defineOptions({
-  name: 'SearchPanel',
+  name: "SearchPanel",
 });
 
 const props = withDefaults(
-  defineProps<{ keyword: string; menus: MenuRecordRaw[] }>(),
+  defineProps<{ keyword?: string; menus?: MenuRecordRaw[] }>(),
   {
-    keyword: '',
+    keyword: "",
     menus: () => [],
   },
 );
@@ -81,7 +82,7 @@ function scrollIntoView() {
   );
 
   if (element) {
-    element.scrollIntoView({ block: 'nearest' });
+    element.scrollIntoView({ block: "nearest" });
   }
 }
 
@@ -101,7 +102,7 @@ async function handleEnter() {
     handleClose();
     await nextTick();
     if (isHttpUrl(to.path)) {
-      window.open(to.path, '_blank');
+      window.open(to.path, "_blank");
     } else {
       router.push({ path: to.path, replace: true });
     }
@@ -135,7 +136,7 @@ function handleDown() {
 // close search modal
 function handleClose() {
   searchResults.value = [];
-  emit('close');
+  emit("close");
 }
 
 // Activate when the mouse moves to a certain line
@@ -156,20 +157,20 @@ function removeItem(index: number) {
 
 // 存储所有需要转义的特殊字符
 const code = new Set([
-  '$',
-  '(',
-  ')',
-  '*',
-  '+',
-  '.',
-  '?',
-  '[',
-  '\\',
-  ']',
-  '^',
-  '{',
-  '|',
-  '}',
+  "$",
+  "(",
+  ")",
+  "*",
+  "+",
+  ".",
+  "?",
+  "[",
+  "\\",
+  "]",
+  "^",
+  "{",
+  "|",
+  "}",
 ]);
 
 // 转换函数，用于转义特殊字符
@@ -184,7 +185,7 @@ function createSearchReg(key: string) {
   // 将输入的字符串拆分为单个字符
   // 对每个字符进行转义
   // 然后用'.*'连接所有字符，创建正则表达式
-  const keys = [...key].map((item) => transform(item)).join('.*');
+  const keys = [...key].map((item) => transform(item)).join(".*");
   // 返回创建的正则表达式
   return new RegExp(`.*${keys}.*`);
 }
@@ -211,12 +212,12 @@ onMounted(() => {
     searchResults.value = searchHistory.value;
   }
   // enter search
-  onKeyStroke('Enter', handleEnter);
+  onKeyStroke("Enter", handleEnter);
   // Monitor keyboard arrow keys
-  onKeyStroke('ArrowUp', handleUp);
-  onKeyStroke('ArrowDown', handleDown);
+  onKeyStroke("ArrowUp", handleUp);
+  onKeyStroke("ArrowDown", handleDown);
   // esc close
-  onKeyStroke('Escape', handleClose);
+  onKeyStroke("Escape", handleClose);
 });
 </script>
 
@@ -230,7 +231,7 @@ onMounted(() => {
       >
         <SearchX class="mx-auto mt-4 size-12" />
         <p class="mb-10 mt-6 text-xs">
-          {{ $t('ui.widgets.search.noResults') }}
+          {{ $t("ui.widgets.search.noResults") }}
           <span class="text-foreground text-sm font-medium">
             "{{ keyword }}"
           </span>
@@ -242,7 +243,7 @@ onMounted(() => {
         class="text-muted-foreground text-center"
       >
         <p class="my-10 text-xs">
-          {{ $t('ui.widgets.search.noRecent') }}
+          {{ $t("ui.widgets.search.noRecent") }}
         </p>
       </div>
 
@@ -251,7 +252,7 @@ onMounted(() => {
           v-if="searchHistory.length > 0 && !keyword"
           class="text-muted-foreground mb-2 text-xs"
         >
-          {{ $t('ui.widgets.search.recent') }}
+          {{ $t("ui.widgets.search.recent") }}
         </li>
         <li
           v-for="(item, index) in uniqueByField(searchResults, 'path')"

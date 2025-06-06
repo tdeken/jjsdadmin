@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { SeparatorProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { Separator, type SeparatorProps } from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any; label?: string } & SeparatorProps>();
+import { Separator } from "radix-vue";
+
+const props = defineProps<SeparatorProps & { class?: any; label?: string }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

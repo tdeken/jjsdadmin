@@ -1,46 +1,32 @@
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onMounted,
-  ref,
-  type StyleValue,
-  useTemplateRef,
-} from 'vue';
+import type { StyleValue } from "vue";
 
-import { CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT } from '@vben-core/shared/constants';
-import { cn } from '@vben-core/shared/utils';
+import type { PageProps } from "./types";
 
-interface Props {
-  title?: string;
-  description?: string;
-  contentClass?: string;
-  /**
-   * 根据content可见高度自适应
-   */
-  autoContentHeight?: boolean;
-  headerClass?: string;
-  footerClass?: string;
-}
+import { computed, nextTick, onMounted, ref, useTemplateRef } from "vue";
+
+import { CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT } from "@vben-core/shared/constants";
+import { cn } from "@vben-core/shared/utils";
 
 defineOptions({
-  name: 'Page',
+  name: "Page",
 });
 
-const { autoContentHeight = false } = defineProps<Props>();
+const { autoContentHeight = false, heightOffset = 0 } =
+  defineProps<PageProps>();
 
 const headerHeight = ref(0);
 const footerHeight = ref(0);
 const shouldAutoHeight = ref(false);
 
-const headerRef = useTemplateRef<HTMLDivElement>('headerRef');
-const footerRef = useTemplateRef<HTMLDivElement>('footerRef');
+const headerRef = useTemplateRef<HTMLDivElement>("headerRef");
+const footerRef = useTemplateRef<HTMLDivElement>("footerRef");
 
 const contentStyle = computed<StyleValue>(() => {
   if (autoContentHeight) {
     return {
-      height: `calc(var(${CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT}) - ${headerHeight.value}px)`,
-      overflowY: shouldAutoHeight.value ? 'auto' : 'unset',
+      height: `calc(var(${CSS_VARIABLE_LAYOUT_CONTENT_HEIGHT}) - ${headerHeight.value}px - ${typeof heightOffset === "number" ? `${heightOffset}px` : heightOffset})`,
+      overflowY: shouldAutoHeight.value ? "auto" : "unset",
     };
   }
   return {};
@@ -100,7 +86,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div :class="contentClass" :style="contentStyle" class="h-full p-4">
+    <div :class="cn('h-full p-4', contentClass)" :style="contentStyle">
       <slot></slot>
     </div>
 

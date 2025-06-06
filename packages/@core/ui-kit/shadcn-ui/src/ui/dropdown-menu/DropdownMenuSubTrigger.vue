@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { DropdownMenuSubTriggerProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { ChevronRight } from 'lucide-vue-next';
-import {
-  DropdownMenuSubTrigger,
-  type DropdownMenuSubTriggerProps,
-  useForwardProps,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & DropdownMenuSubTriggerProps>();
+import { ChevronRight } from "lucide-vue-next";
+import { DropdownMenuSubTrigger, useForwardProps } from "radix-vue";
+
+const props = defineProps<DropdownMenuSubTriggerProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

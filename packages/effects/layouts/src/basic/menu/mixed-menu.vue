@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import type { MenuRecordRaw } from '@vben/types';
-import type { NormalMenuProps } from '@vben-core/menu-ui';
+import type { MenuRecordRaw } from "@vben/types";
 
-import { onBeforeMount } from 'vue';
-import { useRoute } from 'vue-router';
+import type { NormalMenuProps } from "@vben-core/menu-ui";
 
-import { findMenuByPath } from '@vben/utils';
-import { NormalMenu } from '@vben-core/menu-ui';
+import { onBeforeMount } from "vue";
+import { useRoute } from "vue-router";
+
+import { findMenuByPath } from "@vben/utils";
+
+import { NormalMenu } from "@vben-core/menu-ui";
 
 interface Props extends NormalMenuProps {}
 
@@ -26,7 +28,7 @@ onBeforeMount(() => {
     const rootMenu = (props.menus || []).find(
       (item) => item.path === menu.parents?.[0],
     );
-    emit('defaultSelect', menu, rootMenu);
+    emit("defaultSelect", menu, rootMenu);
   }
 });
 </script>

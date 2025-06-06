@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { ContentCompactType } from '@vben-core/typings';
+import type { CSSProperties } from "vue";
 
-import type { CSSProperties } from 'vue';
-import { computed } from 'vue';
+import type { ContentCompactType } from "@vben-core/typings";
 
-import { useLayoutContentStyle } from '@vben-core/composables';
-import { Slot } from '@vben-core/shadcn-ui';
+import { computed } from "vue";
+
+import { useLayoutContentStyle } from "@vben-core/composables";
+import { Slot } from "@vben-core/shadcn-ui";
 
 interface Props {
   /**
@@ -38,8 +39,8 @@ const style = computed((): CSSProperties => {
   } = props;
 
   const compactStyle: CSSProperties =
-    contentCompact === 'compact'
-      ? { margin: '0 auto', width: `${props.contentCompactWidth}px` }
+    contentCompact === "compact"
+      ? { margin: "0 auto", width: `${props.contentCompactWidth}px` }
       : {};
   return {
     ...compactStyle,

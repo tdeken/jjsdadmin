@@ -1,6 +1,6 @@
-import type { CaptchaPoint } from '../types';
+import type { CaptchaPoint } from "../types";
 
-import { reactive } from 'vue';
+import { reactive } from "vue";
 
 export function useCaptchaPoints() {
   const points = reactive<CaptchaPoint[]>([]);
@@ -9,7 +9,7 @@ export function useCaptchaPoints() {
   }
 
   function clearPoints() {
-    points.splice(0, points.length);
+    points.splice(0);
   }
   return {
     addPoint,

@@ -1,6 +1,6 @@
-import type { IconifyIconStructure } from '@vben-core/icons';
+import type { IconifyIconStructure } from "@vben-core/icons";
 
-import { addIcon } from '@vben-core/icons';
+import { addIcon } from "@vben-core/icons";
 
 let loaded = false;
 if (!loaded) {
@@ -10,16 +10,16 @@ if (!loaded) {
 
 function parseSvg(svgData: string): IconifyIconStructure {
   const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(svgData, 'image/svg+xml');
+  const xmlDoc = parser.parseFromString(svgData, "image/svg+xml");
   const svgElement = xmlDoc.documentElement;
 
   const svgContent = [...svgElement.childNodes]
     .filter((node) => node.nodeType === Node.ELEMENT_NODE)
     .map((node) => new XMLSerializer().serializeToString(node))
-    .join('');
+    .join("");
 
-  const viewBoxValue = svgElement.getAttribute('viewBox') || '';
-  const [left, top, width, height] = viewBoxValue.split(' ').map((val) => {
+  const viewBoxValue = svgElement.getAttribute("viewBox") || "";
+  const [left, top, width, height] = viewBoxValue.split(" ").map((val) => {
     const num = Number(val);
     return Number.isNaN(num) ? undefined : num;
   });
@@ -39,22 +39,22 @@ function parseSvg(svgData: string): IconifyIconStructure {
  * <Icon icon="svg:avatar"></Icon>
  */
 async function loadSvgIcons() {
-  const svgEagers = import.meta.glob('./icons/**', {
+  const svgEagers = import.meta.glob("./icons/**", {
     eager: true,
-    query: '?raw',
+    query: "?raw",
   });
 
   await Promise.all(
     Object.entries(svgEagers).map((svg) => {
-      const [key, body] = svg as [string, { default: string } | string];
+      const [key, body] = svg as [string, string | { default: string }];
 
       // ./icons/xxxx.svg => xxxxxx
-      const start = key.lastIndexOf('/') + 1;
-      const end = key.lastIndexOf('.');
+      const start = key.lastIndexOf("/") + 1;
+      const end = key.lastIndexOf(".");
       const iconName = key.slice(start, end);
 
       return addIcon(`svg:${iconName}`, {
-        ...parseSvg(typeof body === 'object' ? body.default : body),
+        ...parseSvg(typeof body === "object" ? body.default : body),
       });
     }),
   );

@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import type { NotificationItem } from './types';
+import type { NotificationItem } from "./types";
 
-import { Bell, MailCheck } from '@vben/icons';
-import { $t } from '@vben/locales';
+import { Bell, MailCheck } from "@vben/icons";
+import { $t } from "@vben/locales";
+
 import {
   VbenButton,
   VbenIconButton,
   VbenPopover,
   VbenScrollbar,
-} from '@vben-core/shadcn-ui';
+} from "@vben-core/shadcn-ui";
 
-import { useToggle } from '@vueuse/core';
+import { useToggle } from "@vueuse/core";
 
 interface Props {
   /**
@@ -23,7 +24,7 @@ interface Props {
   notifications?: NotificationItem[];
 }
 
-defineOptions({ name: 'NotificationPopup' });
+defineOptions({ name: "NotificationPopup" });
 
 withDefaults(defineProps<Props>(), {
   dot: false,
@@ -44,20 +45,20 @@ function close() {
 }
 
 function handleViewAll() {
-  emit('viewAll');
+  emit("viewAll");
   close();
 }
 
 function handleMakeAll() {
-  emit('makeAll');
+  emit("makeAll");
 }
 
 function handleClear() {
-  emit('clear');
+  emit("clear");
 }
 
 function handleClick(item: NotificationItem) {
-  emit('read', item);
+  emit("read", item);
 }
 </script>
 <template>
@@ -79,7 +80,7 @@ function handleClick(item: NotificationItem) {
 
     <div class="relative">
       <div class="flex items-center justify-between p-4 py-3">
-        <div class="text-foreground">{{ $t('ui.widgets.notifications') }}</div>
+        <div class="text-foreground">{{ $t("ui.widgets.notifications") }}</div>
         <VbenIconButton
           :disabled="notifications.length <= 0"
           :tooltip="$t('ui.widgets.markAllAsRead')"
@@ -125,7 +126,7 @@ function handleClick(item: NotificationItem) {
 
       <template v-else>
         <div class="flex-center text-muted-foreground min-h-[150px] w-full">
-          {{ $t('common.noData') }}
+          {{ $t("common.noData") }}
         </div>
       </template>
 
@@ -138,10 +139,10 @@ function handleClick(item: NotificationItem) {
           variant="ghost"
           @click="handleClear"
         >
-          {{ $t('ui.widgets.clearNotifications') }}
+          {{ $t("ui.widgets.clearNotifications") }}
         </VbenButton>
         <VbenButton size="sm" @click="handleViewAll">
-          {{ $t('ui.widgets.viewAll') }}
+          {{ $t("ui.widgets.viewAll") }}
         </VbenButton>
       </div>
     </div>

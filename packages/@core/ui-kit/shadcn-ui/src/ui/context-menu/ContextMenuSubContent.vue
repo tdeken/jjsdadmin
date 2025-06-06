@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type {
+  DropdownMenuSubContentEmits,
+  DropdownMenuSubContentProps,
+} from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import {
-  ContextMenuSubContent,
-  type DropdownMenuSubContentEmits,
-  type DropdownMenuSubContentProps,
-  useForwardPropsEmits,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & DropdownMenuSubContentProps>();
+import { ContextMenuSubContent, useForwardPropsEmits } from "radix-vue";
+
+const props = defineProps<DropdownMenuSubContentProps & { class?: any }>();
 const emits = defineEmits<DropdownMenuSubContentEmits>();
 
 const delegatedProps = computed(() => {

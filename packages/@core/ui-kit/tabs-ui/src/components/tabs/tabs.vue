@@ -1,22 +1,22 @@
 <script lang="ts" setup>
-import type { TabDefinition } from '@vben-core/typings';
+import type { TabDefinition } from "@vben-core/typings";
 
-import type { TabConfig, TabsProps } from '../../types';
+import type { TabConfig, TabsProps } from "../../types";
 
-import { computed } from 'vue';
+import { computed } from "vue";
 
-import { Pin, X } from '@vben-core/icons';
-import { VbenContextMenu, VbenIcon } from '@vben-core/shadcn-ui';
+import { Pin, X } from "@vben-core/icons";
+import { VbenContextMenu, VbenIcon } from "@vben-core/shadcn-ui";
 
 interface Props extends TabsProps {}
 
 defineOptions({
-  name: 'VbenTabs',
-  // eslint-disable-next-line perfectionist/sort-objects
+  name: "VbenTabs",
+
   inheritAttrs: false,
 });
 const props = withDefaults(defineProps<Props>(), {
-  contentClass: 'vben-tabs-content',
+  contentClass: "vben-tabs-content",
   contextMenus: () => [],
   tabs: () => [],
 });
@@ -25,7 +25,7 @@ const emit = defineEmits<{
   close: [string];
   unpin: [TabDefinition];
 }>();
-const active = defineModel<string>('active');
+const active = defineModel<string>("active");
 
 const typeWithClass = computed(() => {
   const typeClasses: Record<string, { content: string }> = {
@@ -34,27 +34,27 @@ const typeWithClass = computed(() => {
     },
     card: {
       content:
-        'h-[calc(100%-6px)] rounded-md ml-2 border border-border  transition-all',
+        "h-[calc(100%-6px)] rounded-md ml-2 border border-border  transition-all",
     },
     plain: {
       content:
-        'h-full [&:not(:first-child)]:border-l last:border-r border-border',
+        "h-full [&:not(:first-child)]:border-l last:border-r border-border",
     },
   };
 
-  return typeClasses[props.styleType || 'plain'] || { content: '' };
+  return typeClasses[props.styleType || "plain"] || { content: "" };
 });
 
 const tabsView = computed(() => {
   return props.tabs.map((tab) => {
-    const { fullPath, meta, name, path } = tab || {};
+    const { fullPath, meta, name, path, key } = tab || {};
     const { affixTab, icon, newTabTitle, tabClosable, title } = meta || {};
     return {
       affixTab: !!affixTab,
-      closable: Reflect.has(meta, 'tabClosable') ? !!tabClosable : true,
+      closable: Reflect.has(meta, "tabClosable") ? !!tabClosable : true,
       fullPath,
       icon: icon as string,
-      key: fullPath || path,
+      key,
       meta,
       name,
       path,
@@ -62,6 +62,20 @@ const tabsView = computed(() => {
     } as TabConfig;
   });
 });
+
+function onMouseDown(e: MouseEvent, tab: TabConfig) {
+  if (
+    e.button === 1 &&
+    tab.closable &&
+    !tab.affixTab &&
+    tabsView.value.length > 1 &&
+    props.middleClickToClose
+  ) {
+    e.preventDefault();
+    e.stopPropagation();
+    emit("close", tab.key);
+  }
+}
 </script>
 
 <template>
@@ -85,6 +99,7 @@ const tabsView = computed(() => {
         class="tab-item [&:not(.is-active)]:hover:bg-accent translate-all group relative flex cursor-pointer select-none"
         data-tab-item="true"
         @click="active = tab.key"
+        @mousedown="onMouseDown($event, tab)"
       >
         <VbenContextMenu
           :handler-data="tab"

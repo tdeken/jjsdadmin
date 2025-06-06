@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { WorkbenchQuickNavItem } from '../typing';
+import type { WorkbenchQuickNavItem } from "../typing";
 
 import {
   Card,
@@ -7,22 +7,22 @@ import {
   CardHeader,
   CardTitle,
   VbenIcon,
-} from '@vben-core/shadcn-ui';
+} from "@vben-core/shadcn-ui";
 
 interface Props {
-  items: WorkbenchQuickNavItem[];
+  items?: WorkbenchQuickNavItem[];
   title: string;
 }
 
 defineOptions({
-  name: 'WorkbenchQuickNav',
+  name: "WorkbenchQuickNav",
 });
 
 withDefaults(defineProps<Props>(), {
   items: () => [],
 });
 
-defineEmits(['click']);
+defineEmits(["click"]);
 </script>
 
 <template>
@@ -35,10 +35,12 @@ defineEmits(['click']);
         <div
           :class="{
             'border-r-0': index % 3 === 2,
-            'pb-4': index > 2,
             'border-b-0': index < 3,
+            'pb-4': index > 2,
+            'rounded-bl-xl': index === items.length - 3,
+            'rounded-br-xl': index === items.length - 1,
           }"
-          class="flex-col-center border-border group w-1/3 cursor-pointer border-b border-r border-t py-8 hover:shadow-xl"
+          class="flex-col-center border-border group w-1/3 cursor-pointer border-r border-t py-8 hover:shadow-xl"
           @click="$emit('click', item)"
         >
           <VbenIcon

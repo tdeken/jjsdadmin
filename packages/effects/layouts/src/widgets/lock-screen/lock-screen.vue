@@ -1,40 +1,41 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref } from "vue";
 
-import { LockKeyhole } from '@vben/icons';
-import { $t, useI18n } from '@vben/locales';
-import { storeToRefs, useLockStore } from '@vben/stores';
-import { useScrollLock } from '@vben-core/composables';
-import { useVbenForm, z } from '@vben-core/form-ui';
-import { VbenAvatar, VbenButton } from '@vben-core/shadcn-ui';
+import { LockKeyhole } from "@vben/icons";
+import { $t, useI18n } from "@vben/locales";
+import { storeToRefs, useAccessStore } from "@vben/stores";
 
-import { useDateFormat, useNow } from '@vueuse/core';
+import { useScrollLock } from "@vben-core/composables";
+import { useVbenForm, z } from "@vben-core/form-ui";
+import { VbenAvatar, VbenButton } from "@vben-core/shadcn-ui";
+
+import { useDateFormat, useNow } from "@vueuse/core";
 
 interface Props {
   avatar?: string;
 }
 
 defineOptions({
-  name: 'LockScreen',
+  name: "LockScreen",
 });
 
 withDefaults(defineProps<Props>(), {
-  avatar: '',
+  avatar: "",
 });
 
 defineEmits<{ toLogin: [] }>();
 
 const { locale } = useI18n();
-const lockStore = useLockStore();
+const accessStore = useAccessStore();
 
 const now = useNow();
-const meridiem = useDateFormat(now, 'A');
-const hour = useDateFormat(now, 'HH');
-const minute = useDateFormat(now, 'mm');
-const date = useDateFormat(now, 'YYYY-MM-DD dddd', { locales: locale.value });
+const meridiem = useDateFormat(now, "A");
+const hour = useDateFormat(now, "HH");
+const minute = useDateFormat(now, "mm");
+const date = useDateFormat(now, "YYYY-MM-DD dddd", { locales: locale.value });
 
 const showUnlockForm = ref(false);
-const { lockScreenPassword } = storeToRefs(lockStore);
+const { lockScreenPassword } = storeToRefs(accessStore);
 
 const [Form, { form, validate }] = useVbenForm(
   reactive({
@@ -44,13 +45,13 @@ const [Form, { form, validate }] = useVbenForm(
     },
     schema: computed(() => [
       {
-        component: 'VbenInputPassword' as const,
+        component: "VbenInputPassword" as const,
         componentProps: {
-          placeholder: $t('ui.widgets.lockScreen.placeholder'),
+          placeholder: $t("ui.widgets.lockScreen.placeholder"),
         },
-        fieldName: 'password',
-        label: $t('authentication.password'),
-        rules: z.string().min(1, { message: $t('authentication.passwordTip') }),
+        fieldName: "password",
+        label: $t("authentication.password"),
+        rules: z.string().min(1, { message: $t("authentication.passwordTip") }),
       },
     ]),
     showDefaultActions: false,
@@ -65,9 +66,9 @@ async function handleSubmit() {
   const { valid } = await validate();
   if (valid) {
     if (validPass.value) {
-      lockStore.unlockScreen();
+      accessStore.unlockScreen();
     } else {
-      form.setFieldError('password', $t('authentication.passwordErrorTip'));
+      form.setFieldError("password", $t("authentication.passwordErrorTip"));
     }
   }
 }
@@ -90,7 +91,7 @@ useScrollLock();
           <LockKeyhole
             class="size-5 transition-all duration-300 group-hover:scale-125"
           />
-          <span>{{ $t('ui.widgets.lockScreen.unlock') }}</span>
+          <span>{{ $t("ui.widgets.lockScreen.unlock") }}</span>
         </div>
         <div class="flex h-full justify-center px-[10%]">
           <div
@@ -123,21 +124,21 @@ useScrollLock();
             <Form />
           </div>
           <VbenButton class="enter-x w-full" @click="handleSubmit">
-            {{ $t('ui.widgets.lockScreen.entry') }}
+            {{ $t("ui.widgets.lockScreen.entry") }}
           </VbenButton>
           <VbenButton
             class="enter-x my-2 w-full"
             variant="ghost"
             @click="$emit('toLogin')"
           >
-            {{ $t('ui.widgets.lockScreen.backToLogin') }}
+            {{ $t("ui.widgets.lockScreen.backToLogin") }}
           </VbenButton>
           <VbenButton
             class="enter-x mr-2 w-full"
             variant="ghost"
             @click="toggleUnlockForm"
           >
-            {{ $t('common.back') }}
+            {{ $t("common.back") }}
           </VbenButton>
         </div>
       </div>

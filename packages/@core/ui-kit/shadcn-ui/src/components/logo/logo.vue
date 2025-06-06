@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { VbenAvatar } from '../avatar';
+import { VbenAvatar } from "../avatar";
 
 interface Props {
   /**
    * @zh_CN 是否收起文本
    */
   collapsed?: boolean;
+  /**
+   * @zh_CN Logo 图片适应方式
+   */
+  fit?: "contain" | "cover" | "fill" | "none" | "scale-down";
   /**
    * @zh_CN Logo 跳转地址
    */
@@ -29,15 +33,16 @@ interface Props {
 }
 
 defineOptions({
-  name: 'VbenLogo',
+  name: "VbenLogo",
 });
 
 withDefaults(defineProps<Props>(), {
   collapsed: false,
-  href: 'javascript:void 0',
+  href: "javascript:void 0",
   logoSize: 32,
-  src: '',
-  theme: 'light',
+  src: "",
+  theme: "light",
+  fit: "cover",
 });
 </script>
 
@@ -52,14 +57,17 @@ withDefaults(defineProps<Props>(), {
         v-if="src"
         :alt="text"
         :src="src"
-        class="relative w-8 rounded-none bg-transparent"
+        :size="logoSize"
+        :fit="fit"
+        class="relative rounded-none bg-transparent"
       />
-      <span
-        v-if="!collapsed"
-        class="text-foreground truncate text-nowrap font-semibold"
-      >
-        {{ text }}
-      </span>
+      <template v-if="!collapsed">
+        <slot name="text">
+          <span class="text-foreground truncate text-nowrap font-semibold">
+            {{ text }}
+          </span>
+        </slot>
+      </template>
     </a>
   </div>
 </template>

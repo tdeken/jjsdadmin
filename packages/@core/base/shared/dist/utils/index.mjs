@@ -18,6 +18,7 @@ const _module = await jiti.import("/Users/branchcn/Project/web/jjsdadmin/package
 export const cloneDeep = _module.cloneDeep;
 export const get = _module.get;
 export const isEqual = _module.isEqual;
+export const set = _module.set;
 export const cn = _module.cn;
 export const formatDate = _module.formatDate;
 export const format = _module.format;

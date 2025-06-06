@@ -1,23 +1,24 @@
-import type { ExtendedFormApi } from '@vben-core/form-ui';
-import type { VxeGridInstance } from 'vxe-table';
+import type { VxeGridInstance } from "vxe-table";
 
-import type { VxeGridProps } from './types';
+import type { ExtendedFormApi } from "@vben-core/form-ui";
 
-import { toRaw } from 'vue';
+import type { VxeGridProps } from "./types";
 
-import { Store } from '@vben-core/shared/store';
+import { toRaw } from "vue";
+
+import { Store } from "@vben-core/shared/store";
 import {
   bindMethods,
   isBoolean,
   isFunction,
   mergeWithArrayOverride,
   StateHandler,
-} from '@vben-core/shared/utils';
+} from "@vben-core/shared/utils";
 
 function getDefaultState(): VxeGridProps {
   return {
-    class: '',
-    gridClass: '',
+    class: "",
+    gridClass: "",
     gridOptions: {},
     gridEvents: {},
     formOptions: undefined,
@@ -26,17 +27,17 @@ function getDefaultState(): VxeGridProps {
 }
 
 export class VxeGridApi {
-  private isMounted = false;
-
-  private stateHandler: StateHandler;
   public formApi = {} as ExtendedFormApi;
 
   // private prevState: null | VxeGridProps = null;
   public grid = {} as VxeGridInstance;
-
   public state: null | VxeGridProps = null;
 
   public store: Store<VxeGridProps>;
+
+  private isMounted = false;
+
+  private stateHandler: StateHandler;
 
   constructor(options: VxeGridProps = {}) {
     const storeState = { ...options };
@@ -68,21 +69,21 @@ export class VxeGridApi {
 
   async query(params: Record<string, any> = {}) {
     try {
-      await this.grid.commitProxy('query', toRaw(params));
+      await this.grid.commitProxy("query", toRaw(params));
     } catch (error) {
-      console.error('Error occurred while querying:', error);
+      console.error("Error occurred while querying:", error);
     }
   }
 
   async reload(params: Record<string, any> = {}) {
     try {
-      await this.grid.commitProxy('reload', toRaw(params));
+      await this.grid.commitProxy("reload", toRaw(params));
     } catch (error) {
-      console.error('Error occurred while reloading:', error);
+      console.error("Error occurred while reloading:", error);
     }
   }
 
-  setGridOptions(options: Partial<VxeGridProps['gridOptions']>) {
+  setGridOptions(options: Partial<VxeGridProps["gridOptions"]>) {
     this.setState({
       gridOptions: options,
     });

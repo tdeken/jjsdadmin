@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { SelectScrollUpButtonProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { ChevronUp } from 'lucide-vue-next';
-import {
-  SelectScrollUpButton,
-  type SelectScrollUpButtonProps,
-  useForwardProps,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & SelectScrollUpButtonProps>();
+import { ChevronUp } from "lucide-vue-next";
+import { SelectScrollUpButton, useForwardProps } from "radix-vue";
+
+const props = defineProps<SelectScrollUpButtonProps & { class?: any }>();
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;

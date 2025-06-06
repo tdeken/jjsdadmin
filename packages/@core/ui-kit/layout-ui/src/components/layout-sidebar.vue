@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { CSSProperties } from 'vue';
-import { computed, shallowRef, useSlots, watchEffect } from 'vue';
+import type { CSSProperties } from "vue";
 
-import { VbenScrollbar } from '@vben-core/shadcn-ui';
+import { computed, shallowRef, useSlots, watchEffect } from "vue";
 
-import { useScrollLock } from '@vueuse/core';
+import { VbenScrollbar } from "@vben-core/shadcn-ui";
 
-import { SidebarCollapseButton, SidebarFixedButton } from './widgets';
+import { useScrollLock } from "@vueuse/core";
+
+import { SidebarCollapseButton, SidebarFixedButton } from "./widgets";
 
 interface Props {
   /**
@@ -64,9 +65,14 @@ interface Props {
   show?: boolean;
   /**
    * 显示折叠按钮
-   * @default false
+   * @default true
    */
   showCollapseButton?: boolean;
+  /**
+   * 显示固定按钮
+   * @default true
+   */
+  showFixedButton?: boolean;
   /**
    * 主题
    */
@@ -94,15 +100,16 @@ const props = withDefaults(defineProps<Props>(), {
   paddingTop: 0,
   show: true,
   showCollapseButton: true,
+  showFixedButton: true,
   zIndex: 0,
 });
 
 const emit = defineEmits<{ leave: [] }>();
-const collapse = defineModel<boolean>('collapse');
-const extraCollapse = defineModel<boolean>('extraCollapse');
-const expandOnHovering = defineModel<boolean>('expandOnHovering');
-const expandOnHover = defineModel<boolean>('expandOnHover');
-const extraVisible = defineModel<boolean>('extraVisible');
+const collapse = defineModel<boolean>("collapse");
+const extraCollapse = defineModel<boolean>("extraCollapse");
+const expandOnHovering = defineModel<boolean>("expandOnHovering");
+const expandOnHover = defineModel<boolean>("expandOnHover");
+const extraVisible = defineModel<boolean>("extraVisible");
 
 const isLocked = useScrollLock(document.body);
 const slots = useSlots();
@@ -115,13 +122,13 @@ const style = computed((): CSSProperties => {
   const { isSidebarMixed, marginTop, paddingTop, zIndex } = props;
 
   return {
-    '--scroll-shadow': 'var(--sidebar)',
+    "--scroll-shadow": "var(--sidebar)",
     ...calcMenuWidthStyle(false),
     height: `calc(100% - ${marginTop}px)`,
     marginTop: `${marginTop}px`,
     paddingTop: `${paddingTop}px`,
     zIndex,
-    ...(isSidebarMixed && extraVisible.value ? { transition: 'none' } : {}),
+    ...(isSidebarMixed && extraVisible.value ? { transition: "none" } : {}),
   };
 });
 
@@ -156,7 +163,7 @@ const contentStyle = computed((): CSSProperties => {
 
   return {
     height: `calc(100% - ${headerHeight + collapseHeight}px)`,
-    paddingTop: '8px',
+    paddingTop: "8px",
     ...contentWidthStyle.value,
   };
 });
@@ -165,8 +172,8 @@ const headerStyle = computed((): CSSProperties => {
   const { headerHeight, isSidebarMixed } = props;
 
   return {
-    ...(isSidebarMixed ? { display: 'flex', justifyContent: 'center' } : {}),
-    height: `${headerHeight}px`,
+    ...(isSidebarMixed ? { display: "flex", justifyContent: "center" } : {}),
+    height: `${headerHeight - 1}px`,
     ...contentWidthStyle.value,
   };
 });
@@ -193,7 +200,7 @@ function calcMenuWidthStyle(isHiddenDom: boolean): CSSProperties {
 
   let widthValue =
     width === 0
-      ? '0px'
+      ? "0px"
       : `${width + (isSidebarMixed && fixedExtra && extraVisible.value ? extraWidth : 0)}px`;
 
   const { collapseWidth } = props;
@@ -203,7 +210,7 @@ function calcMenuWidthStyle(isHiddenDom: boolean): CSSProperties {
   }
 
   return {
-    ...(widthValue === '0px' ? { overflow: 'hidden' } : {}),
+    ...(widthValue === "0px" ? { overflow: "hidden" } : {}),
     flex: `0 0 ${widthValue}`,
     marginLeft: show ? 0 : `-${widthValue}`,
     maxWidth: widthValue,
@@ -231,7 +238,7 @@ function handleMouseenter(e: MouseEvent) {
 }
 
 function handleMouseleave() {
-  emit('leave');
+  emit("leave");
   if (props.isSidebarMixed) {
     isLocked.value = false;
   }
@@ -266,7 +273,7 @@ function handleMouseleave() {
     @mouseleave="handleMouseleave"
   >
     <SidebarFixedButton
-      v-if="!collapse && !isSidebarMixed"
+      v-if="!collapse && !isSidebarMixed && showFixedButton"
       v-model:expand-on-hover="expandOnHover"
     />
     <div v-if="slots.logo" :style="headerStyle">

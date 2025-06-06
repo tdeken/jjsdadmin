@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { PrimitiveProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import { Primitive, type PrimitiveProps, useForwardProps } from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
 
-const props = defineProps<{ class?: any } & PrimitiveProps>();
+import { Primitive, useForwardProps } from "radix-vue";
+
+const props = defineProps<PrimitiveProps & { class?: any }>();
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props;
   return delegated;

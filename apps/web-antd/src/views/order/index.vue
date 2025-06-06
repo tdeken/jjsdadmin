@@ -1,74 +1,77 @@
 <script lang="ts" setup>
-import type { CudInterface } from '#/types/form';
-import type { VbenFormProps } from '#/adapter/form';
-import type { VxeGridProps } from '#/adapter/vxe-table';
-import { Button } from 'ant-design-vue';
+import type { Order as RowType } from "./types";
 
-import { useVbenVxeGrid } from '#/adapter/vxe-table';
+import type { VbenFormProps } from "#/adapter/form";
+import type { VxeGridProps } from "#/adapter/vxe-table";
 
-import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { useRoute } from "vue-router";
 
-import { orderList } from '#/api';
-import { useRoute } from 'vue-router';
-import { $t } from '#/locales';
-import TagComponents from '#/components/tags/tag.vue';
-import { ORDER_STATUS } from '#/constants';
+import { Page, useVbenDrawer } from "@vben/common-ui";
 
-import type { Order as RowType } from './types'
+import { Button } from "ant-design-vue";
 
-import OrderShow from './order-show.vue'
+import { useVbenVxeGrid } from "#/adapter/vxe-table";
+import { orderList } from "#/api";
+import TagComponents from "#/components/tags/tag.vue";
+import { ORDER_STATUS } from "#/constants";
+import { $t } from "#/locales";
+
+import OrderShow from "./order-show.vue";
 
 interface SkuPage {
   oderShow: (row: RowType) => void;
 }
 
 const cud: SkuPage = {
-  oderShow:(row: RowType) => {
-    orderShowModalApi.setState({footer: false, title: '订单详情'});
+  oderShow: (row: RowType) => {
+    orderShowModalApi.setState({ footer: false, title: "订单详情" });
     orderShowModalApi.setData(row);
     orderShowModalApi.open();
   },
-}
+};
 
 const [OrderSHow, orderShowModalApi] = useVbenDrawer({
   // 连接抽离的组件
   connectedComponent: OrderShow,
-
 });
-
 
 const formOptions: VbenFormProps = {
   // 默认展开
   collapsed: false,
-   fieldMappingTime: [['created_date', ['start', 'end'], ['YYYY-MM-DD 00:00:00', 'YYYY-MM-DD 23:59:59']]],
-
+  fieldMappingTime: [
+    [
+      "created_date",
+      ["start", "end"],
+      ["YYYY-MM-DD 00:00:00", "YYYY-MM-DD 23:59:59"],
+    ],
+  ],
   schema: [
     {
-      component: 'Input',
+      component: "Input",
       componentProps: {
-        placeholder: '请输入订单号',
+        placeholder: "请输入订单号",
       },
-      fieldName: 'order_no',
-      label: '订单号',
+      fieldName: "order_no",
+      label: "订单号",
     },
     {
-      component: 'Input',
+      component: "Input",
       componentProps: {
-        placeholder: '请输入收货人或手机号',
+        placeholder: "请输入收货人或手机号",
       },
-      fieldName: 'keyword',
-      label: '关键词',
+      fieldName: "keyword",
+      label: "关键词",
     },
     {
-      component: 'RangePicker',
-      fieldName: 'created_date',
-      label: '下单时间',
+      component: "RangePicker",
+      fieldName: "created_date",
+      label: "下单时间",
     },
   ],
   // 控制表单是否显示折叠按钮
   showCollapseButton: false,
   submitButtonOptions: {
-    content: '查询',
+    content: "查询",
   },
   // 是否在字段值改变时提交表单
   submitOnChange: false,
@@ -78,28 +81,28 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeGridProps<RowType> = {
   columns: [
-    { field:'order_no',title: '订单号', width: 200 },
-    { field:'shop_name',title: '收货人', width: 300 },
-    { field:'address',title: '收货地址' },
-    { field:'amount',title: '订单金额（元）', width: 150 },
-    { field:'real_amount',title: '实收金额（元）', width: 150 },
+    { field: "order_no", title: "订单号", width: 200 },
+    { field: "shop_name", title: "收货人", width: 300 },
+    { field: "address", title: "收货地址" },
+    { field: "amount", title: "订单金额（元）", width: 150 },
+    { field: "real_amount", title: "实收金额（元）", width: 150 },
     {
-      field: 'status',
-      slots: { default: 'status' },
-      title: '状态',
+      field: "status",
+      slots: { default: "status" },
+      title: "状态",
       width: 100,
     },
-    { field:'remark',title: '备注', width:200 },
-    { field:'created_date',title: '下单时间' },
+    { field: "remark", title: "备注", width: 200 },
+    { field: "created_date", title: "下单时间" },
     {
-      field: 'action',
-      fixed: 'right',
-      slots: { default: 'action' },
-      title: '操作',
+      field: "action",
+      fixed: "right",
+      slots: { default: "action" },
+      title: "操作",
       width: 240,
     },
   ],
-  height: 'auto',
+  height: "auto",
   keepSource: true,
   pagerConfig: {},
   proxyConfig: {
@@ -116,15 +119,16 @@ const gridOptions: VxeGridProps<RowType> = {
 };
 
 function refresh() {
-  GridApi.reload()
+  GridApi.reload();
 }
 
+const useRouteStore = useRoute();
 
-const useRouteStore = useRoute()
-
-const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
-
-
+const [Grid, GridApi] = useVbenVxeGrid({
+  tableTitle: $t(useRouteStore.meta.title),
+  formOptions,
+  gridOptions,
+});
 </script>
 
 <template>
@@ -132,10 +136,10 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
     <OrderSHow class="w-[45%]" />
     <Grid>
       <template #status="{ row }">
-        <TagComponents :status="row.status" :status-map="ORDER_STATUS"/>
+        <TagComponents :status="row.status" :status-map="ORDER_STATUS" />
       </template>
       <template #action="{ row }">
-        <Button type="link" @click="cud.oderShow(row)" >订单详情</Button>
+        <Button type="link" @click="cud.oderShow(row)">订单详情</Button>
       </template>
     </Grid>
   </Page>

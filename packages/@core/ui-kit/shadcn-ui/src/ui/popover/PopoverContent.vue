@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import type { PopoverContentEmits, PopoverContentProps } from "radix-vue";
 
-import { cn } from '@vben-core/shared/utils';
+import { computed } from "vue";
 
-import {
-  PopoverContent,
-  type PopoverContentEmits,
-  type PopoverContentProps,
-  PopoverPortal,
-  useForwardPropsEmits,
-} from 'radix-vue';
+import { cn } from "@vben-core/shared/utils";
+
+import { PopoverContent, PopoverPortal, useForwardPropsEmits } from "radix-vue";
 
 defineOptions({
   inheritAttrs: false,
 });
 
 const props = withDefaults(
-  defineProps<{ class?: any } & PopoverContentProps>(),
+  defineProps<PopoverContentProps & { class?: any }>(),
   {
-    align: 'center',
+    align: "center",
     sideOffset: 4,
   },
 );
