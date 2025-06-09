@@ -59,6 +59,11 @@ export namespace OrderApi {
     address_id: string;
     order_id: string;
   }
+
+  export interface CartSku {
+    address_id: string;
+    keyword: string;
+  }
 }
 
 /**
@@ -122,4 +127,11 @@ export async function orderCartAdd(data: OrderApi.CartAdd) {
  */
 export async function orderCartClear(data: OrderApi.CartClear) {
   return requestClient.post('admin/order/cart-clear', data);
+}
+
+/**
+ * 购物车商品
+ */
+export async function orderCartSku(params: OrderApi.CartSku) {
+  return requestClient.get('admin/order/cart-sku', { params });
 }

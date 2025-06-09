@@ -22,6 +22,8 @@ import { orderCart } from "#/api";
 import type { Cart, CartSku } from "./types";
 import CartDelComponent from './cart-del.vue';
 import CartClearComponent from './cart-clear.vue';
+import CartFormComponent  from "./cart-form.vue";
+
 
 const [CartDelete, cartDelModalApi] = useVbenModal({
   // 连接抽离的组件
@@ -33,6 +35,10 @@ const [CartClear, cartClearModalApi] = useVbenModal({
   connectedComponent: CartClearComponent,
 });
 
+const [CartForm, cartFormModalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: CartFormComponent,
+});
 
 const gridOptions: VxeGridProps<CartSku> = {
   minHeight: 200,
@@ -108,7 +114,9 @@ const cud: CartPage = {
      
   },
   create: () => {
-    
+    cartFormModalApi.setState({ title: '添加商品', fullscreenButton: false });
+    cartFormModalApi.setData({address_id: addressId.value, order_id: orderId.value})
+    cartFormModalApi.open();
   },
   clear: () => {
     cartClearModalApi.setState({ title: '确定要清空商品吗？', fullscreenButton: false });
@@ -128,13 +136,14 @@ const { refresh } = useRefresh();
 
 <template>
   <Page>
+    <CartForm :refresh="refresh"/>
     <CartDelete :refresh="refresh"/>
     <CartClear :refresh="refresh"/>
     <div class="button-container">
       <Button class="left-btn" @click="cud.clear" style="margin-left: 20px" type="primary" danger>
         清空货物
       </Button>
-      <Button class="right-btn" style="margin-right: 20px" type="primary">
+      <Button class="right-btn" @click="cud.create" style="margin-right: 20px" type="primary">
         添加商品
       </Button>
     </div>

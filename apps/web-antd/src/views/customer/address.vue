@@ -13,7 +13,7 @@ import { Page, useVbenDrawer, useVbenModal } from "@vben/common-ui";
 import { Button } from "ant-design-vue";
 
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { addressList } from "#/api";
+import { addressList, orderCartStore } from "#/api";
 import { CART_PATH } from "#/constants";
 import { $t } from "#/locales";
 import { customerSelector } from "#/utils";
@@ -144,7 +144,8 @@ const [Grid, GridApi] = useVbenVxeGrid({
 });
 
 const router = useRouter();
-function toCart(addressId: any) {
+const toCart = async (addressId:any) =>  {
+  await orderCartStore({address_id: addressId, order_id: ""})
   router.push({
     path: CART_PATH,
     query: { address_id: addressId, order_id: "" }, // URL查询参数
