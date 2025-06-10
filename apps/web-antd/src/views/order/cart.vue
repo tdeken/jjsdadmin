@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { onMounted, ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import {
   Button,
   Col,
@@ -8,18 +8,22 @@ import {
   DescriptionsItem,
   Divider,
   Row,
+  FloatButton,
 } from "ant-design-vue";
 
-import { Page, useVbenModal } from "@vben/common-ui";
-import { useRefresh } from '@vben/hooks';
+
+import { Page, useVbenModal, alert } from "@vben/common-ui";
+import { useTabs } from '@vben/hooks';
+
+
 
 import type { VxeGridProps } from "#/adapter/vxe-table";
 import type { CudInterface } from '#/types/form';
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { orderCart } from "#/api";
+import { orderCart, orderCartSku, orderStore } from "#/api";
+import { ORDER_PATH } from "#/constants";
 
-
-import type { Cart, CartSku } from "./types";
+import type { Cart, CartSku, CartSelect } from "./types";
 import CartDelComponent from './cart-del.vue';
 import CartClearComponent from './cart-clear.vue';
 import CartFormComponent  from "./cart-form.vue";
@@ -69,29 +73,57 @@ const gridOptions: VxeGridProps<CartSku> = {
   data: [],
 };
 
-const addressId = ref("")
-const orderId = ref("")
+const cartSelect = ref<CartSelect[]>([])
+const fetchSelect = async () => {
+  try {
+    const selectData = await orderCartSku({
+      address_id: queryData.value.address_id
+    })
+
+    cartSelect.value = selectData.list as CartSelect[]
+  }catch(error) {
+
+  }
+
+}
+
+interface Query {
+  address_id: string;
+  order_id: string;
+}
+
+const queryData = ref<Query>({address_id:"", order_id:""})
 const route = useRoute();
 const loading = ref(false);
 const info = ref<Cart | null>(null);
+
 const fetchData = async () => {
   try {
     loading.value = true;
-     addressId.value = route.query.address_id as string;
-     orderId.value = route.query.order_id as string;
-    const response = await orderCart({
-      address_id: addressId.value,
-      order_id: orderId.value,
-    });
+    const response = await orderCart(queryData.value);
+    
+    if (response.status === 1) {
+      alert({
+        content: '窗口已过期，请重新打开',
+        icon: 'warning',
+      }).then(() => {
+        closeTab()
+      })
+      
+    }
 
     info.value = response as Cart;
     gridApi.setGridOptions({data:response.sku})
+
   } finally {
     loading.value = false;
   }
 };
 
 onMounted(() => {
+  queryData.value.address_id = route.query.address_id as string;
+  queryData.value.order_id = route.query.order_id as string;
+  fetchSelect()
   fetchData();
 });
 
@@ -110,40 +142,63 @@ const cud: CartPage = {
   openForm: (state: any, data: any) => {
     
   },
-  update: async (row: CartSku) => {
-     
+  update: (row: CartSku) => {
+     cartFormModalApi.setState({ title: '修改商品', fullscreenButton: false });
+    cartFormModalApi.setData({ row:row, cart_select: cartSelect.value, ...queryData.value })
+    cartFormModalApi.open();
   },
   create: () => {
     cartFormModalApi.setState({ title: '添加商品', fullscreenButton: false });
-    cartFormModalApi.setData({address_id: addressId.value, order_id: orderId.value})
+    cartFormModalApi.setData({ cart_select: cartSelect.value, ...queryData.value })
     cartFormModalApi.open();
   },
   clear: () => {
     cartClearModalApi.setState({ title: '确定要清空商品吗？', fullscreenButton: false });
-    cartClearModalApi.setData({address_id: addressId.value, order_id: orderId.value})
+    cartClearModalApi.setData({...queryData.value})
     cartClearModalApi.open();
   },
-  delete(row: CartSku) {
+  delete: (row: CartSku) => {
     cartDelModalApi.setState({ title: '确定要删除商品吗？', fullscreenButton: false });
-    cartDelModalApi.setData({row: row, address_id: addressId.value, order_id: orderId.value})
+    cartDelModalApi.setData({row: row, ...queryData.value})
     cartDelModalApi.open();
-  },
+  }
 }
 
-const { refresh } = useRefresh();
+const saveBtnStyle = computed(() => {
+  return {right:'60px', bottom: '100px'}
+})
+
+const router = useRouter()
+const tabs = useTabs()
+const closeTab = () => {
+  tabs.closeCurrentTab()
+
+  router.push({
+    path: ORDER_PATH,
+  });
+}
+
+const saveStore = async ()=> {
+  try {
+    await orderStore(queryData.value)
+    closeTab()
+  } catch(error) {
+
+  }
+}
 
 </script>
 
 <template>
   <Page>
-    <CartForm :refresh="refresh"/>
-    <CartDelete :refresh="refresh"/>
-    <CartClear :refresh="refresh"/>
+    <CartForm :refresh="fetchData"/>
+    <CartDelete :refresh="fetchData"/>
+    <CartClear :refresh="fetchData"/>
     <div class="button-container">
       <Button class="left-btn" @click="cud.clear" style="margin-left: 20px" type="primary" danger>
         清空货物
       </Button>
-      <Button class="right-btn" @click="cud.create" style="margin-right: 20px" type="primary">
+      <Button class="right-btn" @click="cud.create"  style="margin-right: 20px" type="primary">
         添加商品
       </Button>
     </div>
@@ -197,13 +252,28 @@ const { refresh } = useRefresh();
         </Descriptions>
       </Col>
     </Row>
-
+    <div>
+      
+    </div>
     <Grid>
+      <template #toolbar-tools>
+      </template>
       <template #action="{ row }">
-        <Button type="link" @click="">编辑</Button>
+        <Button type="link" @click="cud.update(row)">编辑</Button>
         <Button type="link" @click="cud.delete(row)" danger>删除</Button>
       </template>
     </Grid>
+
+    <FloatButton :style=saveBtnStyle :badge="{ count: info?.sku.length, color: 'blue' }" shape="square" type="primary" @click="saveStore" >
+      <template #icon>
+         <span class="icon-[ant-design--save-outlined]"></span>
+      </template>
+      <template #tooltip>
+         <div>
+            保存订单
+         </div>
+      </template>
+    </FloatButton>
   </Page>
 </template>
 
@@ -214,4 +284,5 @@ const { refresh } = useRefresh();
   width: 100%; /* 根据需要设置宽度 */
   padding: 10px; /* 可选内边距 */
 }
+
 </style>

@@ -23,6 +23,7 @@ interface OrderSku {
 
 
 interface Cart {
+  status: number;
   shop_name: string;
   address: string;
   tel: string;
@@ -32,6 +33,7 @@ interface Cart {
 
 interface CartSku {
   id: string;
+  sku_id: string;
   name: string;
   book_num: string;
   format: string;
@@ -42,4 +44,11 @@ interface CartSku {
   unit: string;
 }
 
-export type { Order, OrderSku, Cart, CartSku };
+interface CartSelect {
+  id: string;
+  name: string;
+  price: string;
+  last_price: string;
+}
+
+export type { Order, OrderSku, Cart, CartSku, CartSelect };

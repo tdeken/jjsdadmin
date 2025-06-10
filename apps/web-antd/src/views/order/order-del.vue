@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
-import { goodsSkuDestroy } from '#/api';
+import { orderDestroy } from '#/api';
 import { message } from 'ant-design-vue';
 
 interface Props {
@@ -28,10 +28,12 @@ const [Modal, modalApi] = useVbenModal({
 });
 
 async function del(){
-  await goodsSkuDestroy({id: row.value.id})
+  await orderDestroy({id: row.value.id})
+
   if (props.refresh) {
     props.refresh()
   }
+  
   modalApi.close();
   message.success('操作成功')
 }

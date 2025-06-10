@@ -41,6 +41,7 @@ export namespace OrderApi {
   export interface CartUpdate {
     address_id: string;
     order_id: string;
+    sku_id: string;
     id: string;
     book_num: string;
     price: string;
@@ -50,6 +51,7 @@ export namespace OrderApi {
   export interface CartAdd {
     address_id: string;
     order_id: string;
+    sku_id: string;
     book_num: string;
     price: string;
     remark: string;
@@ -62,8 +64,18 @@ export namespace OrderApi {
 
   export interface CartSku {
     address_id: string;
-    keyword: string;
   }
+
+  export interface CartClose {
+    address_id: string;
+    order_id: string;
+  }
+
+  export interface Store {
+    address_id: string;
+    order_id: string;
+  }
+
 }
 
 /**
@@ -134,4 +146,11 @@ export async function orderCartClear(data: OrderApi.CartClear) {
  */
 export async function orderCartSku(params: OrderApi.CartSku) {
   return requestClient.get('admin/order/cart-sku', { params });
+}
+
+/**
+ * 保存购物车
+ */
+export async function orderStore(data: OrderApi.Store) {
+  return requestClient.post('admin/order/store', data);
 }

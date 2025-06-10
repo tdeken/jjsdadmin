@@ -1,21 +1,26 @@
 <script lang="ts" setup>
 import { useVbenModal } from '@vben/common-ui';
+
+import { ref, h } from 'vue';
+
 import { vbenForm, priceFloat } from '#/utils';
-import { orderCartSku, orderCartAdd, orderCartUpdate } from '#/api';
-import { message } from 'ant-design-vue';
+import {  orderCartAdd, orderCartUpdate } from '#/api';
 
-import { ref, computed } from 'vue';
+import type { CartSku, CartSelect } from './types';
 
-
-const row = ref()
-const addressId = ref()
-const searchKeyword = ref()
+const row = ref<CartSku>() 
+const dataMap = ref<Map<string, CartSelect>>(new Map());
+const findById = (id: string): CartSelect | undefined => {
+  return dataMap.value.get(id)
+}
 
 interface Props {
   refresh?:()=>void, 
 }
 
 const props = defineProps<Props>()
+const addressId = ref<string>('')
+const orderId = ref<string>('')
 
 const [Modal, drawerApi] = useVbenModal({
   onCancel() {
@@ -33,57 +38,83 @@ const [Modal, drawerApi] = useVbenModal({
 
 function updateRow(){
   const data = drawerApi.getData()
-  row.value = data.row
+
   addressId.value = data.address_id
-}
+  orderId.value = data.order_id
 
-// 搜索参数
-const searchParams = computed(() => ({
-  address_id: addressId.value,
-}));
+  const options: any[] = []
+  data.cart_select.forEach((row: CartSelect) => {
+    dataMap.value.set(row.id, row)
+    options.push({
+      value: row.id,
+      label: row.name
+    })
+  });
 
-const searchCartSku = async (params: any) => {
-  try {
-     const res = await orderCartSku({...params})
-      return res
-  } catch (error) {
 
+  if (!data.row) {
+    formApi.updateSchema([
+      {
+        fieldName: 'id',
+        componentProps: {
+          options: options,
+        }
+      }
+    ])
+    return
   }
-};
 
-const search = (val: string) => {
-  searchKeyword.value = val
-  formApi.resetForm()
-  console.log(val)
-}
+  row.value = data.row as CartSku;
 
-const change = (row: any) =>{
-  console.log(row)
+  const option = findById(row.value.id)
+  var price =  {
+      fieldName: 'price',
+      defaultValue: row.value.price || '0',
+      description: () => h('span', ''),
+    }
+  if (option?.last_price !== '0.00') {
+    price = {
+      fieldName: 'price',
+      defaultValue: row.value.price || '0',
+      description: () => h('span', { class: 'text-red-600' }, '最近购买 '+ option?.last_price +' 元'),
+    }
+  }
+
+  formApi.updateSchema([
+    {
+      fieldName: 'id',
+      componentProps: {
+        options: options,
+      },
+      defaultValue: row.value.sku_id || ''
+    },
+    {
+      fieldName: 'book_num',
+      defaultValue: row.value.book_num || '1'
+    },
+    {
+      fieldName: 'remark',
+      defaultValue: row.value.remark || ''
+    },
+    price,
+  ])
 }
 
 const cus = {
   schema: [
     {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
-      component: 'ApiSelect',
-      // 对应组件的参数
+      component: 'Select',
       componentProps: {
-          api: searchCartSku,
-          params: searchParams,
-          showSearch: true,
-          filterOption: false,
-          resultField: 'list',
-          labelField: 'name',
-          valueField: 'id',
-          // 使搜索时按标题搜索
-          optionFilterProp: 'label',
-          onSearch: search,
-          onChange: change,
-          alwaysLoad: true,
+        options: [],
+        allowClear: true,
+        filterOption: true,
+        immediate: false,
+        optionFilterProp: "label",
+        placeholder: '请选择',
+        showSearch: true,
       },
-      // 字段名
+      defaultValue: undefined,
       fieldName: 'id',
-      // 界面显示的label
       label: '下订商品',
       rules: 'required',
     },
@@ -94,7 +125,33 @@ const cus = {
         placeholder: '请输入商品别名，方便搜索',
         step:"0.01",
         min:"0",
-        defaultValue:"0"
+        defaultValue:0
+      },
+      dependencies: {
+        triggerFields: ['id'],
+        trigger(values: any) {
+          if (!values.id) return
+          const row = findById(values.id)
+          if (!row) return 
+
+          formApi.setFieldValue("price", row.price)
+          if (row.last_price !== '0.00')
+          {
+            formApi.updateSchema([
+              {
+                fieldName: 'price',
+                description: () => h('span', { class: 'text-red-600' }, '最近购买 '+row.last_price+' 元')
+              }
+            ])
+          } else {
+            formApi.updateSchema([
+              {
+                fieldName: 'price',
+                description: ''
+              }
+            ])
+          }
+        }
       },
       // 字段名
       fieldName: 'price',
@@ -105,16 +162,29 @@ const cus = {
       component: 'InputNumber',
       // 对应组件的参数
       componentProps: {
-        placeholder: '请输入商品别名，方便搜索',
+        placeholder: '请输入下订数量',
         step:"0.5",
-        min:"0",
-        defaultValue:"1"
+        min:"0.5",
+        defaultValue: "1"
       },
       // 字段名
       fieldName: 'book_num',
       // 界面显示的label
       label: '下订数量',
-    }
+    },
+    {
+      // 组件需要在 #/adapter.ts内注册，并加上类型
+      component: 'Textarea',
+      // 对应组件的参数
+      componentProps: {
+        placeholder: '选填',
+        rows: 4,
+      },
+      // 字段名
+      fieldName: 'remark',
+      // 界面显示的label
+      label: '备注',
+    },
   ],
 }
 
@@ -122,11 +192,39 @@ const [Form, formApi] = vbenForm(cus, onSubmit);
 
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();
-    
-  if (props.refresh) {
+  
+  console.log(values)
+
+  const price = priceFloat(values.price)
+  var bookNum = priceFloat(values.book_num)
+  if (!values.book_num) {
+    bookNum = "1"
+  }
+
+  if (!row.value) {
+    await orderCartAdd({
+      address_id: addressId.value,
+      order_id: orderId.value,
+      sku_id: values.id,
+      book_num: bookNum,
+      price: price,
+      remark: values.remark,
+    })
+  } else {
+    await orderCartUpdate({
+      id: row.value.id,
+      address_id: addressId.value,
+      order_id: orderId.value,
+      sku_id: values.id,
+      book_num: bookNum,
+      price: price,
+      remark: values.remark,
+    })
+  }
+  
+   if (props.refresh) {
     props.refresh()
   }
-    
 }
 
 </script>
