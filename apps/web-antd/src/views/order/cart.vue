@@ -140,17 +140,19 @@ interface CartPage extends CudInterface {
 
 const cud: CartPage = {
   openForm: (state: any, data: any) => {
-    
+    cartFormModalApi.setState(state);
+    cartFormModalApi.setData(data)
+    cartFormModalApi.open();
   },
   update: (row: CartSku) => {
-     cartFormModalApi.setState({ title: '修改商品', fullscreenButton: false });
-    cartFormModalApi.setData({ row:row, cart_select: cartSelect.value, ...queryData.value })
-    cartFormModalApi.open();
+    const state = { title: '修改商品', fullscreenButton: false }
+    const data = { row:row, cart_select: cartSelect.value, ...queryData.value }
+    cud.openForm(state, data)
   },
   create: () => {
-    cartFormModalApi.setState({ title: '添加商品', fullscreenButton: false });
-    cartFormModalApi.setData({ cart_select: cartSelect.value, ...queryData.value })
-    cartFormModalApi.open();
+    const state = { title: '添加商品', fullscreenButton: false }
+    const data = { cart_select: cartSelect.value, ...queryData.value }
+    cud.openForm(state, data)
   },
   clear: () => {
     cartClearModalApi.setState({ title: '确定要清空商品吗？', fullscreenButton: false });

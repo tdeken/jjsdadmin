@@ -1,6 +1,45 @@
+<template>
+  <Drawer>
+    <Row>
+      <Col :offset="1" :span="6">
+        <Descriptions size="middle">
+          <DescriptionsItem label="收货人" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.shop_name }} </DescriptionsItem>
+        </Descriptions>
+      </Col>
+       <Col :span="8">
+        <Descriptions>
+          <DescriptionsItem label="收货地址" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.address }} </DescriptionsItem>
+        </Descriptions>
+      </Col>
+    </Row>
+    <Row>
+      <Col :offset="1" :span="6">
+        <Descriptions size="middle">
+          <DescriptionsItem label="总金额" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.amount }}元 </DescriptionsItem>
+        </Descriptions>
+      </Col>
+      <Col :span="12">
+        <Descriptions>
+          <DescriptionsItem label="实收金额" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.real_amount }}元 </DescriptionsItem>
+        </Descriptions>
+      </Col>
+    </Row>
+    <Row>
+      <Col :offset="1" :span="12">
+        <Descriptions>
+          <DescriptionsItem label="备注" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.remark }} </DescriptionsItem>
+        </Descriptions>
+      </Col>
+    </Row>
+
+    <Grid>
+    </Grid>
+  </Drawer> 
+</template>
+
 <script lang="ts" setup>
 import  { computed } from 'vue';
-import { Row, Col, Descriptions, DescriptionsItem, Divider } from 'ant-design-vue';
+import { Row, Col, Descriptions, DescriptionsItem } from 'ant-design-vue';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -58,43 +97,3 @@ const itemStyle = {
 }
 
 </script>
-
-<template>
-  <Drawer>
-    <Row>
-      <Col :offset="1" :span="12">
-        <Descriptions size="middle">
-          <DescriptionsItem label="收货人" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.shop_name }} </DescriptionsItem>
-        </Descriptions>
-      </Col>
-    </Row>
-    <Row>
-      <Col :offset="1" :span="12">
-        <Descriptions>
-          <DescriptionsItem label="收货地址" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.address }} </DescriptionsItem>
-        </Descriptions>
-      </Col>
-    </Row>
-    <Row>
-      <Col :offset="1" :span="9">
-        <Descriptions>
-          <DescriptionsItem label="总金额" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.amount }}元 </DescriptionsItem>
-        </Descriptions>
-      </Col>
-      <Col :span="12">
-        <Descriptions>
-          <DescriptionsItem label="实收金额" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.real_amount }}元 </DescriptionsItem>
-        </Descriptions>
-      </Col>
-    </Row>
-    <Row>
-      <Col :offset="1" :span="12">
-        <Descriptions>
-          <DescriptionsItem label="备注" :label-style="itemStyle" :content-style="itemStyle" > {{ orderRow.remark }} </DescriptionsItem>
-        </Descriptions>
-      </Col>
-    </Row>
-    <Grid>
-    </Grid>
-  </Drawer> 
-</template>
