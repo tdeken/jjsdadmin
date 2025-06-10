@@ -132,15 +132,9 @@ const printEvent = async () => {
     const bottomEl = bottomElRef.value
     const topHtml = topEl ? topEl.innerHTML : ''
     const bottomHtml = bottomEl ? bottomEl.innerHTML : ''
-    VxeUI.print({
-      title: '出货单据',
-      pageBreaks: [
-        // 第一页
-        {
-          bodyHtml: topHtml + printRest.html + bottomHtml
-        }
-      ]
-    })
+    console.log(printRest)
+    console.log(topHtml)
+    console.log(bottomHtml)
   }
 }
 
