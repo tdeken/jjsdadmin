@@ -1,7 +1,7 @@
 
 <template>
   <Page auto-content-height>
-    <Print class="w-[45%]" />
+    <Print class="w-[60%]" />
     <OrderDelete :refresh="refresh" />
     <OrderSHow class="w-[45%]" />
     <Grid>
@@ -55,7 +55,7 @@ import { Button, Space, Dropdown, DropdownButton, Menu, MenuItem } from "ant-des
 
 
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { orderList, orderCartStore } from "#/api";
+import { orderList, orderCartStore, orderPrintData } from "#/api";
 import TagComponents from "#/components/tags/tag.vue";
 import { ORDER_STATUS } from "#/constants";
 import { $t } from "#/locales";
@@ -98,9 +98,10 @@ const cud: SkuPage = {
     orderModalApi.setData({row: row})
     orderModalApi.open();
   },
-  print: (row: RowType) => {
+  print: async (row: RowType) => {
+    const res = await orderPrintData({order_id: row.id})
     printModalApi.setState({ title: "订单打印", confirmText: '打印' });
-    printModalApi.setData(row);
+    printModalApi.setData(res);
     printModalApi.open();
   }
 };

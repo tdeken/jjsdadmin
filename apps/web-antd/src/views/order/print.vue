@@ -1,64 +1,37 @@
 <template>
   <Modal>
     <div ref="topElRef">
-      <div>
-        <Row class="label-row">
-          <Col :span="6">
-            <p class="p-row">购货者：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="10">
-            <p class="p-row">地址：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="6">
-            <p class="p-row">联系电话：{{ orderRow.address }}</p>
-          </Col>
-        </Row>
-        <Row class="label-row">
-          <Col :span="6">
-            <p class="p-row">供货者：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="10">
-            <p class="p-row">地址：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="6">
-            <p class="p-row">联系电话：{{ orderRow.address }}</p>
-          </Col>
-        </Row>
-        <Row class="label-row">
-          <Col :span="6">
-            <p class="p-row">订单编号：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="10">
-            <p class="p-row">订单日期：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="6">
-            <p class="p-row">订单总金额：{{ orderRow.address }} 元</p>
-          </Col>
-        </Row>
+      <div style="margin-bottom: 8px;">
+        <div style="display: inline-block; width: 100%;">
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">购货者：{{ data.customer.shop_name }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">地址：{{ data.customer.address }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">联系电话：{{ data.customer.tel }}</div>
+        </div>
+        <div style="display: inline-block;width: 100%;">
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">供货者：{{ data.owner.shop_name }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">地址：{{ data.owner.address }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">联系电话：{{ data.owner.tel }}</div>
+        </div>
+        <div style="display: inline-block;width: 100%;">
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">订单编号：{{ data.order_no }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">订单日期：{{ data.created_date }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">订单总金额：{{ data.amount }} 元</div>
+        </div>
       </div>
     </div>
   
-
     <Grid />
 
     <div ref="bottomElRef">
-      <div style="margin-top: 2px">
-        <Row class="label-row">
-          <Col :span="9">
-            <p class="p-row">开票人：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="9">
-            <p class="p-row">配送员：{{ orderRow.address }}</p>
-          </Col>
-          <Col :span="6">
-            <p class="p-row">共 {{orderRow.address}} 样商品</p>
-          </Col>
-        </Row>
-        <Row class="label-row">
-          <Col :span="24">
-            <p class="p-row">特别提示：尊敬的客户，请与配送员当面点清货物，如有错误，请及时来电，多谢惠顾</p>
-          </Col>
-        </Row>
+      <div>
+        <div style="display: inline-block;width: 100%;">
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">开票人：{{ data.operator }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">配送员：{{ data.deliver }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">共 {{ data.total }} 样商品</div>
+        </div>
+        <div style="display: inline-block;width: 100%;height: 18px;line-height: 20px;">
+          特别提示：尊敬的客户，请与配送员当面点清货物，如有错误，请及时来电，多谢惠顾；
+        </div>
       </div>
     </div>
     
@@ -66,20 +39,17 @@
 </template>
 
 <script lang="ts" setup>
-import  { computed, ref } from 'vue';
-import { Row, Col } from 'ant-design-vue';
+import  { ref } from 'vue';
+import { VxeUI } from 'vxe-pc-ui'
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { orderSkuList } from '#/api';
 
 import { useVbenModal } from '@vben/common-ui';
 
-import type { Order, OrderSku } from './types';
+import type { PrintData, PrintSku } from './types';
 
-const orderRow = computed(() => {
-  return modalApi.getData() as Order
-})
+const data = ref<PrintData>()
 
 const [Modal, modalApi] = useVbenModal({
   onCancel() {
@@ -87,36 +57,36 @@ const [Modal, modalApi] = useVbenModal({
   },
   onConfirm(){
     printEvent()
+  },
+  onOpenChange(isOpen: boolean){
+    if (!isOpen) return
+    data.value = modalApi.getData() as PrintData
+
+    gridApi.setGridOptions({data:data.value.list})
   }
 });
 
-
-const gridOptions: VxeGridProps<OrderSku> = {
+const gridOptions: VxeGridProps<PrintSku> = {
   minHeight: 0,
+  border: "full",
   showOverflow: true,
   columns: [
-    { field: 'name', title: '销售商品名称' },
+    { field: 'number', title: '商品条码', width:200 },
+    { field: 'name', title: '商品名称' },
     { field: 'book_num', title: '数量', width:50 },
-    { field: 'format', title: '单位', width:80 },
+    { field: 'unit', title: '单位', width:80 },
+    { field: 'format', title: '规格', width:80 },
     { field: 'price', title: '单价(元)', width:100 },
     { field: 'total', title: '总价(元)', width:100 },
     { field: 'remark', title: '备注'},
   ],
+  data: [],
   pagerConfig: {
     enabled: false,
   },
   sortConfig: {
     multiple: true,
-  },
-  proxyConfig: {
-    ajax: {
-      query: async () => {
-        return await orderSkuList({
-          order_id: orderRow.value.id ,
-        });
-      },
-    },
-  },
+  }
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
@@ -132,9 +102,15 @@ const printEvent = async () => {
     const bottomEl = bottomElRef.value
     const topHtml = topEl ? topEl.innerHTML : ''
     const bottomHtml = bottomEl ? bottomEl.innerHTML : ''
-    console.log(printRest)
-    console.log(topHtml)
-    console.log(bottomHtml)
+    VxeUI.print({
+      title: '出货单据',
+      pageBreaks: [
+        // 第一页
+        {
+          bodyHtml: topHtml + printRest.html + bottomHtml
+        }
+      ]
+    })
   }
 }
 

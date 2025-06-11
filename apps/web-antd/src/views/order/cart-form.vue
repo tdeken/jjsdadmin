@@ -76,7 +76,7 @@ function updateRow(){
     price = {
       fieldName: 'price',
       defaultValue: row.value.price || '0',
-      description: () => h('span', { class: 'text-red-600' }, '最近购买 '+ option?.last_price +' 元'),
+      description: () => h('p', { class: 'text-red-600' }, '最近购买 '+ option?.last_price +' 元'),
     }
   }
 
@@ -125,7 +125,8 @@ const cus = {
         placeholder: '请输入商品别名，方便搜索',
         step:"0.01",
         min:"0",
-        defaultValue:0
+        defaultValue:0,
+        style: { width: '25%' }
       },
       dependencies: {
         triggerFields: ['id'],
@@ -140,7 +141,7 @@ const cus = {
             formApi.updateSchema([
               {
                 fieldName: 'price',
-                description: () => h('span', { class: 'text-red-600' }, '最近购买 '+row.last_price+' 元')
+                description: () => h('span', { class: 'text-red-600' }, '最近售价 '+row.last_price+' 元')
               }
             ])
           } else {
@@ -165,7 +166,8 @@ const cus = {
         placeholder: '请输入下订数量',
         step:"0.5",
         min:"0.5",
-        defaultValue: "1"
+        defaultValue: "1",
+        style: {width: '15%'}
       },
       // 字段名
       fieldName: 'book_num',

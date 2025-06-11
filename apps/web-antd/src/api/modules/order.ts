@@ -76,6 +76,9 @@ export namespace OrderApi {
     order_id: string;
   }
 
+   export interface PrintData {
+    order_id: string;
+  }
 }
 
 /**
@@ -153,4 +156,11 @@ export async function orderCartSku(params: OrderApi.CartSku) {
  */
 export async function orderStore(data: OrderApi.Store) {
   return requestClient.post('admin/order/store', data);
+}
+
+/**
+ * 购物车商品
+ */
+export async function orderPrintData(params: OrderApi.PrintData) {
+  return requestClient.get('admin/order/print-data', { params });
 }

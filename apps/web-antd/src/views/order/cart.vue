@@ -193,7 +193,7 @@ const saveStore = async ()=> {
 
 <template>
   <Page>
-    <CartForm :refresh="fetchData"/>
+    <CartForm :refresh="fetchData" />
     <CartDelete :refresh="fetchData"/>
     <CartClear :refresh="fetchData"/>
     <div class="button-container">

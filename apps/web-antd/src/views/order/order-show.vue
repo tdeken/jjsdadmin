@@ -66,7 +66,7 @@ const gridOptions: VxeGridProps<OrderSku> = {
   columns: [
     { field: 'name', title: '销售商品名称' },
     { field: 'book_num', title: '数量', width:50 },
-    { field: 'format', title: '单位', width:80 },
+    { field: 'unit', title: '单位', width:80 },
     { field: 'price', title: '单价(元)', width:100 },
     { field: 'total', title: '总价(元)', width:100 },
     { field: 'remark', title: '备注'},
@@ -89,7 +89,6 @@ const gridOptions: VxeGridProps<OrderSku> = {
 };
 
 const [Grid] = useVbenVxeGrid({ gridOptions });
-
 
 const itemStyle = {
   fontSize:'16px',

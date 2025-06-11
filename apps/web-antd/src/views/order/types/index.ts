@@ -15,7 +15,7 @@ interface OrderSku {
   id: string;
   name: string;
   book_num: string;
-  format: string;
+  unit: string;
   price: string;
   total: string;
   remark: string;
@@ -51,4 +51,36 @@ interface CartSelect {
   last_price: string;
 }
 
-export type { Order, OrderSku, Cart, CartSku, CartSelect };
+interface PrintData {
+  order_no: string;
+  amount: string;
+  created_date: string;
+  customer: PrintAddress;
+  owner: PrintAddress
+  list: PrintSku[];
+  total: number;
+  operator: string;
+  deliver:string;
+}
+
+interface PrintAddress {
+  shop_name: string;
+  address: string;
+  tel: string;
+}
+interface PrintSku {
+  name: string;
+  book_num: string;
+  format: string;
+  price: string;
+  total: string;
+  remark: string;
+  number: string;
+  unit: string;
+}
+
+export type { 
+  Order, OrderSku, 
+  Cart, CartSku, CartSelect,
+  PrintData, PrintAddress, PrintSku,
+ };

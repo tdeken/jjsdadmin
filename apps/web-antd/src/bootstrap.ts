@@ -16,6 +16,11 @@ import { initSetupVbenForm } from "./adapter/form";
 import App from "./app.vue";
 import { router } from "./router";
 
+import VxeUIAll from 'vxe-pc-ui'
+import 'vxe-pc-ui/lib/style.css'
+import VxeUITable from 'vxe-table'
+import 'vxe-table/lib/style.css'
+
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
   await initComponentAdapter();
@@ -59,6 +64,8 @@ async function bootstrap(namespace: string) {
   // 配置Motion插件
   const { MotionPlugin } = await import("@vben/plugins/motion");
   app.use(MotionPlugin);
+
+  app.use(VxeUIAll).use(VxeUITable)
 
   // 动态更新标题
   watchEffect(() => {
