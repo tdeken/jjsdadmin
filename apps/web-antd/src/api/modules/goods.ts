@@ -38,6 +38,7 @@ export namespace GoodsApi {
     rp: string;
     stock: number;
     number: number;
+    short_name: string;
   }
 
   /** 删除销售品 */

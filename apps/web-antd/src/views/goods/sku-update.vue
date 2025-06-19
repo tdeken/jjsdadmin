@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { goodsSkuCreate, goodsSkuUpdate } from '#/api';
+import { goodsSkuUpdate } from '#/api';
 import { message } from 'ant-design-vue';
 
 import { vbenForm, priceFloat } from '#/utils';
 import { ref } from 'vue';
 
 const row = ref()
-let goodsId = ""
 
 interface Props {
   refresh?:()=>void, 
@@ -48,20 +47,7 @@ function updateRow(){
   const data = drawerApi.getData()?.row
   row.value = data
 
-  goodsId = drawerApi.getData()?.goods_id
-  console.log(goodsId)
   formApi.updateSchema([
-    {
-      componentProps: {
-        options: goodsData,
-      },
-      fieldName: 'goods_id',
-      defaultValue: goodsId,
-      dependencies: {
-        triggerFields: ['goods_id'],
-        if: goodsId === undefined
-      }
-    },
     {
       fieldName: 'capacity',
       defaultValue: data?.capacity || ''
@@ -111,27 +97,8 @@ function updateRow(){
   ])
 }
 
-
 const cus = {
   schema: [
-    {
-      component: 'Select',
-      componentProps: {
-        options: [],
-        allowClear: true,
-        filterOption: true,
-        immediate: false,
-        optionFilterProp: "title",
-        optionValueProp: "id",
-        placeholder: '请选择',
-        showSearch: true,
-      },
-      defaultValue: undefined,
-      fieldName: 'goods_id',
-      label: '绑定商品',
-      rules: 'required',
-      show: false,
-    },
     {
       // 组件需要在 #/adapter.ts内注册，并加上类型
       component: 'Input',
@@ -159,7 +126,7 @@ const cus = {
       component: 'Input',
       // 对应组件的参数
       componentProps: {
-        placeholder: '选填，请输入商品备注，如：原味，蓝莓味',
+        placeholder: '选填，请输入一些关键词',
       },
       // 字段名
       fieldName: 'short_name',
@@ -269,40 +236,22 @@ async function onSubmit(values: Record<string, any>) {
   let wp:string = priceFloat(values.wp)
   let rp:string = priceFloat(values.rp)
 
-
-  if (!row.value || drawerApi.getData()?.copy) {
-    await goodsSkuCreate({
-      goods_id: values.goods_id,
-      remark: values.remark,
-      format: values.format,
-      unit: values.unit,
-      pp: pp,
-      wp: wp,
-      rp: rp,
-      stock: stock,
-      number: values.number,
-      capacity: values.capacity,
-    })
-    message.success('新增销售品成功')
-
-  } else {
-    await goodsSkuUpdate({
-      id: row.value.id,
-      goods_id: goodsId,
-      remark: values.remark,
-      format: values.format,
-      unit: values.unit,
-      pp: pp,
-      wp: wp,
-      rp: rp,
-      stock: stock,
-      number: values.number,
-      capacity: values.capacity,
-    })
-    message.success('更新商品成功')
+  await goodsSkuUpdate({
+    id: row.value.id,
+    goods_id: row.value.goods_id,
+    remark: values.remark,
+    format: values.format,
+    unit: values.unit,
+    pp: pp,
+    wp: wp,
+    rp: rp,
+    stock: stock,
+    number: values.number,
+    capacity: values.capacity,
+    short_name: values.short_name,
+  })
+  message.success('更新商品成功')
   
-  }
-
   if (props.refresh) {
     props.refresh()
   }

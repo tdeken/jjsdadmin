@@ -15,11 +15,16 @@ import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 
 import type { Goods, GoodsSku } from './types';
-import SpuFormComponent from './goods-form.vue';
+import SpuStoreComponent from './goods-store.vue';
+import SpuUpdateComponent from './goods-update.vue';
 import SpuDelComponent from './goods-del.vue';
-import SkuFormComponent from './sku-form.vue';
-import GoodsSkuComponent from './goods-sku.vue';
+
+import SkuStoreComponent from './sku-store.vue';
+import SkuCopyComponent from './sku-copy.vue';
+import SkuUpdateComponent from './sku-update.vue';
 import SkuDelComponent from './sku-del.vue';
+
+import GoodsSkuComponent from './goods-sku.vue';
 
 const unit = ref() 
 const format = ref() 
@@ -37,54 +42,77 @@ onMounted(()=>{
   loadSelectInfo()
 })
 
+
+const [SkuDelete, skuModalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: SkuDelComponent,
+});
+
+const [SkuUpdate, skuUpdateApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: SkuUpdateComponent,
+});
+
+const [SkuStore, skuStoreApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: SkuStoreComponent,
+});
+
+const [SkuCopy, skuCopyApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: SkuCopyComponent,
+});
+
+const [Delete, modalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: SpuDelComponent,
+});
+
+const [Update, updateApi] = useVbenDrawer({
+  connectedComponent: SpuUpdateComponent,
+})
+
+const [Store, storeApi] = useVbenDrawer({
+  connectedComponent: SpuStoreComponent,
+})
+
+
 interface SkuPage extends CudInterface {
   createSku: (row: Goods) => void;
-  openSkuForm: (state :any, data: any) => void;
   updateSku: (row: GoodsSku) => void;
   copySku: (row: GoodsSku) => void;
   deleteSku: (row: GoodsSku) => void;
 }
 
 const cud: SkuPage = {
-  openForm:(state :any, data: any) => {
-    drawerApi.setState(state);
-    drawerApi.setData(data)
-    drawerApi.open();
-  },
   delete: (row: Goods) => {
     modalApi.setState({ title: '确定要删除商品吗？', fullscreenButton: false });
     modalApi.setData({row: row})
     modalApi.open();
   },
   update: (row: Goods) => {
-    const state = {title: '更新商品'}
-    const data = {row: row}
-    cud.openForm(state, data)
+    updateApi.setState({title: '更新商品'});
+    updateApi.setData({row: row})
+    updateApi.open();
   },
   create:()=> {
-    const state = {title: '新增商品'}
-    const data = {}
-    cud.openForm(state, data)
-  },
-  openSkuForm:(state :any, data: any) => {
-    skuDrawerApi.setState(state);
-    skuDrawerApi.setData(data)
-    skuDrawerApi.open();
+    storeApi.setState({title: '新增商品'});
+    storeApi.open();
   },
   createSku: (row: Goods) => {
-    const state = {title: '新增可售商品'}
-    const data = {goods_id: row.id, unit: unit, format: format}
-    cud.openSkuForm(state, data)
+    skuStoreApi.setState({title: '新增可售商品'});
+    skuStoreApi.setData({goods_id: row.id, unit: unit, format: format})
+    skuStoreApi.open();
   },
   updateSku: (row: GoodsSku) => {
-    const state = {title: '更新可售商品'}
-    const data = {goods_id: row.goods_id, row: row, unit: unit, format: format}
-    cud.openSkuForm(state, data)
+    skuUpdateApi.setState({title: '更新可售商品'});
+    skuUpdateApi.setData({goods_id: row.goods_id, row: row, unit: unit, format: format})
+    skuUpdateApi.open();
   },
   copySku: (row: GoodsSku) => {
-    const state = {title: '新增可售商品'}
-    const data = {row: row, unit: unit, format: format, copy: true, goods_id: row.goods_id}
-    cud.openSkuForm(state, data)
+    skuCopyApi.setState({title: '新增可售商品'});
+    skuCopyApi.setData({goods_id: row.goods_id, unit: unit, format: format})
+    skuCopyApi.open();
   },
   deleteSku: (row: GoodsSku) => {
     skuModalApi.setState({ title: '确定要销售品吗？', fullscreenButton: false });
@@ -92,26 +120,6 @@ const cud: SkuPage = {
     skuModalApi.open();
   },
 }
-
-const [SkuDelete, skuModalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: SkuDelComponent,
-});
-
-const [SkuForm, skuDrawerApi] = useVbenDrawer({
-  // 连接抽离的组件
-  connectedComponent: SkuFormComponent,
-});
-
-
-const [Delete, modalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: SpuDelComponent,
-});
-
-const [Form, drawerApi] = useVbenDrawer({
-  connectedComponent: SpuFormComponent,
-})
 
 
 const formOptions: VbenFormProps = {
@@ -203,10 +211,13 @@ const gridEvents: VxeGridListeners<Goods> = {
 
 <template>
   <Page auto-content-height>
-    <Form :refresh="refresh" />
-    <SkuForm :refresh="refresh" />
-    <SkuDelete :refresh="refresh" />
+    <Store :refresh="refresh" />
     <Delete :refresh="refresh" />
+    <Update :refresh="refresh" />
+    <SkuUpdate :refresh="refresh" />
+    <SkuStore :refresh="refresh" />
+    <SkuCopy :refresh="refresh" />
+    <SkuDelete :refresh="refresh" />
     <Grid v-on="gridEvents">
       <template #expand_content="{ row }">
           <GoodsSkuComponent 

@@ -2,7 +2,7 @@
 import { useVbenDrawer } from '@vben/common-ui';
 
 import { vbenForm } from '#/utils';
-import { goodsCreate, goodsUpdate } from '#/api';
+import { customerCreate, customerUpdate } from '#/api';
 import { message } from 'ant-design-vue';
 
 import { ref } from 'vue';
@@ -36,13 +36,13 @@ function updateRow(){
 
   formApi.updateSchema([
     {
-      fieldName: 'title',
-      defaultValue: data?.title || ''
+      fieldName: 'name',
+      defaultValue: data?.name || ''
     },
     {
-      fieldName: 'as_title',
-      defaultValue: data?.as_title || ''
-    }
+      fieldName: 'phone',
+      defaultValue: data?.phone || ''
+    },
   ])
 }
 
@@ -53,25 +53,25 @@ const cus = {
       component: 'Input',
       // 对应组件的参数
       componentProps: {
-        placeholder: '请输入商品名称',
+        placeholder: '请输入商铺名称',
       },
       // 字段名
-      fieldName: 'title',
+      fieldName: 'name',
       // 界面显示的label
-      label: '商品名称',
+      label: '商铺名称',
       rules: 'required',
     },
     {
       component: 'Input',
       // 对应组件的参数
       componentProps: {
-        placeholder: '请输入商品别名，方便搜索',
+        placeholder: '请输入联系方式',
       },
       // 字段名
-      fieldName: 'as_title',
+      fieldName: 'phone',
       // 界面显示的label
-      label: '商品别名',
-    }
+      label: '联系方式',
+    },
   ],
 }
 
@@ -80,25 +80,17 @@ const [Form, formApi] = vbenForm(cus, onSubmit);
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();
 
-  if (row.value) {
-    await goodsUpdate({
-      id: row.value.id,
-      title: values.title, 
-      as_title: values.as_title,
-    })
-    message.success('更新商品成功')
-  } else {
-    await goodsCreate({
-      title: values.title, 
-      as_title: values.as_title,
-    })
-    message.success('新增商品成功')
-  }
+  await customerUpdate({
+    id: row.value.id,
+    name: values.name, 
+    phone: values.phone,
+  })
+  message.success('更新客户成功')
     
   if (props.refresh) {
     props.refresh()
   }
-    
+
 }
 
 </script>

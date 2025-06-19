@@ -15,7 +15,9 @@ import { goodsSkuList, goodsSelectInfo, goodsSelect } from '#/api';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 
-import FormComponent from './sku-form.vue';
+import UpdateComponent from './sku-update.vue';
+import StoreComponent from './sku-store.vue';
+import CopyComponent from './sku-copy.vue';
 import DelComponent from './sku-del.vue';
 
 const unit = ref() 
@@ -44,42 +46,45 @@ const [DelSku, modalApi] = useVbenModal({
   connectedComponent: DelComponent,
 });
 
+const [UpdateSku, updateApi] = useVbenDrawer({
+  connectedComponent: UpdateComponent,
+})
+
+const [StoreSku, storeApi] = useVbenDrawer({
+  connectedComponent: StoreComponent,
+})
+
+const [CopySku, copyApi] = useVbenDrawer({
+  connectedComponent: CopyComponent,
+})
+
 
 interface SkuPage extends CudInterface {
   copySku: (row: GoodsSku) => void;
 }
 
 const cud: SkuPage = {
-  openForm:(state :any, data: any) => {
-    drawerApi.setState(state);
-    drawerApi.setData(data)
-    drawerApi.open();
-  },
   delete: (row: GoodsSku) => {
     modalApi.setState({ title: '确定要销售品吗？', fullscreenButton: false });
     modalApi.setData({row: row})
     modalApi.open();
   },
   update: (row: GoodsSku) => {
-    const state = {title: '更新可售商品'}
-    const data = {goods_id: row.goods_id, row: row, unit: unit, format: format}
-    cud.openForm(state, data)
+    updateApi.setState({title: '更新可售商品'})
+    updateApi.setData({goods_id: row.goods_id, row: row, unit: unit, format: format})
+    updateApi.open()
   },
   create:()=> {
-    const state = {title: '新增可售商品'}
-    const data = {unit: unit, format: format, goods: goods}
-    cud.openForm(state, data)
+    storeApi.setState({title: '新增可售商品'})
+    storeApi.setData({unit: unit, format: format, goods: goods})
+    storeApi.open()
   },
   copySku: (row: GoodsSku) => {
-    const state = {title: '新增可售商品'}
-    const data = {row: row, unit: unit, format: format, copy: true, goods_id: row.goods_id}
-    cud.openForm(state, data)
+    copyApi.setState({title: '新增可售商品'})
+    copyApi.setData({row: row, unit: unit, format: format, copy: true, goods_id: row.goods_id})
+    copyApi.open()
   },
 }
-
-const [CreateSku, drawerApi] = useVbenDrawer({
-  connectedComponent: FormComponent,
-})
 
 interface RowType {
   id: string;
@@ -163,7 +168,9 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 
 <template>
   <Page auto-content-height>
-    <CreateSku :refresh="refresh" />
+    <UpdateSku :refresh="refresh" />
+    <StoreSku :refresh="refresh" />
+    <CopySku :refresh="refresh" />
     <DelSku :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>

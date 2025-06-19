@@ -12,7 +12,8 @@ import { list } from '#/api';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 
-import FormCustomerComponent from './customer-form.vue';
+import StoreCustomerComponent from './customer-store.vue';
+import UpdateCustomerComponent from './customer-update.vue';
 import DelCustomerComponent from './customer-del.vue';
 
 const [DelCustomer, modalApi] = useVbenModal({
@@ -20,33 +21,32 @@ const [DelCustomer, modalApi] = useVbenModal({
   connectedComponent: DelCustomerComponent,
 });
 
+const [UpdateCustomer, updateApi] = useVbenDrawer({
+  connectedComponent: UpdateCustomerComponent,
+})
+
+const [StoreCustomer, storeApi] = useVbenDrawer({
+  connectedComponent: StoreCustomerComponent,
+})
 
 const cud: CudInterface = {
-  openForm:(state :any, data: any) => {
-    drawerApi.setState(state);
-    drawerApi.setData(data)
-    drawerApi.open();
-  },
   delete: (row: RowType) => {
     modalApi.setState({ title: '确定要删除客户吗？', fullscreenButton: false });
     modalApi.setData({row: row})
     modalApi.open();
   },
   update: (row: RowType) => {
-    const state = {title: '更新客户'}
-    const data = {row: row}
-    cud.openForm(state, data)
+    updateApi.setState({title: '更新客户'});
+    updateApi.setData({row: row})
+    updateApi.open();
   },
   create:()=> {
-    const state = {title: '新增客户'}
-    const data = {row: undefined}
-    cud.openForm(state, data)
+    storeApi.setState({title: '新增客户'});
+    storeApi.open();
   },
 }
 
-const [CreateCustomer, drawerApi] = useVbenDrawer({
-  connectedComponent: FormCustomerComponent,
-})
+
 
 
 interface RowType {
@@ -129,7 +129,8 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 
 <template>
   <Page auto-content-height>
-    <CreateCustomer :refresh="refresh" />
+    <StoreCustomer :refresh="refresh" />
+    <UpdateCustomer :refresh="refresh" />
     <DelCustomer :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>

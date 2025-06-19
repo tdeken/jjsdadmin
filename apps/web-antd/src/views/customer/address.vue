@@ -19,7 +19,8 @@ import { $t } from "#/locales";
 import { customerSelector } from "#/utils";
 
 import DelAddressComponent from "./address-del.vue";
-import FormAddressComponent from "./address-form.vue";
+import UpdateAddressComponent from "./address-update.vue";
+import StoreAddressComponent from "./address-store.vue";
 
 const customers = ref();
 const loadCustomers = async () => {
@@ -35,25 +36,20 @@ onMounted(() => {
 });
 
 const cud: CudInterface = {
-  openForm: (state: any, data: any) => {
-    drawerApi.setState(state);
-    drawerApi.setData(data);
-    drawerApi.open();
-  },
   delete: (row: Address) => {
     modalApi.setState({ title: "确定要删除地址吗？", fullscreenButton: false });
     modalApi.setData({ row });
     modalApi.open();
   },
   update: (row: Address) => {
-    const state = { title: "更新收货地址" };
-    const data = { customers: customers.value, row };
-    cud.openForm(state, data);
+    updateApi.setState({ title: "更新收货地址" });
+    updateApi.setData({ customers: customers.value, row: row });
+    updateApi.open();
   },
   create: () => {
-    const state = { title: "新增收货地址" };
-    const data = { customers: customers.value, row: undefined };
-    cud.openForm(state, data);
+    storeApi.setState({ title: "新增收货地址" });
+    storeApi.setData({ customers: customers.value });
+    storeApi.open();
   },
 };
 
@@ -62,8 +58,12 @@ const [DelAddress, modalApi] = useVbenModal({
   connectedComponent: DelAddressComponent,
 });
 
-const [CreateAddress, drawerApi] = useVbenDrawer({
-  connectedComponent: FormAddressComponent,
+const [UpdateAddress, updateApi] = useVbenDrawer({
+  connectedComponent: UpdateAddressComponent,
+});
+
+const [StoreAddress, storeApi] = useVbenDrawer({
+  connectedComponent: StoreAddressComponent,
 });
 
 const formOptions: VbenFormProps = {
@@ -132,6 +132,7 @@ const gridOptions: VxeGridProps<Address> = {
 };
 
 function refresh() {
+  loadCustomers()
   GridApi.reload();
 }
 
@@ -155,7 +156,8 @@ const toCart = async (addressId:any) =>  {
 
 <template>
   <Page auto-content-height>
-    <CreateAddress :refresh="refresh" />
+    <StoreAddress :refresh="refresh" />
+    <UpdateAddress :refresh="refresh" />
     <DelAddress :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>

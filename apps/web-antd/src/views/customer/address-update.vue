@@ -132,29 +132,20 @@ const [Form, formApi] = vbenForm(cus, onSubmit);
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();
 
-  if (row.value) {
-    await addressUpdate({
-      id: row.value.id,
-      shop_name: values.shop_name, 
-      address: values.address, 
-      tel: values.tel, 
-      customer_id: values.customer_id,
-    })
-    message.success('更新客户地址成功')
-  } else {
-    await addressCreate({
-      shop_name: values.shop_name, 
-      address: values.address, 
-      tel: values.tel, 
-      customer_id: values.customer_id,
-    })
-    message.success('新增客户地址成功')
-  }
+  await addressUpdate({
+    id: row.value.id,
+    shop_name: values.shop_name, 
+    address: values.address, 
+    tel: values.tel, 
+    customer_id: values.customer_id,
+  })
+  message.success('更新客户地址成功')
+  
     
   if (props.refresh) {
     props.refresh()
   }
-
+  
 }
 
 </script>

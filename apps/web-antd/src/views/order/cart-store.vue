@@ -80,6 +80,7 @@ function updateRow(){
     }
   }
 
+  formApi.resetForm()
   formApi.updateSchema([
     {
       fieldName: 'id',

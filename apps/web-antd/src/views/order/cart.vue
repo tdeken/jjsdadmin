@@ -26,7 +26,8 @@ import { ORDER_PATH } from "#/constants";
 import type { Cart, CartSku, CartSelect } from "./types";
 import CartDelComponent from './cart-del.vue';
 import CartClearComponent from './cart-clear.vue';
-import CartFormComponent  from "./cart-form.vue";
+import CartUpdateComponent  from "./cart-update.vue";
+import CartStoreComponent  from "./cart-store.vue";
 
 
 const [CartDelete, cartDelModalApi] = useVbenModal({
@@ -39,10 +40,16 @@ const [CartClear, cartClearModalApi] = useVbenModal({
   connectedComponent: CartClearComponent,
 });
 
-const [CartForm, cartFormModalApi] = useVbenModal({
+const [UpdateForm, cartUpdateModalApi] = useVbenModal({
   // 连接抽离的组件
-  connectedComponent: CartFormComponent,
+  connectedComponent: CartUpdateComponent,
 });
+
+const [StoreForm, cartStoreModalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: CartStoreComponent,
+});
+
 
 const gridOptions: VxeGridProps<CartSku> = {
   minHeight: 200,
@@ -139,20 +146,15 @@ interface CartPage extends CudInterface {
 }
 
 const cud: CartPage = {
-  openForm: (state: any, data: any) => {
-    cartFormModalApi.setState(state);
-    cartFormModalApi.setData(data)
-    cartFormModalApi.open();
-  },
   update: (row: CartSku) => {
-    const state = { title: '修改商品', fullscreenButton: false }
-    const data = { row:row, cart_select: cartSelect.value, ...queryData.value }
-    cud.openForm(state, data)
+    cartUpdateModalApi.setState({ title: '修改商品', fullscreenButton: false });
+    cartUpdateModalApi.setData({ row:row, cart_select: cartSelect.value, ...queryData.value })
+    cartUpdateModalApi.open();
   },
   create: () => {
-    const state = { title: '添加商品', fullscreenButton: false }
-    const data = { cart_select: cartSelect.value, ...queryData.value }
-    cud.openForm(state, data)
+    cartStoreModalApi.setState({ title: '添加商品', fullscreenButton: false });
+    cartStoreModalApi.setData({ cart_select: cartSelect.value, ...queryData.value })
+    cartStoreModalApi.open();
   },
   clear: () => {
     cartClearModalApi.setState({ title: '确定要清空商品吗？', fullscreenButton: false });
@@ -193,7 +195,8 @@ const saveStore = async ()=> {
 
 <template>
   <Page>
-    <CartForm :refresh="fetchData" />
+    <StoreForm :refresh="fetchData" />
+    <UpdateForm :refresh="fetchData" />
     <CartDelete :refresh="fetchData"/>
     <CartClear :refresh="fetchData"/>
     <div class="button-container">

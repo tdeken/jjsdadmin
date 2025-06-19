@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { BasicOption } from '@vben/types';
 
-import { computed, markRaw } from 'vue';
+import { computed } from 'vue';
 
-import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
+import { AuthenticationLogin, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
@@ -12,21 +11,6 @@ import { useAuthStore } from '#/store';
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
-
-const MOCK_USER_OPTIONS: BasicOption[] = [
-  {
-    label: 'Super',
-    value: 'vben',
-  },
-  {
-    label: 'Admin',
-    value: 'admin',
-  },
-  {
-    label: 'User',
-    value: 'jack',
-  },
-];
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
@@ -94,5 +78,10 @@ const formSchema = computed((): VbenFormSchema[] => {
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
     @submit="authStore.authLogin"
+    :showQrcodeLogin="false"
+    :showCodeLogin="false"
+    :showThirdPartyLogin="false"
+    :showRegister="false"
+    :showForgetPassword="false"
   />
 </template>

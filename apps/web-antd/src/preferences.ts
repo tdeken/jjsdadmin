@@ -10,4 +10,11 @@ export const overridesPreferences = defineOverridesPreferences({
   app: {
     name: import.meta.env.VITE_APP_TITLE,
   },
+  copyright: {
+    companyName: "",
+    companySiteLink: "",
+    date: "2021",
+    icp: "粤ICP备2021125107号",
+    icpLink: "https://beian.miit.gov.cn",
+  }
 });
