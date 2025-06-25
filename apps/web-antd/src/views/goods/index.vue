@@ -5,24 +5,22 @@ import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps, VxeGridListeners } from '#/adapter/vxe-table';
 
-import { Button } from 'ant-design-vue';
+import { Button, Popconfirm, message } from 'ant-design-vue';
 
-import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { goodsList,goodsSelectInfo } from '#/api';
+import { goodsList, goodsSelectInfo, goodsDestroy, goodsSkuDestroy } from '#/api';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 
 import type { Goods, GoodsSku } from './types';
 import SpuStoreComponent from './goods-store.vue';
 import SpuUpdateComponent from './goods-update.vue';
-import SpuDelComponent from './goods-del.vue';
 
 import SkuStoreComponent from './sku-store.vue';
 import SkuCopyComponent from './sku-copy.vue';
 import SkuUpdateComponent from './sku-update.vue';
-import SkuDelComponent from './sku-del.vue';
 
 import GoodsSkuComponent from './goods-sku.vue';
 
@@ -42,12 +40,6 @@ onMounted(()=>{
   loadSelectInfo()
 })
 
-
-const [SkuDelete, skuModalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: SkuDelComponent,
-});
-
 const [SkuUpdate, skuUpdateApi] = useVbenDrawer({
   // 连接抽离的组件
   connectedComponent: SkuUpdateComponent,
@@ -61,11 +53,6 @@ const [SkuStore, skuStoreApi] = useVbenDrawer({
 const [SkuCopy, skuCopyApi] = useVbenDrawer({
   // 连接抽离的组件
   connectedComponent: SkuCopyComponent,
-});
-
-const [Delete, modalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: SpuDelComponent,
 });
 
 const [Update, updateApi] = useVbenDrawer({
@@ -85,10 +72,10 @@ interface SkuPage extends CudInterface {
 }
 
 const cud: SkuPage = {
-  delete: (row: Goods) => {
-    modalApi.setState({ title: '确定要删除商品吗？', fullscreenButton: false });
-    modalApi.setData({row: row})
-    modalApi.open();
+  delete: async (row: Goods) => {
+    await goodsDestroy({id: row.id})
+    message.success('操作成功')
+    refresh()
   },
   update: (row: Goods) => {
     updateApi.setState({title: '更新商品'});
@@ -114,10 +101,10 @@ const cud: SkuPage = {
     skuCopyApi.setData({goods_id: row.goods_id, unit: unit, format: format})
     skuCopyApi.open();
   },
-  deleteSku: (row: GoodsSku) => {
-    skuModalApi.setState({ title: '确定要销售品吗？', fullscreenButton: false });
-    skuModalApi.setData({row: row})
-    skuModalApi.open();
+  deleteSku: async (row: GoodsSku) => {
+    await goodsSkuDestroy({id: row.id})
+    message.success('操作成功')
+    refresh()
   },
 }
 
@@ -189,14 +176,13 @@ const gridOptions: VxeGridProps<Goods> = {
   }
 };
 
-function refresh() {
+const refresh = () => {
   GridApi.reload()
 }
 
 const useRouteStore = useRoute()
 
 const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
-
 
 const gridEvents: VxeGridListeners<Goods> = {
   cellClick ({ row, column }) {
@@ -211,13 +197,11 @@ const gridEvents: VxeGridListeners<Goods> = {
 
 <template>
   <Page auto-content-height>
-    <Store :refresh="refresh" />
-    <Delete :refresh="refresh" />
-    <Update :refresh="refresh" />
-    <SkuUpdate :refresh="refresh" />
-    <SkuStore :refresh="refresh" />
-    <SkuCopy :refresh="refresh" />
-    <SkuDelete :refresh="refresh" />
+    <Store class="w-[33%]" :refresh="refresh" />
+    <Update class="w-[33%]" :refresh="refresh" />
+    <SkuUpdate class="w-[33%]" :refresh="refresh" />
+    <SkuStore class="w-[33%]" :refresh="refresh" />
+    <SkuCopy class="w-[33%]" :refresh="refresh" />
     <Grid v-on="gridEvents">
       <template #expand_content="{ row }">
           <GoodsSkuComponent 
@@ -235,7 +219,14 @@ const gridEvents: VxeGridListeners<Goods> = {
       <template #action="{ row }">
         <Button type="link" @click="cud.createSku(row)" >+销售品</Button>
         <Button type="link" @click="cud.update(row)" >编辑</Button>
-        <Button danger type="link" @click="cud.delete(row)" >删除</Button>
+        <Popconfirm
+          title = "删除后该商品下的销售商品也会删除，你确定要删除吗？"
+          ok-text = "确定"
+          cancel-text = "取消"
+          @confirm="cud.delete(row)"
+        >
+          <Button danger type="link" >删除</Button>
+        </Popconfirm>
       </template>
     </Grid>
   </Page>

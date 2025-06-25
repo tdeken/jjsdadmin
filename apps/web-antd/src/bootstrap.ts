@@ -21,6 +21,8 @@ import 'vxe-pc-ui/lib/style.css'
 import VxeUITable from 'vxe-table'
 import 'vxe-table/lib/style.css'
 
+import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
+
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
   await initComponentAdapter();
@@ -66,6 +68,15 @@ async function bootstrap(namespace: string) {
   app.use(MotionPlugin);
 
   app.use(VxeUIAll).use(VxeUITable)
+
+  const queryClient = new QueryClient({
+  defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  })
+  app.use(VueQueryPlugin, { queryClient })
 
   // 动态更新标题
   watchEffect(() => {

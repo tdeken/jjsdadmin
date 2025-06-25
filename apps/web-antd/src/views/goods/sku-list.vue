@@ -4,21 +4,20 @@ import { ref, onMounted } from 'vue';
 import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import { Button } from 'ant-design-vue';
+import { Button, Popconfirm, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
-import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 
 import type { GoodsSku } from './types';
-import { goodsSkuList, goodsSelectInfo, goodsSelect } from '#/api';
+import { goodsSkuList, goodsSelectInfo, goodsSelect, goodsSkuDestroy } from '#/api';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 
 import UpdateComponent from './sku-update.vue';
 import StoreComponent from './sku-store.vue';
 import CopyComponent from './sku-copy.vue';
-import DelComponent from './sku-del.vue';
 
 const unit = ref() 
 const format = ref() 
@@ -41,11 +40,6 @@ onMounted(()=>{
   loadSelectInfo()
 })
 
-const [DelSku, modalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: DelComponent,
-});
-
 const [UpdateSku, updateApi] = useVbenDrawer({
   connectedComponent: UpdateComponent,
 })
@@ -64,10 +58,10 @@ interface SkuPage extends CudInterface {
 }
 
 const cud: SkuPage = {
-  delete: (row: GoodsSku) => {
-    modalApi.setState({ title: '确定要销售品吗？', fullscreenButton: false });
-    modalApi.setData({row: row})
-    modalApi.open();
+  delete: async (row: GoodsSku) => {
+    await goodsSkuDestroy({id: row.id})
+    message.success('操作成功')
+    refresh()
   },
   update: (row: GoodsSku) => {
     updateApi.setState({title: '更新可售商品'})
@@ -168,9 +162,9 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
 
 <template>
   <Page auto-content-height>
-    <UpdateSku :refresh="refresh" />
-    <StoreSku :refresh="refresh" />
-    <CopySku :refresh="refresh" />
+    <UpdateSku class="w-[33%]" :refresh="refresh" />
+    <StoreSku class="w-[33%]" :refresh="refresh" />
+    <CopySku class="w-[33%]" :refresh="refresh" />
     <DelSku :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>
@@ -181,7 +175,14 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
       <template #action="{ row }">
         <Button type="link" @click="cud.copySku(row)" >复制</Button>
         <Button type="link" @click="cud.update(row)" >编辑</Button>
-        <Button danger type="link" @click="cud.delete(row)" >删除</Button>
+        <Popconfirm
+          title = "你确定要删除吗？"
+          ok-text = "确定"
+          cancel-text = "取消"
+          @confirm="cud.delete(row)"
+        >
+          <Button danger type="link" >删除</Button>
+        </Popconfirm>
       </template>
     </Grid>
   </Page>

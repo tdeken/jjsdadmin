@@ -8,17 +8,16 @@ import type { CudInterface } from "#/types/form";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { Page, useVbenDrawer, useVbenModal } from "@vben/common-ui";
+import { Page, useVbenDrawer } from "@vben/common-ui";
 
-import { Button } from "ant-design-vue";
+import { Button, Popconfirm, message } from "ant-design-vue";
 
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { addressList, orderCartStore } from "#/api";
+import { addressList, orderCartStore, addressDestroy } from "#/api";
 import { CART_PATH } from "#/constants";
 import { $t } from "#/locales";
 import { customerSelector } from "#/utils";
 
-import DelAddressComponent from "./address-del.vue";
 import UpdateAddressComponent from "./address-update.vue";
 import StoreAddressComponent from "./address-store.vue";
 
@@ -36,10 +35,10 @@ onMounted(() => {
 });
 
 const cud: CudInterface = {
-  delete: (row: Address) => {
-    modalApi.setState({ title: "确定要删除地址吗？", fullscreenButton: false });
-    modalApi.setData({ row });
-    modalApi.open();
+  delete: async (row: Address) => {
+    await addressDestroy({id: row.id})
+    message.success('操作成功')
+    refresh()
   },
   update: (row: Address) => {
     updateApi.setState({ title: "更新收货地址" });
@@ -52,11 +51,6 @@ const cud: CudInterface = {
     storeApi.open();
   },
 };
-
-const [DelAddress, modalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: DelAddressComponent,
-});
 
 const [UpdateAddress, updateApi] = useVbenDrawer({
   connectedComponent: UpdateAddressComponent,
@@ -131,7 +125,7 @@ const gridOptions: VxeGridProps<Address> = {
   },
 };
 
-function refresh() {
+const refresh = () => {
   loadCustomers()
   GridApi.reload();
 }
@@ -158,7 +152,6 @@ const toCart = async (addressId:any) =>  {
   <Page auto-content-height>
     <StoreAddress :refresh="refresh" />
     <UpdateAddress :refresh="refresh" />
-    <DelAddress :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click="cud.create">
@@ -168,7 +161,14 @@ const toCart = async (addressId:any) =>  {
       <template #action="{ row }">
         <Button type="text" @click="toCart(row.id)">订货</Button>
         <Button type="link" @click="cud.update(row)">编辑</Button>
-        <Button danger type="link" @click="cud.delete(row)">删除</Button>
+        <Popconfirm
+          title = "你确定要删除当前的配送地址吗？"
+          ok-text = "确定"
+          cancel-text = "取消"
+          @confirm="cud.delete(row)"
+        >
+          <Button danger type="link" >删除</Button>
+        </Popconfirm>
       </template>
     </Grid>
   </Page>

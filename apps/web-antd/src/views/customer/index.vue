@@ -2,24 +2,18 @@
 import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
-import { Button } from 'ant-design-vue';
+import { Button, Popconfirm, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
-import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenDrawer } from '@vben/common-ui';
 
-import { list } from '#/api';
+import { list, customerDestroy } from '#/api';
 import { useRoute } from 'vue-router';
 import { $t } from '#/locales';
 
 import StoreCustomerComponent from './customer-store.vue';
 import UpdateCustomerComponent from './customer-update.vue';
-import DelCustomerComponent from './customer-del.vue';
-
-const [DelCustomer, modalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: DelCustomerComponent,
-});
 
 const [UpdateCustomer, updateApi] = useVbenDrawer({
   connectedComponent: UpdateCustomerComponent,
@@ -30,10 +24,10 @@ const [StoreCustomer, storeApi] = useVbenDrawer({
 })
 
 const cud: CudInterface = {
-  delete: (row: RowType) => {
-    modalApi.setState({ title: '确定要删除客户吗？', fullscreenButton: false });
-    modalApi.setData({row: row})
-    modalApi.open();
+  delete: async(row: RowType) => {
+    await customerDestroy({id: row.id})
+    message.success('操作成功')
+    refresh()
   },
   update: (row: RowType) => {
     updateApi.setState({title: '更新客户'});
@@ -45,9 +39,6 @@ const cud: CudInterface = {
     storeApi.open();
   },
 }
-
-
-
 
 interface RowType {
   id: string;
@@ -117,7 +108,7 @@ const gridOptions: VxeGridProps<RowType> = {
   },
 };
 
-function refresh() {
+const refresh = () => {
   GridApi.reload()
 }
 
@@ -131,7 +122,6 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
   <Page auto-content-height>
     <StoreCustomer :refresh="refresh" />
     <UpdateCustomer :refresh="refresh" />
-    <DelCustomer :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click=cud.create >
@@ -140,7 +130,14 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
       </template>
       <template #action="{ row }">
         <Button type="link" @click="cud.update(row)" >编辑</Button>
-        <Button danger type="link" @click="cud.delete(row)" >删除</Button>
+        <Popconfirm
+          title = "删除后该客户下的收货地址也会删除，你确定要删除吗？"
+          ok-text = "确定"
+          cancel-text = "取消"
+          @confirm="cud.delete(row)"
+        >
+          <Button danger type="link" >删除</Button>
+        </Popconfirm>
       </template>
     </Grid>
   </Page>

@@ -2,7 +2,7 @@
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page } from '@vben/common-ui';
-import { Button } from 'ant-design-vue';
+import { Button, Popconfirm } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 
@@ -76,7 +76,14 @@ function deleteSku (row : GoodsSku){
       <template #action="{ row }">
         <Button type="link" @click="copySku(row)" >复制</Button>
         <Button type="link" @click="updateSku(row)" >编辑</Button>
-        <Button danger type="link" @click="deleteSku(row)" >删除</Button>
+        <Popconfirm
+          title = "你确定要删除吗？"
+          ok-text = "确定"
+          cancel-text = "取消"
+          @confirm="deleteSku(row)"
+        >
+          <Button danger type="link" >删除</Button>
+        </Popconfirm>
       </template>
     </Grid>
   </Page>

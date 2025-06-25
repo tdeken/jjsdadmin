@@ -4,11 +4,10 @@ import { useVbenModal } from '@vben/common-ui';
 import { ref, h } from 'vue';
 
 import { vbenForm, priceFloat } from '#/utils';
-import {  orderCartAdd, orderCartUpdate } from '#/api';
+import {  orderCartAdd } from '#/api';
 
-import type { CartSku, CartSelect } from './types';
+import type { CartSelect } from './types';
 
-const row = ref<CartSku>() 
 const dataMap = ref<Map<string, CartSelect>>(new Map());
 const findById = (id: string): CartSelect | undefined => {
   return dataMap.value.get(id)
@@ -51,54 +50,15 @@ function updateRow(){
     })
   });
 
-
-  if (!data.row) {
-    formApi.updateSchema([
-      {
-        fieldName: 'id',
-        componentProps: {
-          options: options,
-        }
-      }
-    ])
-    return
-  }
-
-  row.value = data.row as CartSku;
-
-  const option = findById(row.value.id)
-  var price =  {
-      fieldName: 'price',
-      defaultValue: row.value.price || '0',
-      description: () => h('span', ''),
-    }
-  if (option?.last_price !== '0.00') {
-    price = {
-      fieldName: 'price',
-      defaultValue: row.value.price || '0',
-      description: () => h('p', { class: 'text-red-600' }, '最近购买 '+ option?.last_price +' 元'),
-    }
-  }
-
-  formApi.resetForm()
   formApi.updateSchema([
     {
       fieldName: 'id',
       componentProps: {
         options: options,
-      },
-      defaultValue: row.value.sku_id || ''
-    },
-    {
-      fieldName: 'book_num',
-      defaultValue: row.value.book_num || '1'
-    },
-    {
-      fieldName: 'remark',
-      defaultValue: row.value.remark || ''
-    },
-    price,
+      }
+    }
   ])
+
 }
 
 const cus = {
@@ -195,8 +155,6 @@ const [Form, formApi] = vbenForm(cus, onSubmit);
 
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();
-  
-  console.log(values)
 
   const price = priceFloat(values.price)
   var bookNum = priceFloat(values.book_num)
@@ -204,26 +162,15 @@ async function onSubmit(values: Record<string, any>) {
     bookNum = "1"
   }
 
-  if (!row.value) {
-    await orderCartAdd({
-      address_id: addressId.value,
-      order_id: orderId.value,
-      sku_id: values.id,
-      book_num: bookNum,
-      price: price,
-      remark: values.remark,
-    })
-  } else {
-    await orderCartUpdate({
-      id: row.value.id,
-      address_id: addressId.value,
-      order_id: orderId.value,
-      sku_id: values.id,
-      book_num: bookNum,
-      price: price,
-      remark: values.remark,
-    })
-  }
+  await orderCartAdd({
+    address_id: addressId.value,
+    order_id: orderId.value,
+    sku_id: values.id,
+    book_num: bookNum,
+    price: price,
+    remark: values.remark,
+  })
+  
   
    if (props.refresh) {
     props.refresh()

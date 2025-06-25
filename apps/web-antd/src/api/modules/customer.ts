@@ -27,6 +27,10 @@ export namespace CustomerApi {
     phone: string;
   }
 
+  /** 地址删除*/
+  export interface AddressSelectQuery {
+  }
+
   /** 地址创建 */
   export interface AddressCreate {
     shop_name: string;
@@ -103,6 +107,13 @@ export async function customerDestroy(data: CustomerApi.CustomerDestroy) {
  */
 export async function addressList(params: CustomerApi.AddressListQuery) {
   return requestClient.get('admin/customer/address-list', { params });
+}
+
+/**
+ * 地址列表
+ */
+export async function addressSelect(params: CustomerApi.AddressSelectQuery) {
+  return requestClient.get('admin/customer/address-select', { params });
 }
 
 /**

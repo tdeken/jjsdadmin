@@ -1,6 +1,7 @@
 
 <template>
   <Page auto-content-height>
+    <OrderStore />
     <Print class="w-[60%]" />
     <OrderDelete :refresh="refresh" />
     <OrderSHow class="w-[45%]" />
@@ -25,11 +26,19 @@
                  <MenuItem @click="cud.update(row)">
                   修改订单
                 </MenuItem>
-                <MenuItem @click="cud.update(row)">
+                <!-- <MenuItem @click="cud.update(row)">
                   修改订单状态
-                </MenuItem>
-                <MenuItem @click="cud.delete(row)">
-                  删除订单
+                </MenuItem> -->
+                <MenuItem>
+                  <Popconfirm
+                    title = "你确定要删除吗？"
+                    ok-text = "确定"
+                    cancel-text = "取消"
+                    @confirm="cud.delete(row)"
+                  >
+                    删除订单
+                  </Popconfirm>
+                  
                 </MenuItem>
               </Menu>
             </template>
@@ -51,20 +60,17 @@ import { useRoute, useRouter } from "vue-router";
 
 import { Page, useVbenDrawer, useVbenModal } from "@vben/common-ui";
 
-import { Button, Space, Dropdown, DropdownButton, Menu, MenuItem } from "ant-design-vue";
-
+import { Button, Space, Dropdown, DropdownButton, Menu, MenuItem, message } from "ant-design-vue";
 
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { orderList, orderCartStore, orderPrintData } from "#/api";
+import { orderList, orderCartStore, orderPrintData, orderDestroy } from "#/api";
 import TagComponents from "#/components/tags/tag.vue";
-import { ORDER_STATUS } from "#/constants";
+import { ORDER_STATUS, CART_PATH } from "#/constants";
 import { $t } from "#/locales";
 import type { CudInterface } from '#/types/form';
-import { CART_PATH } from "#/constants";
-
 
 import OrderShow from "./order-show.vue";
-import OrderDelComponent from './order-del.vue';
+import OrderStoreComponent from './order-store.vue';
 import PrintComponent from './print.vue';
 
 const router = useRouter();
@@ -80,23 +86,21 @@ const cud: SkuPage = {
     orderShowModalApi.setData(row);
     orderShowModalApi.open();
   },
-  openForm: (state: any, data: any) => {
-    
-  },
   update: async (row: RowType) => {
-      await orderCartStore({address_id: row.address_id, order_id: row.id})
-      router.push({
-          path: CART_PATH,
-          query: { address_id: row.address_id, order_id: row.id }, // URL查询参数
-        });
+    await orderCartStore({address_id: row.address_id, order_id: row.id})
+    router.push({
+      path: CART_PATH,
+      query: { address_id: row.address_id, order_id: row.id }, // URL查询参数
+    });
   },
   create: () => {
-    
+    orderStoreModalApi.setState({ title: '创建订单', fullscreenButton: false });
+    orderStoreModalApi.open();
   },
-  delete: (row: RowType) => {
-    orderModalApi.setState({ title: '确定要删除订单吗？', fullscreenButton: false });
-    orderModalApi.setData({row: row})
-    orderModalApi.open();
+  delete: async (row: RowType) => {
+    await orderDestroy({id: row.id})
+    message.success('操作成功')
+    refresh()
   },
   print: async (row: RowType) => {
     const res = await orderPrintData({order_id: row.id})
@@ -111,9 +115,9 @@ const [Print, printModalApi] = useVbenModal({
   connectedComponent: PrintComponent,
 });
 
-const [OrderDelete, orderModalApi] = useVbenModal({
+const [OrderStore, orderStoreModalApi] = useVbenModal({
   // 连接抽离的组件
-  connectedComponent: OrderDelComponent,
+  connectedComponent: OrderStoreComponent,
 });
 
 const [OrderSHow, orderShowModalApi] = useVbenDrawer({
@@ -167,25 +171,18 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeGridProps<RowType> = {
   columns: [
-    { field: "order_no", title: "订单号", minWidth: 150 },
+    { field: "order_no", title: "订单号", minWidth: 100 },
     { field: "shop_name", title: "收货人", minWidth: 150 },
     { field: "address", title: "收货地址", minWidth: 200 },
     { field: "amount", title: "总金额（元）", minWidth: 100 },
-    { field: "real_amount", title: "实收（元）", minWidth: 100 },
-    {
-      field: "status",
-      slots: { default: "status" },
-      title: "状态",
-      width: 100,
-    },
     { field: "remark", title: "备注", width: 200 },
-    { field: "created_date", title: "下单时间" },
+    { field: "created_date", title: "下单时间", minWidth: 100 },
     {
       field: "action",
       fixed: "right",
       slots: { default: "action" },
       title: "操作",
-      minWidth: 200,
+      minWidth: 100,
     },
   ],
   height: "auto",
@@ -204,8 +201,8 @@ const gridOptions: VxeGridProps<RowType> = {
   },
 };
 
-function refresh() {
-  GridApi.reload();
+const refresh = () => {
+   GridApi.reload();
 }
 
 const useRouteStore = useRoute();

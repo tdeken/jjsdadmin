@@ -4,7 +4,7 @@ import { useVbenModal } from '@vben/common-ui';
 import { ref, h } from 'vue';
 
 import { vbenForm, priceFloat } from '#/utils';
-import {  orderCartAdd, orderCartUpdate } from '#/api';
+import { orderCartUpdate } from '#/api';
 
 import type { CartSku, CartSelect } from './types';
 
@@ -50,19 +50,6 @@ function updateRow(){
       label: row.name
     })
   });
-
-
-  if (!data.row) {
-    formApi.updateSchema([
-      {
-        fieldName: 'id',
-        componentProps: {
-          options: options,
-        }
-      }
-    ])
-    return
-  }
 
   row.value = data.row as CartSku;
 
@@ -195,37 +182,24 @@ const [Form, formApi] = vbenForm(cus, onSubmit);
 
 async function onSubmit(values: Record<string, any>) {
   drawerApi.close();
-  
-  console.log(values)
 
   const price = priceFloat(values.price)
   var bookNum = priceFloat(values.book_num)
   if (!values.book_num) {
     bookNum = "1"
   }
-
-  if (!row.value) {
-    await orderCartAdd({
-      address_id: addressId.value,
-      order_id: orderId.value,
-      sku_id: values.id,
-      book_num: bookNum,
-      price: price,
-      remark: values.remark,
-    })
-  } else {
-    await orderCartUpdate({
-      id: row.value.id,
-      address_id: addressId.value,
-      order_id: orderId.value,
-      sku_id: values.id,
-      book_num: bookNum,
-      price: price,
-      remark: values.remark,
-    })
-  }
+ 
+  await orderCartUpdate({
+    id: row.value?.id as string,
+    address_id: addressId.value,
+    order_id: orderId.value,
+    sku_id: values.id,
+    book_num: bookNum,
+    price: price,
+    remark: values.remark,
+  })
   
-   if (props.refresh) {
+  if (props.refresh) {
     props.refresh()
   }
 }

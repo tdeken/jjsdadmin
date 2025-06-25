@@ -9,31 +9,23 @@ import {
   Divider,
   Row,
   FloatButton,
+  Popconfirm,
+  message
 } from "ant-design-vue";
-
 
 import { Page, useVbenModal, alert } from "@vben/common-ui";
 import { useTabs } from '@vben/hooks';
 
-
-
 import type { VxeGridProps } from "#/adapter/vxe-table";
 import type { CudInterface } from '#/types/form';
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
-import { orderCart, orderCartSku, orderStore } from "#/api";
+import { orderCart, orderCartSku, orderStore, orderCartDestroy } from "#/api";
 import { ORDER_PATH } from "#/constants";
 
 import type { Cart, CartSku, CartSelect } from "./types";
-import CartDelComponent from './cart-del.vue';
 import CartClearComponent from './cart-clear.vue';
 import CartUpdateComponent  from "./cart-update.vue";
 import CartStoreComponent  from "./cart-store.vue";
-
-
-const [CartDelete, cartDelModalApi] = useVbenModal({
-  // 连接抽离的组件
-  connectedComponent: CartDelComponent,
-});
 
 const [CartClear, cartClearModalApi] = useVbenModal({
   // 连接抽离的组件
@@ -88,10 +80,9 @@ const fetchSelect = async () => {
     })
 
     cartSelect.value = selectData.list as CartSelect[]
-  }catch(error) {
+  } catch(error) {
 
   }
-
 }
 
 interface Query {
@@ -161,10 +152,10 @@ const cud: CartPage = {
     cartClearModalApi.setData({...queryData.value})
     cartClearModalApi.open();
   },
-  delete: (row: CartSku) => {
-    cartDelModalApi.setState({ title: '确定要删除商品吗？', fullscreenButton: false });
-    cartDelModalApi.setData({row: row, ...queryData.value})
-    cartDelModalApi.open();
+  delete: async (row: CartSku) => {
+    await orderCartDestroy({id: row.id, ...queryData.value})
+    message.success('操作成功')
+    fetchData()
   }
 }
 
@@ -265,7 +256,14 @@ const saveStore = async ()=> {
       </template>
       <template #action="{ row }">
         <Button type="link" @click="cud.update(row)">编辑</Button>
-        <Button type="link" @click="cud.delete(row)" danger>删除</Button>
+        <Popconfirm
+          title = "你确定要删除吗？"
+          ok-text = "确定"
+          cancel-text = "取消"
+          @confirm="cud.delete(row)"
+        >
+          <Button danger type="link" >删除</Button>
+        </Popconfirm>
       </template>
     </Grid>
 

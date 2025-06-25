@@ -21,7 +21,6 @@ interface OrderSku {
   remark: string;
 }
 
-
 interface Cart {
   status: number;
   shop_name: string;
@@ -79,8 +78,15 @@ interface PrintSku {
   unit: string;
 }
 
+interface AddressSelect {
+  id: string;
+  shop_name: string;
+  address: string;
+}
+
 export type { 
   Order, OrderSku, 
   Cart, CartSku, CartSelect,
   PrintData, PrintAddress, PrintSku,
+  AddressSelect,
  };

@@ -3,19 +3,19 @@
     <div ref="topElRef">
       <div style="margin-bottom: 8px;">
         <div style="display: inline-block; width: 100%;">
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">购货者：{{ data.customer.shop_name }}</div>
-          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">地址：{{ data.customer.address }}</div>
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">联系电话：{{ data.customer.tel }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">购货者：{{ data?.customer.shop_name }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">地址：{{ data?.customer.address }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">联系电话：{{ data?.customer.tel }}</div>
         </div>
         <div style="display: inline-block;width: 100%;">
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">供货者：{{ data.owner.shop_name }}</div>
-          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">地址：{{ data.owner.address }}</div>
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">联系电话：{{ data.owner.tel }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">供货者：{{ data?.owner.shop_name }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">地址：{{ data?.owner.address }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">联系电话：{{ data?.owner.tel }}</div>
         </div>
         <div style="display: inline-block;width: 100%;">
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">订单编号：{{ data.order_no }}</div>
-          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">订单日期：{{ data.created_date }}</div>
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">订单总金额：{{ data.amount }} 元</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">订单编号：{{ data?.order_no }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">订单日期：{{ data?.created_date }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">订单总金额：{{ data?.amount }} 元</div>
         </div>
       </div>
     </div>
@@ -25,9 +25,9 @@
     <div ref="bottomElRef">
       <div>
         <div style="display: inline-block;width: 100%;">
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">开票人：{{ data.operator }}</div>
-          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">配送员：{{ data.deliver }}</div>
-          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">共 {{ data.total }} 样商品</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">开票人：{{ data?.operator }}</div>
+          <div style="float: left; width: 30%;height: 18px;line-height: 20px;">配送员：{{ data?.deliver }}</div>
+          <div style="float: left; width: 40%;height: 18px;line-height: 20px;">共 {{ data?.total }} 样商品</div>
         </div>
         <div style="display: inline-block;width: 100%;height: 18px;line-height: 20px;">
           特别提示：尊敬的客户，请与配送员当面点清货物，如有错误，请及时来电，多谢惠顾；
