@@ -4,7 +4,7 @@
       <div>
         <div class="p-label-g p-title">
           <div class="p-label" style="width: 100%;font-weight: bold; font-size: 20px;text-align: center;">
-            健健综合店(批 发/进 货 台 账)
+            健健综合店 (批 发/进 货 台 账)
           </div>
         </div>
         <div class="p-label-g">
