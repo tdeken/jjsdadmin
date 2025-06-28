@@ -3,7 +3,6 @@
   <Page auto-content-height>
     <OrderStore />
     <Print class="w-[60%]" />
-    <OrderDelete :refresh="refresh" />
     <OrderSHow class="w-[45%]" />
     <Grid>
       <template #toolbar-tools>
