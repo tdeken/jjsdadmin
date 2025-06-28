@@ -22,3 +22,11 @@ packages/@core/ui-kit/form-ui/dist
 packages/@core/ui-kit/layout-ui/dist
 packages/@core/ui-kit/menu-ui/dist
 packages/@core/ui-kit/tabs-ui/dist
+
+internal/vite-config/dist
+internal/lint-configs/eslint-config/dist
+internal/node-utils/dist
+internal/tailwind-config/dist
+
+scripts/vsh/dist
+scripts/turbo-run/dist
