@@ -2,13 +2,8 @@
 import { useVbenDrawer } from '@vben/common-ui';
 
 import { vbenForm } from '#/utils';
-import { customerCreate, customerUpdate } from '#/api';
+import { customerCreate } from '#/api';
 import { message } from 'ant-design-vue';
-
-import { ref } from 'vue';
-
-
-const row = ref()
 
 interface Props {
   refresh?:()=>void, 

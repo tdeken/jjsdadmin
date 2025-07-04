@@ -2,7 +2,7 @@
 <template>
   <Page auto-content-height>
     <OrderStore />
-    <Print class="w-[60%]" />
+    <Print :refresh="refresh" />
     <OrderSHow class="w-[45%]" />
     <Grid>
       <template #toolbar-tools>
@@ -13,6 +13,10 @@
       
       <template #status="{ row }">
         <TagComponents :status="row.status" :status-map="ORDER_STATUS" />
+      </template>
+
+      <template #print_status="{ row }">
+       <TagComponents :status="row.print_status" :status-map="ORDER_PRINT_STATUS" />
       </template>
 
       <template #action="{ row }">
@@ -59,12 +63,12 @@ import { useRoute, useRouter } from "vue-router";
 
 import { Page, useVbenDrawer, useVbenModal } from "@vben/common-ui";
 
-import { Button, Space, Dropdown, DropdownButton, Menu, MenuItem, message } from "ant-design-vue";
+import { Button, Space, Dropdown, DropdownButton, Menu, MenuItem, message, Popconfirm } from "ant-design-vue";
 
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
 import { orderList, orderCartStore, orderPrintData, orderDestroy } from "#/api";
 import TagComponents from "#/components/tags/tag.vue";
-import { ORDER_STATUS, CART_PATH } from "#/constants";
+import { ORDER_STATUS, ORDER_PRINT_STATUS, CART_PATH } from "#/constants";
 import { $t } from "#/locales";
 import type { CudInterface } from '#/types/form';
 
@@ -104,7 +108,7 @@ const cud: SkuPage = {
   print: async (row: RowType) => {
     const res = await orderPrintData({order_id: row.id})
     printModalApi.setState({ title: "订单打印", confirmText: '打印' });
-    printModalApi.setData(res);
+    printModalApi.setData({order_id: row.id, print_data: res});
     printModalApi.open();
   }
 };
@@ -175,13 +179,14 @@ const gridOptions: VxeGridProps<RowType> = {
     { field: "address", title: "收货地址", minWidth: 200 },
     { field: "amount", title: "总金额（元）", minWidth: 100 },
     { field: "remark", title: "备注", width: 200 },
+    { field: "print_status", title: "打印状态", width: 100, slots: { default: 'print_status' } },
     { field: "created_date", title: "下单时间", minWidth: 100 },
     {
       field: "action",
       fixed: "right",
       slots: { default: "action" },
       title: "操作",
-      minWidth: 100,
+      minWidth: 200,
     },
   ],
   height: "auto",

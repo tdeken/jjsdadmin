@@ -8,7 +8,8 @@ interface SelectOption {
    * 选项值
    */
   value?: string;
-
+  
+  [key: string]: any
 }
 
 /** 表单操作 */

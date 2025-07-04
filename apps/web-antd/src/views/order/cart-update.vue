@@ -2,9 +2,10 @@
 import { useVbenModal } from '@vben/common-ui';
 
 import { ref, h } from 'vue';
+import { debounce } from 'lodash-es';
 
 import { vbenForm, priceFloat } from '#/utils';
-import { orderCartUpdate } from '#/api';
+import { orderCartUpdate, orderCartSku } from '#/api';
 
 import type { CartSku, CartSelect } from './types';
 
@@ -21,6 +22,7 @@ interface Props {
 const props = defineProps<Props>()
 const addressId = ref<string>('')
 const orderId = ref<string>('')
+const searchText = ref<string>('')
 
 const [Modal, drawerApi] = useVbenModal({
   onCancel() {
@@ -47,23 +49,23 @@ function updateRow(){
     dataMap.value.set(row.id, row)
     options.push({
       value: row.id,
-      label: row.name
+      label: row.name + " / " + row.unit
     })
   });
 
   row.value = data.row as CartSku;
 
-  const option = findById(row.value.id)
+  const sku = findById(row.value.sku_id)
   var price =  {
       fieldName: 'price',
       defaultValue: row.value.price || '0',
       description: () => h('span', ''),
     }
-  if (option?.last_price !== '0.00') {
+  if (sku && sku.last_price !== '0.00') {
     price = {
       fieldName: 'price',
       defaultValue: row.value.price || '0',
-      description: () => h('p', { class: 'text-red-600' }, '最近购买 '+ option?.last_price +' 元'),
+      description: () => h('p', { class: 'text-red-600' }, '最近购买 '+ sku.last_price +' 元'),
     }
   }
 
@@ -95,11 +97,19 @@ const cus = {
       componentProps: {
         options: [],
         allowClear: true,
-        filterOption: true,
+        filterOption: false,
         immediate: false,
         optionFilterProp: "label",
         placeholder: '请选择',
         showSearch: true,
+        onSearch: (keyword: string) => {
+          if (searchText.value === keyword) return
+          searchText.value = keyword
+          handleSearch(keyword)
+        },
+        onChange: (val: string) => {
+          handleChange(val)
+        }
       },
       defaultValue: undefined,
       fieldName: 'id',
@@ -115,32 +125,6 @@ const cus = {
         min:"0",
         defaultValue:0,
         style: { width: '25%' }
-      },
-      dependencies: {
-        triggerFields: ['id'],
-        trigger(values: any) {
-          if (!values.id) return
-          const row = findById(values.id)
-          if (!row) return 
-
-          formApi.setFieldValue("price", row.price)
-          if (row.last_price !== '0.00')
-          {
-            formApi.updateSchema([
-              {
-                fieldName: 'price',
-                description: () => h('span', { class: 'text-red-600' }, '最近售价 '+row.last_price+' 元')
-              }
-            ])
-          } else {
-            formApi.updateSchema([
-              {
-                fieldName: 'price',
-                description: ''
-              }
-            ])
-          }
-        }
       },
       // 字段名
       fieldName: 'price',
@@ -203,6 +187,54 @@ async function onSubmit(values: Record<string, any>) {
     props.refresh()
   }
 }
+
+// 防抖函数（500ms 延迟）
+const handleSearch = debounce(async (keyword = '') => {
+  try {
+    const params = { address_id: addressId.value , keyword}
+    const data = await orderCartSku(params);
+    formApi.updateSchema([
+    {
+      fieldName: 'id',
+      componentProps: {
+        options: data.list.map((item : CartSelect) => ({
+          label: item.name + "/" + item.unit,
+          value: item.id,
+        })),
+      }
+    }
+  ])
+
+
+  } catch (error) {
+    console.error('搜索失败:', error);
+  }
+}, 300);
+
+const handleChange = (id: string) => {
+  const row = findById(id)
+  if (!row) return 
+
+  formApi.setFieldValue("price", row.price)
+
+  if (row.last_price !== '0.00') {
+    formApi.updateSchema([
+      {
+        fieldName: 'price',
+        description: () => h('span', { class: 'text-red-600' }, '最近售价 '+row.last_price+' 元')
+      }
+    ])
+    return
+  }
+
+  formApi.updateSchema([
+    {
+      fieldName: 'price',
+      description: ''
+    }
+  ])
+}
+
 
 </script>
 

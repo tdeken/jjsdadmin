@@ -23,6 +23,9 @@ import 'vxe-table/lib/style.css'
 
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 
+import CartSkuSelect from '#/components/selector/cart-sku-select.vue';
+
+
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
   await initComponentAdapter();
@@ -68,6 +71,9 @@ async function bootstrap(namespace: string) {
   app.use(MotionPlugin);
 
   app.use(VxeUIAll).use(VxeUITable)
+
+  app.component('CartSkuSelect', CartSkuSelect);
+
 
   const queryClient = new QueryClient({
   defaultOptions: {

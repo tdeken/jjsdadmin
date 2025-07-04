@@ -16,6 +16,9 @@ export default defineConfig(async () => {
         },
       },
     },
-    plugins: []
+    plugins: [],
+    optimizeDeps: {
+      include: ['lodash-es']
+    }
   };
 });

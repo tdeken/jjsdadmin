@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { goodsSkuCreate, goodsSkuUpdate } from '#/api';
+import { goodsSkuCreate } from '#/api';
 import { message } from 'ant-design-vue';
 
 import { vbenForm, priceFloat } from '#/utils';
 import { ref } from 'vue';
 
 const row = ref()
-let goodsId = ""
+const goodsId = ref<string>('')
 
 interface Props {
   refresh?:()=>void, 
@@ -48,7 +48,7 @@ function updateRow(){
   const data = drawerApi.getData()?.row
   row.value = data
 
-  goodsId = drawerApi.getData()?.goods_id
+  goodsId.value = drawerApi.getData()?.goods_id
 
   formApi.updateSchema([
     {
@@ -246,7 +246,7 @@ async function onSubmit(values: Record<string, any>) {
 
 
   await goodsSkuCreate({
-    goods_id: goodsId,
+    goods_id: goodsId.value,
     remark: values.remark,
     format: values.format,
     unit: values.unit,

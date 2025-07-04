@@ -24,7 +24,7 @@ const [Modal, drawerApi] = useVbenModal({
 
 const queryKey = ['options'];
 
-const { dataUpdatedAt, promise: fetchDataFn } = useQuery({
+const { promise: fetchDataFn } = useQuery({
   // 在组件渲染期间预取数据
   experimental_prefetchInRender: true,
   // 获取接口数据的函数

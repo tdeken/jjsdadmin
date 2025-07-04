@@ -64,6 +64,7 @@ export namespace OrderApi {
 
   export interface CartSku {
     address_id: string;
+    keyword?: string;
   }
 
   export interface CartClose {
@@ -76,9 +77,14 @@ export namespace OrderApi {
     order_id: string;
   }
 
-   export interface PrintData {
+  export interface PrintData {
     order_id: string;
   }
+
+  export interface ConfirmPrint {
+    order_id: string;
+  }
+
 }
 
 /**
@@ -159,8 +165,15 @@ export async function orderStore(data: OrderApi.Store) {
 }
 
 /**
- * 购物车商品
+ * 打印订单数据
  */
 export async function orderPrintData(params: OrderApi.PrintData) {
   return requestClient.get('admin/order/print-data', { params });
+}
+
+/**
+ * 确认打印
+ */
+export async function orderConfirmPrint(data: OrderApi.ConfirmPrint) {
+  return requestClient.post('admin/order/confirm-print', data);
 }

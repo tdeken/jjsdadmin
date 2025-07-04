@@ -8,6 +8,7 @@ interface Order {
   real_amount: string;
   created_date: string;
   status: number;
+  print_status: number;
   remark: string;
 }
 
@@ -46,6 +47,7 @@ interface CartSku {
 interface CartSelect {
   id: string;
   name: string;
+  unit: string;
   price: string;
   last_price: string;
 }

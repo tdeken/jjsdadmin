@@ -188,7 +188,6 @@ const saveStore = async ()=> {
   <Page>
     <StoreForm :refresh="fetchData" />
     <UpdateForm :refresh="fetchData" />
-    <CartDelete :refresh="fetchData"/>
     <CartClear :refresh="fetchData"/>
     <div class="button-container">
       <Button class="left-btn" @click="cud.clear" style="margin-left: 20px" type="primary" danger>

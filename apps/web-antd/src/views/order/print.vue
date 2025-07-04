@@ -1,5 +1,5 @@
 <template>
-  <Modal>
+  <Modal class="w-[60%]">
     <div ref="topElRef">
       <div>
         <div class="p-label-g p-title">
@@ -39,8 +39,8 @@
         </div>
       </div>
     </div>
-    
   </Modal> 
+  <PrintConfirm :refresh="refresh" />
 </template>
 
 <script lang="ts" setup>
@@ -54,18 +54,35 @@ import { useVbenModal } from '@vben/common-ui';
 
 import type { PrintData, PrintSku } from './types';
 
-const data = ref<PrintData>()
+import PrintConfirmComponent from './print-confirm.vue';
 
+
+interface Props {
+  refresh?:()=>void, 
+}
+
+const props = defineProps<Props>()
+
+const [PrintConfirm, printConfirmApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: PrintConfirmComponent,
+});
+
+const data = ref<PrintData>()
+const orderId = ref<string>('')
 const [Modal, modalApi] = useVbenModal({
   onCancel() {
     modalApi.close();
   },
   onConfirm(){
     printEvent()
+    printConfirmApi.setData({order_id: orderId.value});
+    printConfirmApi.open()
   },
   onOpenChange(isOpen: boolean){
     if (!isOpen) return
-    data.value = modalApi.getData() as PrintData
+    data.value = modalApi.getData().print_data as PrintData
+    orderId.value = modalApi.getData().order_id
 
     gridApi.setGridOptions({data:data.value.list})
   }
@@ -102,22 +119,22 @@ const bottomElRef = ref<HTMLDivElement>()
 
 const customStyle = `
   @page { 
-    size: auto; 
+    size: auto;
     margin: 0 !important; 
-    marks: none;
   }
     
-  body { 
-    margin: 0 !important; 
-    padding: 5px !important; 
+  body {
+    width: 100%;
+    height: 100%;
   }
   .vxe-table {
+    width: 100% !important;
     border: none !important;
   }
   .vxe-table th,
   .vxe-table td {
     border: 1px solid #000 !important;
-    font-size: ` + '16' + `px;
+    font-size: ` + '14' + `px;
   }
   .p-label {
     float: left;
@@ -136,7 +153,7 @@ const customStyle = `
     width: 100%;
     height: 18px;
     line-height: 20px;
-    font-size: ` + '18' + `px;
+    font-size: ` + '16' + `px;
   }
   
   .p-title {
@@ -159,6 +176,12 @@ const printEvent = async () => {
     ,
     html: topHtml + printRest.html + bottomHtml,
     })
+  }
+}
+
+const refresh = () => {
+  if (props.refresh) {
+    props.refresh()
   }
 }
 
