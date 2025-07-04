@@ -31,21 +31,17 @@ function updateRow(){
   const format = drawerApi.getData()?.format
   const unit = drawerApi.getData()?.unit
   const goods = drawerApi.getData()?.goods
-  const goodsData: any[] = []
-  if (goods) {
-      goods.value.forEach((row: any) => {
-        goodsData.push({
-            value: row.id,
-            label: row.title,
-        })
-      })
-  }
 
   formApi.resetForm()
   formApi.updateSchema([
     {
       componentProps: {
-        options: goodsData,
+        options:  goods.value.map((row: any) => {
+          return {
+              value: row.id,
+              label: row.title,
+          }
+        }),
       },
       fieldName: 'goods_id',
     },
@@ -75,8 +71,7 @@ const cus = {
         allowClear: true,
         filterOption: true,
         immediate: false,
-        optionFilterProp: "title",
-        optionValueProp: "id",
+        optionFilterProp: "label",
         placeholder: '请选择',
         showSearch: true,
       },
@@ -84,7 +79,6 @@ const cus = {
       fieldName: 'goods_id',
       label: '绑定商品',
       rules: 'required',
-      show: false,
     },
     {
       // 组件需要在 #/adapter.ts内注册，并加上类型

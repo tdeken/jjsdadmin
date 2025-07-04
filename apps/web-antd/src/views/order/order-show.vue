@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import  { computed } from 'vue';
+import  { ref } from 'vue';
 import { Row, Col, Descriptions, DescriptionsItem } from 'ant-design-vue';
 
 import type { VxeGridProps } from '#/adapter/vxe-table';
@@ -50,14 +50,30 @@ import { useVbenDrawer } from '@vben/common-ui';
 import type { Order, OrderSku } from './types';
 
 
-const orderRow = computed(() => {
-  return drawerApi.getData() as Order
+const orderRow = ref<Order>({
+  id: "",
+  order_no: "",
+  address_id: "",
+  shop_name: "",
+  address: "",
+  amount: "",
+  real_amount: "",
+  created_date: "",
+  status: 0,
+  print_status: 0,
+  remark: "",
 })
 
 const [Drawer, drawerApi] = useVbenDrawer({
   onCancel() {
     drawerApi.close();
-  }
+  },
+  onOpenChange(isOpen) {
+    if(isOpen) {
+      orderRow.value = drawerApi.getData() 
+      gridApi.reload()
+    }
+  },
 });
 
 const gridOptions: VxeGridProps<OrderSku> = {
@@ -88,7 +104,7 @@ const gridOptions: VxeGridProps<OrderSku> = {
   },
 };
 
-const [Grid] = useVbenVxeGrid({ gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ gridOptions });
 
 const itemStyle = {
   fontSize:'16px',

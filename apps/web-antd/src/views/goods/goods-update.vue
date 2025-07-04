@@ -33,16 +33,8 @@ function updateRow(){
   const data = drawerApi.getData()?.row
   row.value = data
 
-  formApi.updateSchema([
-    {
-      fieldName: 'title',
-      defaultValue: data?.title || ''
-    },
-    {
-      fieldName: 'as_title',
-      defaultValue: data?.as_title || ''
-    }
-  ])
+  formApi.setFieldValue('title', data?.title || '')
+  formApi.setFieldValue('as_title', data?.as_title || '')
 }
 
 const cus = {

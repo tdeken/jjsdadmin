@@ -32,7 +32,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
 });
 
-function fullCustomers(){
+const fullCustomers = () => {
   formApi.updateSchema([
     {
       componentProps: {
@@ -43,7 +43,7 @@ function fullCustomers(){
   ])
 }
 
-function updateRow(){
+const updateRow = () => {
   const data = drawerApi.getData()?.row
   row.value = data
 
@@ -52,22 +52,10 @@ function updateRow(){
   } else {
     formApi.setFieldValue('customer_id', data.customer_id)
   }
- 
-
-  formApi.updateSchema([
-    {
-      fieldName: 'shop_name',
-      defaultValue: data?.shop_name || ''
-    },
-    {
-      fieldName: 'address',
-      defaultValue: data?.address || ''
-    },
-    {
-      fieldName: 'tel',
-      defaultValue: data?.tel || ''
-    }
-  ])
+  
+  formApi.setFieldValue('shop_name', data?.shop_name || '')
+  formApi.setFieldValue('address', data?.address || '')
+  formApi.setFieldValue('tel', data?.tel || '')
 }
 
 const cus = {

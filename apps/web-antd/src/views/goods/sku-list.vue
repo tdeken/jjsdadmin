@@ -118,8 +118,8 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeGridProps<RowType> = {
   columns: [
-   { field: 'name', title: '销售商品名称' },
-    { field: 'short_name', title: '简称' },
+   { field: 'name', title: '销售商品名称', minWidth: 200 },
+    { field: 'short_name', title: '简称', minWidth: 150 },
     { field: 'unit', title: '单位', width:50 },
     { field: 'format', title: '规格', width:100 },
     { field: 'wp', title: '批发价(元)', width:100 },
@@ -131,7 +131,7 @@ const gridOptions: VxeGridProps<RowType> = {
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      maxWidth: 500,
+      minWidth: 200,
     },
   ],
   height: 'auto',
@@ -165,7 +165,6 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
     <UpdateSku class="w-[33%]" :refresh="refresh" />
     <StoreSku class="w-[33%]" :refresh="refresh" />
     <CopySku class="w-[33%]" :refresh="refresh" />
-    <DelSku :refresh="refresh" />
     <Grid>
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click=cud.create >

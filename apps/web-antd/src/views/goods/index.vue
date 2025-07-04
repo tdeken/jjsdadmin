@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 
 import type { CudInterface } from '#/types/form';
 import type { VbenFormProps } from '#/adapter/form';
-import type { VxeGridProps, VxeGridListeners } from '#/adapter/vxe-table';
+import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Button, Popconfirm, message } from 'ant-design-vue';
 
@@ -18,7 +18,7 @@ import type { Goods, GoodsSku } from './types';
 import SpuStoreComponent from './goods-store.vue';
 import SpuUpdateComponent from './goods-update.vue';
 
-import SkuStoreComponent from './sku-store.vue';
+import SkuStoreComponent from './goods-sku-store.vue';
 import SkuCopyComponent from './sku-copy.vue';
 import SkuUpdateComponent from './sku-update.vue';
 
@@ -146,19 +146,20 @@ const gridOptions: VxeGridProps<Goods> = {
   },
   columns: [
     { type: 'expand', width: 60, slots: { content: 'expand_content' } },
-    { field:'title', title: '商品名称', width: 300 },
+    { field:'title', title: '商品名称', minWidth: 200 },
     { 
       field:'sku_num', 
-      title: '可售商品数'
+      title: '销售品数',
+      width: 80,
     },
-    { field:'as_title', title: '商品别名' },
-    { field:'updated_date', title: '最后修改日期' },
+    { field:'as_title', title: '商品别名', minWidth: 200 },
+    { field:'updated_date', title: '最后修改日期', minWidth: 200 },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      maxWidth: 300,
+      minWidth: 200,
     },
   ],
   height: 'auto',
@@ -173,6 +174,12 @@ const gridOptions: VxeGridProps<Goods> = {
         });
       },
     },
+  },
+  rowConfig: {
+    keyField: 'id'
+  },
+  expandConfig: {
+    trigger: 'row',
   }
 };
 
@@ -184,15 +191,6 @@ const useRouteStore = useRoute()
 
 const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
 
-const gridEvents: VxeGridListeners<Goods> = {
-  cellClick ({ row, column }) {
-    console.log(`单击行：${row.id} 单击列：${column.title}`)
-  },
-  cellDblclick ({ row, column }) {
-    console.log(`双击行：${row.id} 双击列：${column.title}`)
-  }
-}
-
 </script>
 
 <template>
@@ -202,7 +200,7 @@ const gridEvents: VxeGridListeners<Goods> = {
     <SkuUpdate class="w-[33%]" :refresh="refresh" />
     <SkuStore class="w-[33%]" :refresh="refresh" />
     <SkuCopy class="w-[33%]" :refresh="refresh" />
-    <Grid v-on="gridEvents">
+    <Grid>
       <template #expand_content="{ row }">
           <GoodsSkuComponent 
             :data="row.goods_skus" 

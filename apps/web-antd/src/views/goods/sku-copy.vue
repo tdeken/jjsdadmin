@@ -34,22 +34,12 @@ function updateRow(){
 
   const format = drawerApi.getData()?.format
   const unit = drawerApi.getData()?.unit
-  const goods = drawerApi.getData()?.goods
-  const goodsData: any[] = []
-  if (goods) {
-      goods.value.forEach((row: any) => {
-        goodsData.push({
-            value: row.id,
-            label: row.title,
-        })
-      })
-  }
 
   const data = drawerApi.getData()?.row
   row.value = data
 
   goodsId.value = drawerApi.getData()?.goods_id
-
+  formApi.resetForm()
   formApi.updateSchema([
     {
       fieldName: 'capacity',

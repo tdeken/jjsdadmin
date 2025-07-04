@@ -67,9 +67,9 @@ const formOptions: VbenFormProps = {
     {
       component: "Input",
       componentProps: {
-        placeholder: "请输入商铺名称",
+        placeholder: "请输入商铺名称或客户名称",
       },
-      fieldName: "shop_name",
+      fieldName: "keyword",
       label: "商铺",
     },
     {
@@ -98,16 +98,16 @@ const gridOptions: VxeGridProps<Address> = {
     labelField: "name",
   },
   columns: [
-    { field: "shop_name", title: "商铺", width: 500 },
-    { field: "address", title: "地址" },
-    { field: "tel", title: "联系方式", width: 300 },
-    { field: "created_date", title: "添加日期" },
+    { field: "shop_name", title: "商铺", width: 200 },
+    { field: "address", title: "地址", minWidth: 200 },
+    { field: "tel", title: "联系方式", width: 200 },
+    { field: "created_date", title: "添加日期", width: 200  },
     {
       field: "action",
       fixed: "right",
       slots: { default: "action" },
       title: "操作",
-      width: 250,
+      width: 200,
     },
   ],
   height: "auto",

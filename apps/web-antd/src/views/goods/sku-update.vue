@@ -33,67 +33,33 @@ function updateRow(){
 
   const format = drawerApi.getData()?.format
   const unit = drawerApi.getData()?.unit
-  const goods = drawerApi.getData()?.goods
-  const goodsData: any[] = []
-  if (goods) {
-      goods.value.forEach((row: any) => {
-        goodsData.push({
-            value: row.id,
-            label: row.title,
-        })
-      })
-  }
-
   const data = drawerApi.getData()?.row
   row.value = data
 
+  formApi.setFieldValue('capacity', data?.capacity || '')
+  formApi.setFieldValue('short_name', data?.short_name || '')
+  formApi.setFieldValue('remark', data?.remark || '')
+  formApi.setFieldValue('format', data?.format || '')
+  formApi.setFieldValue('unit', data?.unit || '')
+  formApi.setFieldValue('pp', data?.pp || '0')
+  formApi.setFieldValue('wp', data?.wp || '0')
+  formApi.setFieldValue('rp', data?.rp || '0')
+  formApi.setFieldValue('stock', data?.stock || '-1')
+  formApi.setFieldValue('number', data?.number || '-1')
+
   formApi.updateSchema([
-    {
-      fieldName: 'capacity',
-      defaultValue: data?.capacity || ''
-    },
-    {
-      fieldName: 'short_name',
-      defaultValue: data?.short_name || ''
-    },
-    {
-      fieldName: 'remark',
-      defaultValue: data?.remark || ''
-    },
     {
       componentProps: {
         options: format,
       },
       fieldName: 'format',
-      defaultValue: data?.format || format.value?.[0].value,
     },
     {
       componentProps: {
         options: unit,
       },
       fieldName: 'unit',
-      defaultValue: data?.unit || unit.value?.[0].value,
     },
-    {
-      fieldName: 'pp',
-      defaultValue: data?.pp || '0',
-    },
-    {
-      fieldName: 'wp',
-      defaultValue: data?.wp || '0',
-    },
-    {
-      fieldName: 'rp',
-      defaultValue: data?.rp || '0',
-    },
-    {
-      fieldName: 'stock',
-      defaultValue: data?.stock || '-1',
-    },
-    {
-      fieldName: 'number',
-      defaultValue: data?.number || ''
-    }
   ])
 }
 
