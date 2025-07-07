@@ -101,6 +101,7 @@ const gridOptions: VxeGridProps<Address> = {
     { field: "shop_name", title: "商铺", width: 200 },
     { field: "address", title: "地址", minWidth: 200 },
     { field: "tel", title: "联系方式", width: 200 },
+    { field: "name", title: "客户名称", width: 200 },
     { field: "created_date", title: "添加日期", width: 200  },
     {
       field: "action",

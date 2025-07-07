@@ -47,6 +47,26 @@ const updateRow = () => {
   const data = drawerApi.getData()?.row
   row.value = data
 
+
+  formApi.updateSchema([
+    {
+      fieldName: 'customer_id',
+      defaultValue: data?.customer_id || undefined,
+    },
+    {
+      fieldName: 'shop_name',
+      defaultValue: data?.shop_name || '',
+    },
+    {
+      fieldName: 'address',
+      defaultValue: data?.address || '',
+    },
+    {
+      fieldName: 'tel',
+      defaultValue: data?.tel || '',
+    }
+  ])
+
   if (!data?.customer_id) {
     formApi.setFieldValue('customer_id', undefined)
   } else {

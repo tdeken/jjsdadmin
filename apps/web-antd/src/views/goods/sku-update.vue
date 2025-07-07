@@ -36,6 +36,55 @@ function updateRow(){
   const data = drawerApi.getData()?.row
   row.value = data
 
+  formApi.updateSchema([
+    {
+      fieldName: 'capacity',
+      defaultValue: data?.capacity || ''
+    },
+    {
+      fieldName: 'short_name',
+      defaultValue: data?.short_name || ''
+    },
+    {
+      fieldName: 'remark',
+      defaultValue: data?.remark || ''
+    },
+    {
+      componentProps: {
+        options: format,
+      },
+      fieldName: 'format',
+      defaultValue: data?.format || format.value?.[0].value,
+    },
+    {
+      componentProps: {
+        options: unit,
+      },
+      fieldName: 'unit',
+      defaultValue: data?.unit || unit.value?.[0].value,
+    },
+    {
+      fieldName: 'pp',
+      defaultValue: data?.pp || '0',
+    },
+    {
+      fieldName: 'wp',
+      defaultValue: data?.wp || '0',
+    },
+    {
+      fieldName: 'rp',
+      defaultValue: data?.rp || '0',
+    },
+    {
+      fieldName: 'stock',
+      defaultValue: data?.stock || '-1',
+    },
+    {
+      fieldName: 'number',
+      defaultValue: data?.number || ''
+    }
+  ])
+
   formApi.setFieldValue('capacity', data?.capacity || '')
   formApi.setFieldValue('short_name', data?.short_name || '')
   formApi.setFieldValue('remark', data?.remark || '')
@@ -47,20 +96,6 @@ function updateRow(){
   formApi.setFieldValue('stock', data?.stock || '-1')
   formApi.setFieldValue('number', data?.number || '-1')
 
-  formApi.updateSchema([
-    {
-      componentProps: {
-        options: format,
-      },
-      fieldName: 'format',
-    },
-    {
-      componentProps: {
-        options: unit,
-      },
-      fieldName: 'unit',
-    },
-  ])
 }
 
 const cus = {

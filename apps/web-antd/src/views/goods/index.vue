@@ -180,6 +180,8 @@ const gridOptions: VxeGridProps<Goods> = {
   },
   expandConfig: {
     trigger: 'row',
+    accordion: true,
+    reserve: true,
   }
 };
 

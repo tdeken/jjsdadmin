@@ -34,6 +34,18 @@ const updateRow = () => {
   const data = drawerApi.getData()?.row
   row.value = data
 
+
+  formApi.updateSchema([
+    {
+      fieldName: 'name',
+      defaultValue: data?.name || '',
+    },
+    {
+      fieldName: 'phone',
+      defaultValue: data?.phone || '',
+    },
+  ])
+
   formApi.setFieldValue('name', data?.name || '')
   formApi.setFieldValue('phone', data?.phone || '')
 }

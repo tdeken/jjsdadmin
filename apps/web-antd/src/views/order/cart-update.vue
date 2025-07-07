@@ -88,6 +88,10 @@ function updateRow(){
     },
     price,
   ])
+
+  formApi.setFieldValue('id', row.value?.id || undefined)
+  formApi.setFieldValue('book_num', row.value?.book_num || '1')
+  formApi.setFieldValue('remark', row.value?.remark || '')
 }
 
 const cus = {

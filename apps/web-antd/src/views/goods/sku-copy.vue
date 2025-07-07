@@ -88,6 +88,18 @@ function updateRow(){
       defaultValue: data?.number || ''
     }
   ])
+
+
+  formApi.setFieldValue('capacity', data?.capacity || '')
+  formApi.setFieldValue('short_name', data?.short_name || '')
+  formApi.setFieldValue('remark', data?.remark || '')
+  formApi.setFieldValue('format', data?.format || '')
+  formApi.setFieldValue('unit', data?.unit || '')
+  formApi.setFieldValue('pp', data?.pp || '0')
+  formApi.setFieldValue('wp', data?.wp || '0')
+  formApi.setFieldValue('rp', data?.rp || '0')
+  formApi.setFieldValue('stock', data?.stock || '-1')
+  formApi.setFieldValue('number', data?.number || '-1')
 }
 
 

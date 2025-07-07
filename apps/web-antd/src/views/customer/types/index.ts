@@ -4,6 +4,7 @@ interface Address {
   address: string;
   tel: string;
   created_date: string;
+  name: string;
 }
 
 export type { Address };
