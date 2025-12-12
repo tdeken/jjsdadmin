@@ -178,7 +178,7 @@ const cus = {
       component: 'Input',
       // 对应组件的参数
       componentProps: {
-        placeholder: '选填，请输入商品备注，如：原味，蓝莓味',
+        placeholder: '选填，请输入商品编码',
       },
       // 字段名
       fieldName: 'number',
