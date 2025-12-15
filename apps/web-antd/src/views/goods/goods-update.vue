@@ -5,9 +5,8 @@ import { vbenForm } from '#/utils';
 import { goodsUpdate } from '#/api';
 import { message } from 'ant-design-vue';
 
-import { ref } from 'vue';
-
-const row = ref()
+import { UPDATE } from '#/constants';
+import { GoodsFormSchema, GoodsInitForm } from './form';
 
 interface Props {
   refresh?:()=>void, 
@@ -15,75 +14,11 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const [Drawer, drawerApi] = useVbenDrawer({
-  onCancel() {
-    drawerApi.close();
-  },
-  onConfirm() {
-    formApi.validateAndSubmitForm();
-  },
-  onOpenChange(isOpen) {
-    if (isOpen) {
-      updateRow()
-    }
-  },
-});
-
-function updateRow(){
-  const data = drawerApi.getData()?.row
-  row.value = data
-  
-  formApi.updateSchema([
-    {
-      fieldName: 'title',
-      defaultValue: data?.title || '',
-    },
-    {
-      fieldName: 'as_title',
-      defaultValue: data?.as_title || '',
-    }
-  ])
-
-  formApi.setFieldValue('title', data?.title || '')
-  formApi.setFieldValue('as_title', data?.as_title || '')
-}
-
-const cus = {
-  schema: [
-    {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入商品名称',
-      },
-      // 字段名
-      fieldName: 'title',
-      // 界面显示的label
-      label: '商品名称',
-      rules: 'required',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入商品别名，方便搜索',
-      },
-      // 字段名
-      fieldName: 'as_title',
-      // 界面显示的label
-      label: '商品别名',
-    }
-  ],
-}
-
-const [Form, formApi] = vbenForm(cus, onSubmit);
-
-async function onSubmit(values: Record<string, any>) {
+const onSubmit = async (values: Record<string, any>) => {
   drawerApi.close();
 
   await goodsUpdate({
-    id: row.value.id,
+    id: drawerApi.getData().row.id,
     title: values.title, 
     as_title: values.as_title,
   })
@@ -94,6 +29,22 @@ async function onSubmit(values: Record<string, any>) {
   }
     
 }
+
+const [Drawer, drawerApi] = useVbenDrawer({
+  onCancel: () => {
+    drawerApi.close();
+  },
+  onConfirm: () => {
+    formApi.validateAndSubmitForm();
+  },
+  onOpenChange: (isOpen) => {
+    if (isOpen) {
+      GoodsInitForm(UPDATE, drawerApi, formApi)
+    }
+  },
+});
+
+const [Form, formApi] = vbenForm(GoodsFormSchema(UPDATE), onSubmit);
 
 </script>
 

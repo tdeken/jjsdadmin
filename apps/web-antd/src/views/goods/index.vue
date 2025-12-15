@@ -18,7 +18,7 @@ import type { Goods, GoodsSku } from './types';
 import SpuStoreComponent from './goods-store.vue';
 import SpuUpdateComponent from './goods-update.vue';
 
-import SkuStoreComponent from './goods-sku-store.vue';
+// import SkuStoreComponent from './goods-sku-store.vue';
 import SkuCopyComponent from './sku-copy.vue';
 import SkuUpdateComponent from './sku-update.vue';
 
@@ -45,10 +45,10 @@ const [SkuUpdate, skuUpdateApi] = useVbenDrawer({
   connectedComponent: SkuUpdateComponent,
 });
 
-const [SkuStore, skuStoreApi] = useVbenDrawer({
-  // 连接抽离的组件
-  connectedComponent: SkuStoreComponent,
-});
+// const [SkuStore, skuStoreApi] = useVbenDrawer({
+//   // 连接抽离的组件
+//   connectedComponent: SkuStoreComponent,
+// });
 
 const [SkuCopy, skuCopyApi] = useVbenDrawer({
   // 连接抽离的组件
@@ -87,9 +87,9 @@ const cud: SkuPage = {
     storeApi.open();
   },
   createSku: (row: Goods) => {
-    skuStoreApi.setState({title: '新增可售商品'});
-    skuStoreApi.setData({goods_id: row.id, unit: unit, format: format})
-    skuStoreApi.open();
+    skuCopyApi.setState({title: '新增可售商品'});
+    skuCopyApi.setData({goods_id: row.id, unit: unit, format: format})
+    skuCopyApi.open();
   },
   updateSku: (row: GoodsSku) => {
     skuUpdateApi.setState({title: '更新可售商品'});
@@ -97,8 +97,8 @@ const cud: SkuPage = {
     skuUpdateApi.open();
   },
   copySku: (row: GoodsSku) => {
-    skuCopyApi.setState({title: '新增可售商品'});
-    skuCopyApi.setData({goods_id: row.goods_id, unit: unit, format: format})
+    skuCopyApi.setState({title: '复制可售商品'});
+    skuCopyApi.setData({goods_id: row.goods_id, row: row, unit: unit, format: format})
     skuCopyApi.open();
   },
   deleteSku: async (row: GoodsSku) => {
@@ -145,8 +145,7 @@ const gridOptions: VxeGridProps<Goods> = {
     labelField: 'name',
   },
   columns: [
-    { type: 'expand', width: 60, slots: { content: 'expand_content' } },
-    { field:'title', title: '商品名称', minWidth: 200 },
+    { type: 'expand', field:'title', title: '商品名称', minWidth: 400, slots: { content: 'expand_content' } },
     { 
       field:'sku_num', 
       title: '销售品数',
@@ -159,7 +158,7 @@ const gridOptions: VxeGridProps<Goods> = {
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      minWidth: 200,
+      minWidth: 250,
     },
   ],
   height: 'auto',
@@ -173,15 +172,17 @@ const gridOptions: VxeGridProps<Goods> = {
           ...formValues,
         });
       },
-    },
+    }
   },
   rowConfig: {
     keyField: 'id'
   },
   expandConfig: {
-    trigger: 'row',
+    labelField:"title",
+    trigger: 'cell',
     accordion: true,
     reserve: true,
+    expandRowKeys: []
   }
 };
 
@@ -193,6 +194,8 @@ const useRouteStore = useRoute()
 
 const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
 
+
+
 </script>
 
 <template>
@@ -200,7 +203,6 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
     <Store class="w-[33%]" :refresh="refresh" />
     <Update class="w-[33%]" :refresh="refresh" />
     <SkuUpdate class="w-[33%]" :refresh="refresh" />
-    <SkuStore class="w-[33%]" :refresh="refresh" />
     <SkuCopy class="w-[33%]" :refresh="refresh" />
     <Grid>
       <template #expand_content="{ row }">

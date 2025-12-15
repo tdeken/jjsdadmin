@@ -47,7 +47,18 @@ export namespace GoodsApi {
   }
 
   /** 商品更新 */
-  export interface SkuUpdate extends SkuCreate, SkuDestroy {
+  export interface SkuUpdate {
+    id: string;
+    capacity: string;
+    remark: string;
+    format: string;
+    unit: string;
+    pp: string;
+    wp: string;
+    rp: string;
+    stock: number;
+    number: number;
+    short_name: string;
   }
 
 

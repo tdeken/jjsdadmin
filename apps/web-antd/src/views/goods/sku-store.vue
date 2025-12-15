@@ -5,6 +5,8 @@ import { goodsSkuCreate } from '#/api';
 import { message } from 'ant-design-vue';
 
 import { vbenForm, priceFloat } from '#/utils';
+import { InitForm, FormSchema } from './form';
+import { STORE } from '#/constants';
 
 interface Props {
   refresh?:()=>void, 
@@ -13,207 +15,20 @@ interface Props {
 const props = defineProps<Props>()
 
 const [Drawer, drawerApi] = useVbenDrawer({
-  onCancel() {
+  onCancel: () => {
     drawerApi.close();
   },
-  onConfirm() {
+  onConfirm: () => {
     formApi.submitForm();
   },
-  onOpenChange(isOpen) {
+  onOpenChange: (isOpen) => {
     if (isOpen) {
-      updateRow()
+      InitForm(STORE, drawerApi, formApi)
     }
   },
 });
 
-function updateRow(){
-
-  const format = drawerApi.getData()?.format
-  const unit = drawerApi.getData()?.unit
-  const goods = drawerApi.getData()?.goods
-
-  formApi.resetForm()
-  formApi.updateSchema([
-    {
-      componentProps: {
-        options:  goods.value.map((row: any) => {
-          return {
-              value: row.id,
-              label: row.title,
-          }
-        }),
-      },
-      fieldName: 'goods_id',
-    },
-    {
-      componentProps: {
-        options: format,
-      },
-      fieldName: 'format',
-      defaultValue: format.value?.[0].value ,
-    },
-    {
-      componentProps: {
-        options: unit,
-      },
-      fieldName: 'unit',
-      defaultValue:  unit.value?.[0].value,
-    }
-  ])
-}
-
-const cus = {
-  schema: [
-    {
-      component: 'Select',
-      componentProps: {
-        options: [],
-        allowClear: true,
-        filterOption: true,
-        immediate: false,
-        optionFilterProp: "label",
-        placeholder: '请选择',
-        showSearch: true,
-      },
-      defaultValue: undefined,
-      fieldName: 'goods_id',
-      label: '绑定商品',
-      rules: 'required',
-    },
-    {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '选填，请输入商品重量，如200g，250ml',
-      },
-      // 字段名
-      fieldName: 'capacity',
-      // 界面显示的label
-      label: '商品重量',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '选填，请输入商品备注，如：原味，蓝莓味',
-      },
-      // 字段名
-      fieldName: 'remark',
-      // 界面显示的label
-      label: '商品备注',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '选填，请输入一些关键词',
-      },
-      // 字段名
-      fieldName: 'short_name',
-      // 界面显示的label
-      label: '简称',
-    },
-    {
-      component: 'Select',
-      componentProps: {
-        options: [],
-        allowClear: true,
-        filterOption: true,
-        immediate: false,
-        optionFilterProp: "label",
-        placeholder: '请选择',
-        showSearch: true,
-      },
-      defaultValue: undefined,
-      fieldName: 'format',
-      label: '商品规格',
-      rules: 'required',
-    },
-    {
-      component: 'Select',
-      componentProps: {
-        options: [],
-        allowClear: true,
-        filterOption: true,
-        immediate: false,
-        optionFilterProp: "label",
-        placeholder: '请选择',
-        showSearch: true,
-      },
-      defaultValue: undefined,
-      fieldName: 'unit',
-      label: '商品单位',
-      rules: 'required',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入',
-        step: '0.01',
-        min: "0",
-        style: "width: 100px",
-      },
-      defaultValue: '0',
-      fieldName: 'pp',
-      label: '采购价',
-      suffix: () => '（元）',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入',
-        step: '0.01',
-        min: "0",
-        style: "width: 100px",
-      },
-      defaultValue: '0',
-      fieldName: 'wp',
-      label: '批发价',
-      suffix: () => '（元）',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入',
-        step: '0.01',
-        min: "0",
-        style: "width: 100px",
-      },
-      defaultValue: '0',
-      fieldName: 'rp',
-      label: '零售价',
-      suffix: () => '（元）',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入',
-        min: "-1",
-        style: "width: 100px",
-      },
-      defaultValue: '-1',
-      fieldName: 'stock',
-      label: '库存',
-      suffix: () => '（-1表示不限制）',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '选填，请输入商品备注，如：原味，蓝莓味',
-      },
-      // 字段名
-      fieldName: 'number',
-      // 界面显示的label
-      label: '商品编码',
-    },
-  ],
-}
-
-const [Form, formApi] = vbenForm(cus, onSubmit);
-
-async function onSubmit(values: Record<string, any>) {
+const onSubmit =  async (values: Record<string, any>) => {
   drawerApi.close();
 
   let stock:number =  parseInt(values.stock)
@@ -239,8 +54,9 @@ async function onSubmit(values: Record<string, any>) {
   if (props.refresh) {
     props.refresh()
   }
-    
 }
+
+const [Form, formApi] = vbenForm(FormSchema(STORE), onSubmit);
 
 </script>
 

@@ -50,19 +50,19 @@ const gridOptions: VxeGridProps<GoodsSku> = {
 
 const [Grid] = useVbenVxeGrid({ gridOptions });
 
-function copySku (row : GoodsSku){
+const copySku = (row : GoodsSku) =>{
   if (props.copySku){
     props.copySku(row)
   }
 }
 
-function updateSku (row : GoodsSku){
+const updateSku = (row : GoodsSku) =>{
   if (props.updateSku){
     props.updateSku(row)
   }
 }
 
-function deleteSku (row : GoodsSku){
+const deleteSku = (row : GoodsSku) =>{
   if (props.deleteSku){
     props.deleteSku(row)
   }
