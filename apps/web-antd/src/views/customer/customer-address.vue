@@ -79,7 +79,7 @@ const gridOptions: VxeGridProps<Address> = {
   },
 };
 
-const [Grid, GridApi] = useVbenVxeGrid({ gridOptions });
+const [Grid] = useVbenVxeGrid({ gridOptions });
 
 const router = useRouter();
 const toCart = async (addressId:any) =>  {

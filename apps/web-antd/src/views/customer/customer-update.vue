@@ -15,13 +15,13 @@ interface Props {
 const props = defineProps<Props>()
 
 const [Drawer, drawerApi] = useVbenDrawer({
-  onCancel() {
+  onCancel: () => {
     drawerApi.close();
   },
-  onConfirm() {
+  onConfirm: () => {
     formApi.validateAndSubmitForm();
   },
-  onOpenChange(isOpen) {
+  onOpenChange: (isOpen) => {
     if (isOpen) {
       CustomerInitForm(UPDATE, drawerApi, formApi)
     }
