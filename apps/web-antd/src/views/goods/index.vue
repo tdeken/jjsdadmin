@@ -18,7 +18,6 @@ import type { Goods, GoodsSku } from './types';
 import SpuStoreComponent from './goods-store.vue';
 import SpuUpdateComponent from './goods-update.vue';
 
-// import SkuStoreComponent from './goods-sku-store.vue';
 import SkuCopyComponent from './sku-copy.vue';
 import SkuUpdateComponent from './sku-update.vue';
 
@@ -44,11 +43,6 @@ const [SkuUpdate, skuUpdateApi] = useVbenDrawer({
   // 连接抽离的组件
   connectedComponent: SkuUpdateComponent,
 });
-
-// const [SkuStore, skuStoreApi] = useVbenDrawer({
-//   // 连接抽离的组件
-//   connectedComponent: SkuStoreComponent,
-// });
 
 const [SkuCopy, skuCopyApi] = useVbenDrawer({
   // 连接抽离的组件
@@ -193,8 +187,6 @@ const refresh = () => {
 const useRouteStore = useRoute()
 
 const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title), formOptions, gridOptions });
-
-
 
 </script>
 

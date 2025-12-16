@@ -14,6 +14,24 @@ import { $t } from '#/locales';
 
 import StoreCustomerComponent from './customer-store.vue';
 import UpdateCustomerComponent from './customer-update.vue';
+import AddressCustomerComponent from './customer-address.vue';
+import StoreAddressComponent from "./address-store.vue";
+
+import { onMounted, ref } from 'vue';
+import { customerSelector } from '#/utils';
+
+const customers = ref();
+const loadCustomers = async () => {
+  try {
+    customers.value = await customerSelector();
+  } catch (error) {
+    console.error("加载用户失败:", error);
+  }
+};
+
+onMounted(() => {
+  loadCustomers();
+});
 
 const [UpdateCustomer, updateApi] = useVbenDrawer({
   connectedComponent: UpdateCustomerComponent,
@@ -23,7 +41,15 @@ const [StoreCustomer, storeApi] = useVbenDrawer({
   connectedComponent: StoreCustomerComponent,
 })
 
-const cud: CudInterface = {
+const [StoreAddress, storeAddressApi] = useVbenDrawer({
+  connectedComponent: StoreAddressComponent,
+});
+
+interface CustomerPage extends CudInterface {
+ createAddress:(row: RowType) => void
+}
+
+const cud: CustomerPage = {
   delete: async(row: RowType) => {
     await customerDestroy({id: row.id})
     message.success('操作成功')
@@ -38,6 +64,11 @@ const cud: CudInterface = {
     storeApi.setState({title: '新增客户'});
     storeApi.open();
   },
+   createAddress:(row: RowType) => {
+    storeAddressApi.setState({title: '新增客户地址'});
+    storeAddressApi.setData({customers: customers.value, customer_id: row.id})
+    storeAddressApi.open();
+  }
 }
 
 interface RowType {
@@ -81,15 +112,16 @@ const formOptions: VbenFormProps = {
 
 const gridOptions: VxeGridProps<RowType> = {
   columns: [
-    { field:'name',title: '商铺', align: 'left', width: 500 },
+    { type: 'expand', field:'name',title: '商铺', align: 'left', minWidth: 300, slots: { content: 'expand_content' } },
     { field:'phone',title: '联系方式', align: 'left' },
+    { field:'num',title: '地址数量', align: 'left' },
     { field:'created_date',title: '添加日期', align: 'left' },
     {
       field: 'action',
       fixed: 'right',
       slots: { default: 'action' },
       title: '操作',
-      width: 200,
+      minWidth: 200,
     },
   ],
   height: 'auto',
@@ -106,11 +138,27 @@ const gridOptions: VxeGridProps<RowType> = {
       },
     },
   },
+  rowConfig: {
+    keyField: 'id'
+  },
+  expandConfig: {
+    labelField:"name",
+    trigger: 'cell',
+    accordion: true,
+    reserve: true,
+    expandRowKeys: []
+  }
 };
 
-const refresh = () => {
-  GridApi.reload()
+const refreshList = () => {
+  GridApi.reload();
 }
+
+const refresh = () => {
+  loadCustomers();  
+  refreshList();
+}
+
 
 const useRouteStore = useRoute()
 
@@ -122,13 +170,23 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
   <Page auto-content-height>
     <StoreCustomer :refresh="refresh" />
     <UpdateCustomer :refresh="refresh" />
+    <StoreAddress :refresh="refreshList" />
     <Grid>
+      <template #expand_content="{ row }">
+          <AddressCustomerComponent 
+            :data="row.address_list"
+            :customerId="row.id"
+            :customers="customers"
+            :refresh="refreshList"
+          />
+      </template>
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click=cud.create >
           新增客户
         </Button>
       </template>
       <template #action="{ row }">
+        <Button type="link" @click="cud.createAddress(row)" >新增地址</Button>
         <Button type="link" @click="cud.update(row)" >编辑</Button>
         <Popconfirm
           title = "删除后该客户下的收货地址也会删除，你确定要删除吗？"

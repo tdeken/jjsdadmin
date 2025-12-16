@@ -303,6 +303,10 @@ const GoodsFormSchema = (mark: string) => {
       schema: []
   }
 
+  if (mark === "") {
+    return vfp
+  }
+
   const fixedSchema = [
    {
       // 组件需要在 #/adapter.ts内注册，并加上类型

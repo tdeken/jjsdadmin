@@ -4,6 +4,8 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { vbenForm } from '#/utils';
 import { customerCreate } from '#/api';
 import { message } from 'ant-design-vue';
+import { CustomerFormSchema, CustomerInitForm } from './form';
+import { STORE } from '#/constants';
 
 interface Props {
   refresh?:()=>void, 
@@ -20,43 +22,12 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
   onOpenChange(isOpen) {
     if (isOpen) {
-      
+      CustomerInitForm(STORE, drawerApi, formApi)
     }
   },
 });
 
-const cus = {
-  schema: [
-    {
-      // 组件需要在 #/adapter.ts内注册，并加上类型
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入商铺名称',
-      },
-      // 字段名
-      fieldName: 'name',
-      // 界面显示的label
-      label: '商铺名称',
-      rules: 'required',
-    },
-    {
-      component: 'Input',
-      // 对应组件的参数
-      componentProps: {
-        placeholder: '请输入联系方式',
-      },
-      // 字段名
-      fieldName: 'phone',
-      // 界面显示的label
-      label: '联系方式',
-    },
-  ],
-}
-
-const [Form, formApi] = vbenForm(cus, onSubmit);
-
-async function onSubmit(values: Record<string, any>) {
+const onSubmit = async (values: Record<string, any>) => {
   drawerApi.close();
 
   await customerCreate({
@@ -70,6 +41,8 @@ async function onSubmit(values: Record<string, any>) {
   }
 
 }
+
+const [Form, formApi] = vbenForm(CustomerFormSchema(STORE), onSubmit);
 
 </script>
 
