@@ -118,9 +118,31 @@ const bottomElRef = ref<HTMLDivElement>()
 
 
 const customStyle = `
+
+  @media print {
+    /* 隐藏滚动条区域 */
+    .vxe-table--fixed-right-wrapper,
+    .vxe-table--fixed-left-wrapper,
+    .vxe-table--scroll-placeholder {
+      display: none !important;
+    }
+    
+    /* 只显示主表格 */
+    .vxe-table--main-wrapper {
+      width: 100% !important;
+      overflow: visible !important;
+    }
+    
+    /* 调整表格主体 */
+    .vxe-table--body-wrapper {
+      width: 100% !important;
+      overflow: visible !important;
+    }
+  }
+  
   @page { 
-    size: 225mm 110mm;
-    margin: 0 !important;
+    size: auto;
+    margin: 0.2cm !important;
   }
     
   body {

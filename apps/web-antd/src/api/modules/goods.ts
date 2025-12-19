@@ -37,6 +37,7 @@ export namespace GoodsApi {
     wp: string;
     rp: string;
     stock: number;
+    stock_tip: number;
     number: number;
     short_name: string;
   }
@@ -57,6 +58,7 @@ export namespace GoodsApi {
     wp: string;
     rp: string;
     stock: number;
+    stock_tip: number;
     number: number;
     short_name: string;
   }

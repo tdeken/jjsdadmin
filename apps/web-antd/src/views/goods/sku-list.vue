@@ -100,6 +100,22 @@ const formOptions: VbenFormProps = {
       label: '关键字',
     },
     {
+      component: 'Select',
+      componentProps: {
+        mode:"multiple",
+        allowClear: true,
+        name: 'cname',
+        options: [
+          {
+            label: '库存告急',
+            value: '1',
+          },
+        ],
+      },
+      fieldName: 'cond',
+      label: '过滤条件',
+    },
+    {
       component: 'RangePicker',
       fieldName: 'created_date',
       label: '创建时间',
@@ -124,7 +140,7 @@ const gridOptions: VxeGridProps<RowType> = {
     { field: 'format', title: '规格', width:100 },
     { field: 'wp', title: '批发价(元)', width:100 },
     { field: 'rp', title: '零售价(元)', width:100 },
-    { field: 'stock', title: '库存', width:100 },
+    { field: 'stock', title: '库存', width:100, slots: { default: 'stock' } },
     { field: 'number', title: '商品编号', width:200 },
     {
       field: 'action',
@@ -166,11 +182,18 @@ const [Grid, GridApi] = useVbenVxeGrid({tableTitle: $t(useRouteStore.meta.title)
     <StoreSku class="w-[33%]" :refresh="refresh" />
     <CopySku class="w-[33%]" :refresh="refresh" />
     <Grid>
+      <template #stock="{ row }">
+        <VxeText v-if="row.stock < 0" >-</VxeText>
+        <VxeText v-if="row.stock >= 0 && row.stock < 10" status="error">{{ row.stock }}</VxeText>
+        <VxeText v-if="row.stock >=10" >{{ row.stock }}</VxeText>
+      </template>
+
       <template #toolbar-tools>
         <Button class="mr-2" type="primary" @click=cud.create >
           新增销售商品
         </Button>
       </template>
+
       <template #action="{ row }">
         <Button type="link" @click="cud.copySku(row)" >复制</Button>
         <Button type="link" @click="cud.update(row)" >编辑</Button>

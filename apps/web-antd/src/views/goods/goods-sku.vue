@@ -29,7 +29,7 @@ const gridOptions: VxeGridProps<GoodsSku> = {
     { field: 'format', title: '规格', width:100 },
     { field: 'wp', title: '批发价(元)', width:100 },
     { field: 'rp', title: '零售价(元)', width:100 },
-    { field: 'stock', title: '库存', width:100 },
+    { field: 'stock', title: '库存', width:100, slots: { default: 'stock' } },
     { field: 'number', title: '商品编号', width:200 },
     {
       field: 'action',
@@ -73,6 +73,12 @@ const deleteSku = (row : GoodsSku) =>{
 <template>
   <Page>
     <Grid>
+      <template #stock="{ row }">
+        <VxeText v-if="row.stock < 0" >-</VxeText>
+        <VxeText v-if="row.stock >= 0 && row.stock < 10" status="error">{{ row.stock }}</VxeText>
+        <VxeText v-if="row.stock >=10" >{{ row.stock }}</VxeText>
+      </template>
+
       <template #action="{ row }">
         <Button type="link" @click="copySku(row)" >复制</Button>
         <Button type="link" @click="updateSku(row)" >编辑</Button>

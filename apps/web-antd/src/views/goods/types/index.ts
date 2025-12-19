@@ -20,6 +20,7 @@ interface GoodsSku {
   wp: string;
   rp: string;
   stock: number;
+  stock_tip: number;
   number: string;
   short_name: string;
 }

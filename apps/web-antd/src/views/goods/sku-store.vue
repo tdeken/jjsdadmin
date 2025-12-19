@@ -32,6 +32,7 @@ const onSubmit =  async (values: Record<string, any>) => {
   drawerApi.close();
 
   let stock:number =  parseInt(values.stock)
+  let stockTip:number =  parseInt(values.stock_tip)
   let pp:string = priceFloat(values.pp)
   let wp:string = priceFloat(values.wp)
   let rp:string = priceFloat(values.rp)
@@ -45,6 +46,7 @@ const onSubmit =  async (values: Record<string, any>) => {
     wp: wp,
     rp: rp,
     stock: stock,
+    stock_tip: stockTip,
     number: values.number,
     capacity: values.capacity,
     short_name: values.short_name,

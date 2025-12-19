@@ -80,6 +80,10 @@ const copyField = (mark: string, formApi: ExtendedFormApi, unit: any, format : a
       defaultValue: data?.stock || '-1',
     },
     {
+      fieldName: 'stock_tip',
+      defaultValue: data?.stock_tip || '1',
+    },
+    {
       fieldName: 'number',
       defaultValue: data?.number || ''
     }
@@ -94,6 +98,7 @@ const copyField = (mark: string, formApi: ExtendedFormApi, unit: any, format : a
   formApi.setFieldValue('wp', data?.wp || '0')
   formApi.setFieldValue('rp', data?.rp || '0')
   formApi.setFieldValue('stock', data?.stock || '-1')
+  formApi.setFieldValue('stock_tip', data?.stock_tip || '1')
   formApi.setFieldValue('number', data?.number || '')
 
 }
@@ -220,6 +225,18 @@ const FormSchema = (mark: string) => {
       fieldName: 'stock',
       label: '库存',
       suffix: () => '（-1表示不限制）',
+    },
+    {
+      component: 'InputNumber',
+      componentProps: {
+        placeholder: '请输入',
+        min: "1",
+        style: "width: 100px",
+      },
+      defaultValue: '10',
+      fieldName: 'stock_tip',
+      label: '库存告急',
+      help: () => '当库存少于当前配置的时候，当前销售品会变成库存告急状态'
     },
     {
       component: 'Input',
