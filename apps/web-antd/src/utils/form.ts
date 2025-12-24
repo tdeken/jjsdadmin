@@ -1,10 +1,9 @@
 import { customerSelect } from "#/api"
 import { useVbenForm } from '#/adapter/form';
 import type { VbenFormProps } from '#/adapter/form';
-import { useVbenDrawer, type ExtendedDrawerApi, type ExtendedFormApi } from "@vben/common-ui";
 
 
- async function customerSelector(){
+ const customerSelector = async () => {
   const data = await customerSelect()
   return data.list.map(item=>{
     return {
@@ -14,7 +13,7 @@ import { useVbenDrawer, type ExtendedDrawerApi, type ExtendedFormApi } from "@vb
   })
 }
 
-function vbenForm (cus: VbenFormProps, onSubmit: any)  {
+const vbenForm =  (cus: VbenFormProps, onSubmit: any) => {
   const conf:VbenFormProps  = {
       // 所有表单项共用，可单独在表单内覆盖
     commonConfig: {
@@ -36,6 +35,7 @@ function vbenForm (cus: VbenFormProps, onSubmit: any)  {
     },
     wrapperClass: 'grid-cols-1',
   }
+
   return useVbenForm({...cus, ...conf})
 }
 

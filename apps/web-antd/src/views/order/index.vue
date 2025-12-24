@@ -2,6 +2,7 @@
 <template>
   <Page auto-content-height>
     <OrderStore />
+    <OrderSettlement :refresh="refresh" />
     <Print :refresh="refresh" />
     <OrderSHow class="w-[45%]" />
     <Grid>
@@ -29,9 +30,9 @@
                  <MenuItem @click="cud.update(row)">
                   修改订单
                 </MenuItem>
-                <!-- <MenuItem @click="cud.update(row)">
-                  修改订单状态
-                </MenuItem> -->
+                <MenuItem @click="cud.settlement(row)">
+                  订单结算
+                </MenuItem>
                 <MenuItem>
                   <Popconfirm
                     title = "你确定要删除吗？"
@@ -45,7 +46,7 @@
                 </MenuItem>
               </Menu>
             </template>
-            <DropdownButton size='small' type="link">更多</DropdownButton>
+            <Button size='small' type="link">更多</Button>
           </Dropdown>
         </Space>
       </template>
@@ -63,7 +64,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { Page, useVbenDrawer, useVbenModal } from "@vben/common-ui";
 
-import { Button, Space, Dropdown, DropdownButton, Menu, MenuItem, message, Popconfirm } from "ant-design-vue";
+import { Button, Space, Dropdown, Menu, MenuItem, message, Popconfirm } from "ant-design-vue";
 
 import { useVbenVxeGrid } from "#/adapter/vxe-table";
 import { orderList, orderCartStore, orderPrintData, orderDestroy } from "#/api";
@@ -73,6 +74,7 @@ import { $t } from "#/locales";
 import type { CudInterface } from '#/types/form';
 
 import OrderShow from "./order-show.vue";
+import OrderSettlementComponent from "./order-settlement.vue";
 import OrderStoreComponent from './order-store.vue';
 import PrintComponent from './print.vue';
 
@@ -81,6 +83,7 @@ const router = useRouter();
 interface SkuPage extends CudInterface {
   oderShow: (row: RowType) => void;
   print: (row: RowType) => void;
+  settlement: (row: RowType) => void;
 }
 
 const cud: SkuPage = {
@@ -110,6 +113,11 @@ const cud: SkuPage = {
     printModalApi.setState({ title: "订单打印", confirmText: '打印' });
     printModalApi.setData({order_id: row.id, print_data: res});
     printModalApi.open();
+  },
+  settlement: (row: RowType) => {
+    orderOrderSettlementModalApi.setState({ title: "订单结算" });
+    orderOrderSettlementModalApi.setData(row);
+    orderOrderSettlementModalApi.open();
   }
 };
 
@@ -126,6 +134,11 @@ const [OrderStore, orderStoreModalApi] = useVbenModal({
 const [OrderSHow, orderShowModalApi] = useVbenDrawer({
   // 连接抽离的组件
   connectedComponent: OrderShow,
+});
+
+const [OrderSettlement, orderOrderSettlementModalApi] = useVbenModal({
+  // 连接抽离的组件
+  connectedComponent: OrderSettlementComponent,
 });
 
 const formOptions: VbenFormProps = {
@@ -179,6 +192,7 @@ const gridOptions: VxeGridProps<RowType> = {
     { field: "address", title: "收货地址", minWidth: 200 },
     { field: "amount", title: "总金额（元）", minWidth: 100 },
     { field: "remark", title: "备注", width: 200 },
+    { field: "status", title: "订单状态", width: 100, slots: { default: 'status' } },
     { field: "print_status", title: "打印状态", width: 100, slots: { default: 'print_status' } },
     { field: "created_date", title: "下单时间", minWidth: 100 },
     {

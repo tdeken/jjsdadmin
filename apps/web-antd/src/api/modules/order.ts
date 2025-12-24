@@ -85,6 +85,13 @@ export namespace OrderApi {
     order_id: string;
   }
 
+  export interface Settlement {
+    order_id: string;
+    source: number;
+    real_amount: string;
+    next_date: string;
+    remark: string;
+  }
 }
 
 /**
@@ -176,4 +183,11 @@ export async function orderPrintData(params: OrderApi.PrintData) {
  */
 export async function orderConfirmPrint(data: OrderApi.ConfirmPrint) {
   return requestClient.post('admin/order/confirm-print', data);
+}
+
+/**
+ * 结算
+ */
+export async function orderSettlement(data: OrderApi.Settlement) {
+  return requestClient.post('admin/order/settlement', data);
 }

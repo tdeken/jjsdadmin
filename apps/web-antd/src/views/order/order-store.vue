@@ -36,7 +36,7 @@ const { promise: fetchDataFn } = useQuery({
   staleTime: 1000 * 60 * 5,
 });
 
-async function fetchOptions() {
+const fetchOptions = async () => {
   const res = await fetchDataFn.value
 
   return res.list.map((item:AddressSelect)=> {
@@ -66,9 +66,7 @@ const cus = {
   ],
 }
 
-const [Form, formApi] = vbenForm(cus, onSubmit);
-
-async function onSubmit(values: Record<string, any>) {
+const onSubmit = async (values: Record<string, any>) => {
   drawerApi.close();
   await orderCartStore({address_id: values.id, order_id: ''})
   router.push({
@@ -76,6 +74,8 @@ async function onSubmit(values: Record<string, any>) {
     query: {address_id: values.id, order_id: ''}, // URL查询参数
   });
 }
+
+const [Form, formApi] = vbenForm(cus, onSubmit);
 
 </script>
 

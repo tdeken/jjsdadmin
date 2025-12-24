@@ -1,9 +1,8 @@
 const ORDER_STATUS: Object = {
   0: { color: 'processing', text: '待配送' },
-  1: { color: 'cyan', text: '捡货中' },
-  2: { color: 'magenta', text: '配送中' },
-  3: { color: 'warning', text: '配送完成' },
-  4: { color: 'success', text: '已结算' }
+  1: { color: 'success', text: '已结算' },
+  2: { color: 'warning', text: '延期结算' },
+  // 1: { color: 'cyan', text: '已结算' },
 }
 
 const ORDER_PRINT_STATUS: Object = {

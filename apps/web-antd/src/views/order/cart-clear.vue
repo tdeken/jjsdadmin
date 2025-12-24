@@ -25,13 +25,13 @@ const [Modal, modalApi] = useVbenModal({
 
       const data = modalApi.getData()
       if (data) {
-        form.value = {address_id:data.address_id, order_id:data.order_id}
+        form.value = {address_id:data.address_id, order_id: data.order_id}
       }
     }
   },
 });
 
-async function del(){
+const del = async () => {
   await orderCartClear(form.value)
   if (props.refresh) {
     props.refresh()

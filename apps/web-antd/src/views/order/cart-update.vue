@@ -8,6 +8,7 @@ import { vbenForm, priceFloat } from '#/utils';
 import { orderCartUpdate, orderCartSku } from '#/api';
 
 import type { CartSku, CartSelect } from './types';
+import { message } from 'ant-design-vue';
 
 const row = ref<CartSku>() 
 const dataMap = ref<Map<string, CartSelect>>(new Map());
@@ -166,9 +167,7 @@ const cus = {
   ],
 }
 
-const [Form, formApi] = vbenForm(cus, onSubmit);
-
-async function onSubmit(values: Record<string, any>) {
+const onSubmit = async (values: Record<string, any>) => {
   drawerApi.close();
 
   const price = priceFloat(values.price)
@@ -186,11 +185,15 @@ async function onSubmit(values: Record<string, any>) {
     price: price,
     remark: values.remark,
   })
+
+  message.success('更新货物成功')
   
   if (props.refresh) {
     props.refresh()
   }
 }
+
+const [Form, formApi] = vbenForm(cus, onSubmit);
 
 // 防抖函数（500ms 延迟）
 const handleSearch = debounce(async (keyword = '') => {
